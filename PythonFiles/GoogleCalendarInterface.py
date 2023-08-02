@@ -93,7 +93,8 @@ class Interface:
         start_date_to_use = date_start is not None and date_start or curr_date
         start_time_to_use = time_start is not None and time_start or curr_time
 
-        end_date_to_use = date_end is not None and date_end or curr_date
+
+        end_date_to_use = date_end is not None and date_end or date_start
         end_time_to_use = time_end is not None and time_end or self._dt_manager.AddToTime(time=curr_time, hrs=1)
 
         start_DateTime = self.CreateGoogleDateTimeFormat(date=start_date_to_use, time=start_time_to_use)
@@ -113,12 +114,12 @@ class Interface:
                 "dateTime" : end_DateTime,
                 "timeZone" : tz
             },
-            "recurrence" : [
-                "RRULE:FREQ=DAILY;COUNT=2"
-            ],
-            "attendees" : [
-                {"email":"nonexistantemail@mail.com"}
-            ]
+            # "recurrence" : [
+            #     "RRULE:FREQ=DAILY;COUNT=2"
+            # ],
+            # "attendees" : [
+            #     {"email":"nonexistantemail@mail.com"}
+            # ]
         }
 
         return newEvent
@@ -127,7 +128,12 @@ class Interface:
 def main():
     googleCalendar = Interface()
 
-    new_event = googleCalendar.CreateGoogleEvent(event="Test 1", time_start=None, time_end=None, date_start=None, date_end=None, location="Test location")
+    new_event = googleCalendar.CreateGoogleEvent(event="Test 1", 
+                                                 time_start=None, 
+                                                 time_end=None, 
+                                                 date_start=None, 
+                                                 date_end=None, 
+                                                 location="Test location")
     print(new_event)
     googleCalendar.CreateCalendarEvent(new_event=new_event)
 

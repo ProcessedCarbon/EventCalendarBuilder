@@ -19,8 +19,9 @@ class Interface:
 
         return: list of split strings
         """
+        new_string = self.RemoveEnDashU2013(string)
         pattern = r'|'.join(delims)
-        return split(pattern, string)
+        return split(pattern, new_string)
 
     
     def GetDateStruct(self, day, month, year):
@@ -58,6 +59,9 @@ class Interface:
     def SplitWordAndRemoveEmptySlots(self, text):
             splitted = wordninja.split(text)
             return [x for x in splitted if x != '']
+
+    def RemoveEnDashU2013(self, text):
+        return text.replace(u'\u2013', "-")
 
     def ConvertToTimedFormat(self, time_text):
         string_obj = str(time_text)
@@ -116,8 +120,9 @@ class Interface:
             list_of_processed.append(date_struct)
         
         # Assign year and month to be used for substrings that do not posses one
-        year = founded_year != None and founded_year or self._dt_config.today.year
-        month = founded_month != None and founded_month or self._dt_config.today.month
+        currentDate = self._dt_config.getCurrentDate()
+        year = founded_year != None and founded_year or currentDate.year
+        month = founded_month != None and founded_month or currentDate.month
 
         formatted = []
         for struct in list_of_processed:
@@ -171,7 +176,7 @@ def main():
     #     print(f)
 
     # Testing for time
-    test_time = "12:30am-6.30pmVenue"
+    test_time = "(10.30 am – 10.00 pm)"
     print(t.ProcessTimeForGoogleCalendars(test_time))
 
 if __name__ == "__main__":
