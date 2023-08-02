@@ -1,14 +1,13 @@
 import string
 from re import sub
 from re import split
-import DateTimeManager
+from Managers.DateTimeManager import DateTimeManager
 import wordninja
 
-class Interface:
-    def __init__(self):
-        self._accepted_chars = ["-", "to"]
-        self._special_chars = string.punctuation
-        self._dt_config = DateTimeManager.Interface()
+class TextProcessingManager:
+    _accepted_chars = ["-", "to"]
+    _special_chars = string.punctuation
+    _dt_config = DateTimeManager()
 
     def MultipleDelimSplitString(self, string, delims):
         """
@@ -167,7 +166,7 @@ class Interface:
     
 # For testing
 def main():
-    t = Interface()
+    t = TextProcessingManager()
 
     # Testing for date
     # test_date = "23rd to 25th Aug"

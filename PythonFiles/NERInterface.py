@@ -1,6 +1,6 @@
 import spacy
 
-class Interface:
+class NERInterface:
     def __init__(self):
         self.nlp = spacy.load(r"./model/model-best") #load model    
         self._event = None

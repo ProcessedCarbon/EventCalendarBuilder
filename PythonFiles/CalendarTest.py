@@ -1,9 +1,9 @@
 
-import GoogleCalendarInterface
-import NERInterface
+from GoogleCalendarInterface import GoogleCalendarInterface
+from NERInterface import NERInterface
+from Managers.TextProcessing import TextProcessingManager
 
 from dateutil.parser import parse
-import TextProcessing
 
 testing_file_path = "./Testing/testing_text_r.txt"
 
@@ -17,9 +17,10 @@ def main():
     
     print("------------------------------------------------------------------------------")
     print("Initializing Interfaces in progress.......")
-    g_Interface = GoogleCalendarInterface.Interface()
-    ner_Interface = NERInterface.Interface()
-    text_processing = TextProcessing.Interface()
+    g_Interface = GoogleCalendarInterface()
+    ner_Interface = NERInterface()
+    text_processing = TextProcessingManager()
+
     print("------------------------------------------------------------------------------")
     print("Initialization Done!")
     #test_text = "School of Civil and Environmental Engineering is offering EM5103 Water Resources Management to all NTU students to take as Unrestricted Elective (UE) or Broadening and Deepening Elective (BDE) in the Semester 1 AY2023-2024.For students who are keen to take the course as UE/BDE during Semester 1 AY2023-2024, you may register for it during Add/Drop period from Fri, 11 August 2023 – Fri, 25 August 2023 (10.30 am – 10.00 pm). Please ensure that you have sufficient UE/BDE balance AUs to take the course."

@@ -1,6 +1,6 @@
 import requests
 
-class Interface:
+class LocationManager:
     
     def getCurrentCountry(self):
         try:
@@ -13,7 +13,7 @@ class Interface:
 
 # For testing
 def main():
-    location_manager = Interface()
+    location_manager = LocationManager()
     print(location_manager.getCurrentCountry())
 
 if __name__ == "__main__":

@@ -3,9 +3,8 @@ import pytz
 from datetime import datetime, timedelta
 from dateutil.parser import parse
 
-class Interface:
-    def __init__(self):
-        self._months = [
+class DateTimeManager:
+    _months = [
             "january",
             "feburary",
             "march",
@@ -31,42 +30,38 @@ class Interface:
             "nov",
             "dec",
         ]
+    
+    _period = ["am", "pm"]
+    
+    _years = {str(x) for x in range(2000, dt.date.today().year)}
 
-        self._period = [
-            "am",
-            "pm"
-        ]
-
-        self._years = {str(x) for x in range(2000, dt.date.today().year)}
-
-    def isMonth(self, month):
+    def isMonth(self, month: str):
         return (str(month).lower() in self._months)
 
     def isYear(self, year):
         return (year in self._years)
     
-    def FormatToDateTime(self, date_string, format):
+    def FormatToDateTime(self, date_string: str, format: str):
         try:
             dt = parse(date_string)
             return dt.strftime(format)
         except:
             return None 
     
-    def isDateTime(self, datetime_, fuzzy):
+    def isDateTime(self, datetime_: str, fuzzy: bool):
         try:
             parse(datetime_, fuzzy=fuzzy)
             return True
         except ValueError:
             return False
         
-    def isAPeriod(self, period_):
+    def isAPeriod(self, period_: str):
         period_string = str(period_)
         return period_string.lower() in self._period
     
     def getTimeZone(self, timezone_=None, country_code_=None):
 
         if timezone_ is None:
-            print("Missing time zone  value")
             return "Asia/Singapore"
         
         # If valid timezone just return
@@ -101,7 +96,7 @@ class Interface:
                     set_zones.add(name)
         return min(set_zones)
 
-    def convertTime12HTo24H(self, time_12h):
+    def convertTime12HTo24H(self, time_12h: str):
         try:
             time_object = datetime.strptime(time_12h, "%I:%M:%S %p")
             return time_object.strftime("%H:%M:%S")
@@ -116,7 +111,7 @@ class Interface:
         now_format = now.strftime("%H:%M:%S")
         return now_format
     
-    def AddToTime(self, time, s=0, min=0, hrs=0):
+    def AddToTime(self, time: str, s=0, min=0, hrs=0):
         try:
             time_obj = parse(time)
             new = time_obj + timedelta(seconds=s, 
@@ -127,19 +122,25 @@ class Interface:
         except:
             return None
     
-    def AddToDate(self, date, d=0, wks = 0):
+    def AddToDate(self, date: str, d=0, wks=0):
         try:
-            date_string = str(date)
-            date_obj = parse(date_string)
+            date_obj = parse(date)
             date_string = str(date_obj + timedelta(days=d, weeks=wks))
             return self.FormatToDateTime(date_string, format='%Y-%m-%d')
         except:
             return None
-
+    
+    def CheckIfDateTimeIsLater(self, datetime_1: str, datetime_2: str):
+        try:
+            date_1 = parse(datetime_1)
+            date_2 = parse(datetime_2)
+            return date_1 > date_2
+        except:
+            return None
     
 # For testing
 def main():
-    dt_config = Interface()
+    dt_config = DateTimeManager()
     # Testing for time
     # test_tz = "SST"
     # test_cc = "SG"
@@ -152,11 +153,11 @@ def main():
     # print("Date: " , dt_config.getCurrentDate())
 
     current_time = dt_config.getCurrentTime()
-    new_time = dt_config.AddToTime(time=current_time, hrs=1)
+    new_time = dt_config.AddToTime(time=str(current_time), hrs=1)
     print("New Time: " , new_time)
 
     current_date = dt_config.getCurrentDate()
-    new_date = dt_config.AddToDate(date=current_date, d=1)
+    new_date = dt_config.AddToDate(date=str(current_date), d=1)
     print("New date: ", new_date)
 
 if __name__ == "__main__":
