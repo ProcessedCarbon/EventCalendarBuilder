@@ -1,7 +1,7 @@
 import os.path
 import datetime as dt
 from dateutil.parser import parse
-import wordninja
+import DateTimeManager
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -17,6 +17,7 @@ credentials_path = GoogleCalendarAPI_path + "credentials.json"
 class Interface:
     def __init__(self):
         self.creds = None
+        self._dt_manager = DateTimeManager.Interface()
 
         if os.path.exists(r'token_path'):
             self.creds = Credentials.from_authorized_user_file(token_path)
@@ -70,36 +71,47 @@ class Interface:
         new_event = self.service.events().insert(calendarId = "primary", body=new_event).execute()
         print(f"Event created {new_event.get('htmlLink')}")
     
-    def CreateEvent(event, time, date, location):
+    def CreateGoogleDateTimeFormat(self, date, time):
+        return str(date) + "T" + str(time)
+
+    def CreateGoogleEvent(self, event, location, time_start=None, time_end=None, date_start=None, date_end=None, colorId=1):
         """
         Returns the google calendar event format with the given entities in placed to be used to parsed to create a new event on google calendars
-
+        https://developers.google.com/calendar/api/v3/reference/events
+        
         :param str event: Name of event
         :param str location: Place where the event is to be
-        :param str date: Start and end Dates of the event
-        :param str time: Start and end times of the event
+        :param str date_start: Start date of event
+        :param str date_end: End date of event
+        :param str time_start: Start timing of the event
+        :param str time_end: End timing of the event
         :return: Event format using google calendars
         """
+        curr_date = self._dt_manager.getCurrentDate()
+        curr_time = self._dt_manager.getCurrentTime()
 
-        parsed_date = parse(date)
-        formatted_date = parsed_date.strftime('%Y-%m-%d')
-        print("Formatted Date: ", formatted_date)
+        start_date_to_use = date_start is not None and date_start or curr_date
+        start_time_to_use = time_start is not None and time_start or curr_time
 
-        splitted_time = wordninja.split(time)
-        
+        end_date_to_use = date_end is not None and date_end or curr_date
+        end_time_to_use = time_end is not None and time_end or self._dt_manager.AddToTime(time=curr_time, hrs=1)
+
+        start_DateTime = self.CreateGoogleDateTimeFormat(date=start_date_to_use, time=start_time_to_use)
+        end_DateTime = self.CreateGoogleDateTimeFormat(date=end_date_to_use, time=end_time_to_use)
+        tz = self._dt_manager.getTimeZone()
 
         newEvent = {
             "summary" :  'event' in locals() and event or "N/A",
             "location" : 'location' in locals() and location or "N/A",
             "description" : "Test description",
-            "colorId" : 6,
+            "colorId" : colorId,
             "start" : {
-                "dateTime" : "2023-07-04T22:00:00",
-                "timeZone" : "Singapore"
+                "dateTime" : start_DateTime,
+                "timeZone" : tz
             },
             "end" : {
-                "dateTime" : "2023-07-04T23:00:00",
-                "timeZone" : "Singapore"
+                "dateTime" : end_DateTime,
+                "timeZone" : tz
             },
             "recurrence" : [
                 "RRULE:FREQ=DAILY;COUNT=2"
@@ -110,6 +122,17 @@ class Interface:
         }
 
         return newEvent
+
+# For testing
+def main():
+    googleCalendar = Interface()
+
+    new_event = googleCalendar.CreateGoogleEvent(event="Test 1", time_start=None, time_end=None, date_start=None, date_end=None, location="Test location")
+    print(new_event)
+    googleCalendar.CreateCalendarEvent(new_event=new_event)
+
+if __name__ == "__main__":
+    main()
 
 
     

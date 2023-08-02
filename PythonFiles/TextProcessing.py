@@ -159,6 +159,7 @@ class Interface:
                 list_of_correct_time_format[index] = time_obj
 
         return list_of_correct_time_format
+    
 # For testing
 def main():
     t = Interface()

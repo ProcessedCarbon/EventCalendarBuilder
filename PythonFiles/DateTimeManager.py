@@ -1,11 +1,10 @@
 import datetime as dt
 import pytz
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.parser import parse
 
 class Interface:
     def __init__(self):
-        self.today = dt.date.today()
         self._months = [
             "january",
             "feburary",
@@ -38,7 +37,7 @@ class Interface:
             "pm"
         ]
 
-        self._years = {str(x) for x in range(2000, self.today.year)}
+        self._years = {str(x) for x in range(2000, dt.date.today().year)}
 
     def isMonth(self, month):
         return (str(month).lower() in self._months)
@@ -64,7 +63,7 @@ class Interface:
         period_string = str(period_)
         return period_string.lower() in self._period
     
-    def getTimeZone(self, timezone_, country_code_):
+    def getTimeZone(self, timezone_=None, country_code_=None):
 
         if timezone_ is None:
             print("Missing time zone  value")
@@ -108,7 +107,36 @@ class Interface:
             return time_object.strftime("%H:%M:%S")
         except:
             return None
+    
+    def getCurrentDate(self):
+        return dt.date.today()
+    
+    def getCurrentTime(self):
+        now = datetime.now()
+        now_format = now.strftime("%H:%M:%S")
+        return now_format
+    
+    def AddToTime(self, time, s=0, min=0, hrs=0):
+        try:
+            time_obj = parse(time)
+            new = time_obj + timedelta(seconds=s, 
+                                    minutes=min, 
+                                    hours=hrs, 
+                                    )
+            return format(new, '%H:%M:%S')
+        except:
+            return None
+    
+    def AddToDate(self, date, d=0, wks = 0):
+        try:
+            date_string = str(date)
+            date_obj = parse(date_string)
+            date_string = str(date_obj + timedelta(days=d, weeks=wks))
+            return self.FormatToDateTime(date_string, format='%Y-%m-%d')
+        except:
+            return None
 
+    
 # For testing
 def main():
     dt_config = Interface()
@@ -117,8 +145,19 @@ def main():
     # test_cc = "SG"
     # print(dt_config.getTimeZone(timezone_ = test_tz, country_code_=test_cc))
 
-    test_12h = "7pm"
-    print(dt_config.convertTime12HTo24H(test_12h))
+    # test_12h = "7pm"
+    # print(dt_config.convertTime12HTo24H(test_12h))
+
+    # print("Time: " , dt_config.getCurrentTime())
+    # print("Date: " , dt_config.getCurrentDate())
+
+    current_time = dt_config.getCurrentTime()
+    new_time = dt_config.AddToTime(time=current_time, hrs=1)
+    print("New Time: " , new_time)
+
+    current_date = dt_config.getCurrentDate()
+    new_date = dt_config.AddToDate(date=current_date, d=1)
+    print("New date: ", new_date)
 
 if __name__ == "__main__":
     main()
