@@ -1,7 +1,7 @@
 
 from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
-from Managers.TextProcessing import TextProcessingManager
+from TextProcessing import TextProcessingManager
 
 from dateutil.parser import parse
 
