@@ -2,6 +2,7 @@ import os.path
 import datetime as dt
 from dateutil.parser import parse
 from Managers.DateTimeManager import DateTimeManager
+from Managers.LocationManager import LocationManager
 from GoogleCalendar.GoogleEvent import GoogleEvent
 
 from google.auth.transport.requests import Request
@@ -17,6 +18,8 @@ credentials_path = GoogleCalendarAPI_path + "credentials.json"
 
 class GoogleCalendarInterface:
     _dt_manager = DateTimeManager()
+    _loc_manager = LocationManager()
+
     def __init__(self):
         self.creds = None
 
@@ -37,12 +40,19 @@ class GoogleCalendarInterface:
         try:
             self.service = build("calendar", 'v3', credentials = self.creds)
         except HttpError as error:
-            print("Err occured: ", error)
+            print(f'[{str(self.__class__.__name__).upper()}](__init__()): {error}')
 
     # Calendar event query
-    def GetLatestCalendarEvent(self, count: int):
+    def GetUpcomingCalendarEvent(self, count: int):
+        """
+        Obtains a list of upcoming count calendar events gotten from google calendar. 
+        
+        :param count (int): Number of events to get
+        return: list of upcoming events from calendar
+        """
+
         if self.service == None:
-            print("Missing service!")
+            print(f'[{str(self.__class__.__name__).upper()}](GetUpcomingCalendarEvent()): MISSING SERVICE!')
             return
 
         now = dt.datetime.now().isoformat() + "Z"
@@ -65,14 +75,20 @@ class GoogleCalendarInterface:
 
     # Event creation
     def CreateCalendarEvent(self, googleEvent: GoogleEvent):
+        """
+        Creates the google event on the google calendar
+
+        :param googleEvent (GoogleEvent): Google event to be created on calendar
+        """
+        
         if self.service == None:
-            print("Missing service!")
+            print(f'[{str(self.__class__.__name__).upper()}](CreateCalendarEvent()): MISSING SERVICE!')
             return
         
         new_event = self.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
         print(f"Event created {new_event.get('htmlLink')}")
 
-    def CreateGoogleEvent(self, event, location, time_start=None, time_end=None, date_start=None, date_end=None, colorId=1):
+    def CreateGoogleEvent(self, event, location, timezone="", time_start=None, time_end=None, date_start=None, date_end=None, colorId=1):
         """
         Returns the google calendar event format with the given entities in placed to be used to parsed to create a new event on google calendars
         https://developers.google.com/calendar/api/v3/reference/events
@@ -89,13 +105,18 @@ class GoogleCalendarInterface:
         curr_date = self._dt_manager.getCurrentDate()
         curr_time = self._dt_manager.getCurrentTime()
 
+        # handle date and time
         start_date_to_use = str(date_start is not None and date_start or curr_date)
         start_time_to_use = str(time_start is not None and time_start or curr_time)
 
         end_date_to_use = str(date_end is not None and date_end or start_date_to_use)
         end_time_to_use = str(time_end is not None and time_end or self._dt_manager.AddToTime(time=start_time_to_use, hrs=1))
         
-        tz = str(self._dt_manager.getTimeZone())
+        # Handle timezone
+        country_gotten = self._loc_manager.getCurrentCountry()
+        country =  country_gotten != None and country_gotten or self._loc_manager._default_country
+        country_code = self._loc_manager.getCountryCode(country)
+        tz = self._dt_manager.getTimeZone(timezone_abrev_=timezone, country_code_=country_code, country_=country)
 
         return GoogleEvent(event=str(event), 
                            location=str(location), 
@@ -104,21 +125,26 @@ class GoogleCalendarInterface:
                            date_start=start_date_to_use,
                            date_end=end_date_to_use,
                            colorId=colorId,
-                           timezone=tz
+                           timezone=str(tz)
                            )
 
 # For testing
 def main():
     googleCalendar = GoogleCalendarInterface()
 
-    new_event = googleCalendar.CreateGoogleEvent(event="Test 1", 
-                                                 time_start=None, 
-                                                 time_end=None, 
-                                                 date_start=None, 
-                                                 date_end=None, 
-                                                 location="Test location")
-    print(new_event)
-    googleCalendar.CreateCalendarEvent(googleEvent=new_event)
+    # new_event = googleCalendar.CreateGoogleEvent(event="Test 1", 
+    #                                              time_start=None, 
+    #                                              time_end=None, 
+    #                                              date_start=None, 
+    #                                              date_end=None, 
+    #                                              location="Test location")
+    # print(new_event)
+    # googleCalendar.CreateCalendarEvent(googleEvent=new_event)
+
+    # country = str(googleCalendar._loc_manager.getCurrentCountry())
+    # country_code = googleCalendar._loc_manager.getCountryCode(country_name=country)
+    # tz = googleCalendar._dt_manager.getTimeZone(timezone_abrev_="SGT", country_code_=country_code, country_=country)
+    # print("Timezone: " , tz)
 
 if __name__ == "__main__":
     main()

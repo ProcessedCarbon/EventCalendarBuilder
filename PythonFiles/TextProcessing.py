@@ -56,14 +56,23 @@ class TextProcessingManager:
         return string
 
     def SplitWordAndRemoveEmptySlots(self, text):
-            splitted = wordninja.split(text)
-            return [x for x in splitted if x != '']
+        splitted = wordninja.split(text)
+        return [x for x in splitted if x != '']
 
     def RemoveEnDashU2013(self, text):
         return text.replace(u'\u2013', "-")
 
-    def ConvertToTimedFormat(self, time_text):
+    def ConvertToTimedFormat(self, time_text: str):
+        """
+        Converts time_text to a acceptable time format for datetime parsing. 
+
+        :param time_text (str): string of text to convert to
+
+        return: accpetable format for datetime parsing
+        """
+
         string_obj = str(time_text)
+
         # Remove all spaces and special char from string object
         for c in string_obj:
             if c == " " or c.isalnum() == False:
@@ -84,7 +93,7 @@ class TextProcessingManager:
         
         return H + ":" + M + ":00" + " " + P 
 
-    def ProcessDateForGoogleCalendar(self, date_text):
+    def ProcessDateForGoogleCalendar(self, date_text: str):
         """
         Returns a list of strings formatted in the way that can be used for Google Calendars. 
 
@@ -92,8 +101,13 @@ class TextProcessingManager:
 
         return: list of formatted dates suitable for google calendars
         """
+        if date_text == "None":
+            print(f'[{str(self.__class__.__name__).upper()}](ProcessDateForGoogleCalendar()): DATE_TEXT == NONE, INVALID')
+            return None
+
         date_to_use = self.RemoveUncessarySpecialChars(string=date_text, special_char_to_keep=self._accepted_chars)
         splitted_date = self.MultipleDelimSplitString(string=date_to_use, delims=self._accepted_chars)
+
         # Find year
         # At this point max each array slot should have max DD MM YYYY
         list_of_processed = []
@@ -133,7 +147,18 @@ class TextProcessingManager:
 
         return formatted
     
-    def ProcessTimeForGoogleCalendars(self, time_text):
+    def ProcessTimeForGoogleCalendars(self, time_text: str):
+        """
+        Returns a list of time strings formatted in the way that can be used for Google Calendars. 
+
+        :param time_text (str): string of text that has the dates 
+
+        return: list of formatted times suitable for google calendars
+        """
+        if time_text == "None":
+            print(f'[{str(self.__class__.__name__).upper()}](ProcessTimeForGoogleCalendars()): TIME_TEXT == NONE, INVALID')
+            return None
+
         # Form new list of accepted chars which include delims and time periods
         new_accepted_chars = self._accepted_chars + self._dt_config._period
 
