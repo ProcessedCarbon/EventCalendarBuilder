@@ -24,21 +24,26 @@ def main():
     ner_Interface = NERInterface()
     entities = ner_Interface.GetEntitiesFromText(text=test_text)
 
+    event = entities["EVENT"]
+    location = entities["LOC"]
+    date = entities["DATE"]
+    time = entities["TIME"]
+
     print("------------------------------------------------------------------------------")
-    print("event: ", entities["EVENT"])
-    print("location: ", entities["LOC"])
-    print("date: ", entities["DATE"])
-    print("time: ", entities["TIME"])
+    print("event: ", event)
+    print("location: ", location)
+    print("date: ", date)
+    print("time: ", time)
 
-    # print("------------------------------------------------------------------------------")
-    # print("Processing text to google format ...... ")
-    # text_processing = TextProcessingManager()
-    # google_time = text_processing.ProcessTimeForGoogleCalendars(time_text=str(time))
-    # google_date = text_processing.ProcessDateForGoogleCalendar(date_text=str(date))
+    print("------------------------------------------------------------------------------")
+    print("Processing text to google format ...... ")
+    text_processing = TextProcessingManager()
+    google_time = text_processing.ProcessTimeForGoogleCalendars(time_text=str(time))
+    google_date = text_processing.ProcessDateForGoogleCalendar(date_text=str(date))
 
-    # print("------------------------------------------------------------------------------")
-    # print("Google Time: ", google_time)
-    # print("Google Date: ", google_date)
+    print("------------------------------------------------------------------------------")
+    print("Google Time: ", google_time)
+    print("Google Date: ", google_date)
 
     # print("------------------------------------------------------------------------------")
     # print("Creating calendar event ......")

@@ -24,14 +24,15 @@ class NERInterface:
         event = time = date = loc = ""
 
         if len(entityList) > 0 :
-            for e in entityList:
-                if e.label_ == "EVENT":
+            for entity in entityList:
+                e = str(entity)
+                if entity.label_ == "EVENT":
                     event = e
-                elif e.label_ == "TIME":
+                elif entity.label_ == "TIME":
                     time = e
-                elif e.label_ == "DATE":
+                elif entity.label_ == "DATE":
                     date = e
-                elif e.label_ == "LOC":
+                elif entity.label_ == "LOC":
                     loc = e
 
         return self.getEntities(e=event, t=time, d=date, l=loc)

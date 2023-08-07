@@ -106,7 +106,7 @@ class TextProcessingManager:
         return: list of formatted dates suitable for google calendars
         """
 
-        if date_text == "None":
+        if date_text == "None" or "" or len(date_text) <= 0:
             print(f"[{str(self.__class__.__name__).upper()}](ProcessTimeForGoogleCalendars()): {self._error_codes_list[1000]}")
             return []
 
@@ -161,7 +161,7 @@ class TextProcessingManager:
         return: list of formatted times suitable for google calendars
         """
 
-        if time_text == "None":
+        if time_text == "None" or "" or len(time_text) <= 0:
             print(f"[{str(self.__class__.__name__).upper()}](ProcessTimeForGoogleCalendars()): {self._error_codes_list[1000]}")
             return []
 
