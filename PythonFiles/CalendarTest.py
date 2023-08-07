@@ -22,42 +22,38 @@ def main():
     print("------------------------------------------------------------------------------")
     print("Getting Entities from text.....")
     ner_Interface = NERInterface()
-    ner_Interface.AssignEntities(text=test_text)
-    event = ner_Interface.getEvent()
-    location = ner_Interface.getLoc()
-    date = ner_Interface.getDate()
-    time = ner_Interface.getTime()
+    entities = ner_Interface.GetEntitiesFromText(text=test_text)
 
     print("------------------------------------------------------------------------------")
-    print("event: ", event)
-    print("location: ", location)
-    print("date: ", date)
-    print("time: ", time)
+    print("event: ", entities["EVENT"])
+    print("location: ", entities["LOC"])
+    print("date: ", entities["DATE"])
+    print("time: ", entities["TIME"])
 
-    print("------------------------------------------------------------------------------")
-    print("Processing text to google format ...... ")
-    text_processing = TextProcessingManager()
-    google_time = text_processing.ProcessTimeForGoogleCalendars(time_text=str(time))
-    google_date = text_processing.ProcessDateForGoogleCalendar(date_text=str(date))
+    # print("------------------------------------------------------------------------------")
+    # print("Processing text to google format ...... ")
+    # text_processing = TextProcessingManager()
+    # google_time = text_processing.ProcessTimeForGoogleCalendars(time_text=str(time))
+    # google_date = text_processing.ProcessDateForGoogleCalendar(date_text=str(date))
 
-    print("------------------------------------------------------------------------------")
-    print("Google Time: ", google_time)
-    print("Google Date: ", google_date)
+    # print("------------------------------------------------------------------------------")
+    # print("Google Time: ", google_time)
+    # print("Google Date: ", google_date)
 
-    print("------------------------------------------------------------------------------")
-    print("Creating calendar event ......")
-    g_Interface = GoogleCalendarInterface(establish_connection=False)
-    n_event = g_Interface.CreateGoogleEvent(event=str(event), 
-                                              location=str(location), 
-                                              time=google_time, 
-                                              date=google_date,
-                                              )
-    print("Event")
-    print(n_event)
-    g_Interface.ConnectToGoogleCalendar()
-    g_Interface.CreateCalendarEvent(googleEvent=n_event)
-    print("------------------------------------------------------------------------------")
-    print("Done!")
+    # print("------------------------------------------------------------------------------")
+    # print("Creating calendar event ......")
+    # g_Interface = GoogleCalendarInterface(establish_connection=False)
+    # n_event = g_Interface.CreateGoogleEvent(event=str(event), 
+    #                                           location=str(location), 
+    #                                           time=google_time, 
+    #                                           date=google_date,
+    #                                           )
+    # print("Event")
+    # print(n_event)
+    # g_Interface.ConnectToGoogleCalendar()
+    # g_Interface.CreateCalendarEvent(googleEvent=n_event)
+    # print("------------------------------------------------------------------------------")
+    # print("Done!")
 
 if __name__ == "__main__":
     main()
