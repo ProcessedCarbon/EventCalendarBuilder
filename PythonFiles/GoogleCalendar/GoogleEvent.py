@@ -4,8 +4,8 @@ class GoogleEvent:
         end_datetime = self.CreateGoogleDateTimeFormat(date=date_end, time=time_end)
 
         self.event = {
-            "summary" :  'event' in locals() and event or "N/A",
-            "location" : 'location' in locals() and location or "N/A",
+            "summary" : event,
+            "location" : location,
             "description" : "Test description",
             "colorId" : colorId,
             "start" : {

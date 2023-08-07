@@ -3,8 +3,6 @@ from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
 from TextProcessing import TextProcessingManager
 
-from dateutil.parser import parse
-
 testing_file_path = "./Testing/testing_text_r.txt"
 
 def getTestingText():
@@ -46,21 +44,20 @@ def main():
     print("Google Time: ", google_time)
     print("Google Date: ", google_date)
 
-    # print("------------------------------------------------------------------------------")
-    # print("Creating calendar event ......")
-    # g_Interface = GoogleCalendarInterface()
-    # n_event = g_Interface.CreateGoogleEvent(event=str(event), 
-    #                                           location=str(location), 
-    #                                           time_start=str(google_time[0]), 
-    #                                           time_end=str(google_time[1]),
-    #                                           date_start=str(google_date[0]),
-    #                                           date_end=None
-    #                                           )
-    # print("Event")
-    # print(n_event)
-    # g_Interface.CreateCalendarEvent(new_event=n_event)
-    # print("------------------------------------------------------------------------------")
-    # print("Done!")
+    print("------------------------------------------------------------------------------")
+    print("Creating calendar event ......")
+    g_Interface = GoogleCalendarInterface(establish_connection=False)
+    n_event = g_Interface.CreateGoogleEvent(event=str(event), 
+                                              location=str(location), 
+                                              time=google_time, 
+                                              date=google_date,
+                                              )
+    print("Event")
+    print(n_event)
+    g_Interface.ConnectToGoogleCalendar()
+    g_Interface.CreateCalendarEvent(googleEvent=n_event)
+    print("------------------------------------------------------------------------------")
+    print("Done!")
 
 if __name__ == "__main__":
     main()

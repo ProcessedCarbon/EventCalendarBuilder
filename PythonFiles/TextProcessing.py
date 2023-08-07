@@ -2,12 +2,15 @@ import string
 from re import sub
 from re import split
 from Managers.DateTimeManager import DateTimeManager
+from Managers.ErrorConfig import ErrorCodes
 import wordninja
 
 class TextProcessingManager:
     _accepted_chars = ["-", "to"]
     _special_chars = string.punctuation
     _dt_config = DateTimeManager()
+    _error_codes_list = ErrorCodes()._error_codes
+
 
     def MultipleDelimSplitString(self, string, delims):
         """
@@ -64,7 +67,8 @@ class TextProcessingManager:
 
     def ConvertToTimedFormat(self, time_text: str):
         """
-        Converts time_text to a acceptable time format for datetime parsing. 
+        Converts time_text to a acceptable time format for datetime parsing. Does not handle seconds,
+        they are treated as 00 and are placed in there for the purpose of fulfilling format criteria. 
 
         :param time_text (str): string of text to convert to
 
@@ -101,9 +105,10 @@ class TextProcessingManager:
 
         return: list of formatted dates suitable for google calendars
         """
+
         if date_text == "None":
-            print(f'[{str(self.__class__.__name__).upper()}](ProcessDateForGoogleCalendar()): DATE_TEXT == NONE, INVALID')
-            return None
+            print(f"[{str(self.__class__.__name__).upper()}](ProcessTimeForGoogleCalendars()): {self._error_codes_list[1000]}")
+            return []
 
         date_to_use = self.RemoveUncessarySpecialChars(string=date_text, special_char_to_keep=self._accepted_chars)
         splitted_date = self.MultipleDelimSplitString(string=date_to_use, delims=self._accepted_chars)
@@ -155,9 +160,10 @@ class TextProcessingManager:
 
         return: list of formatted times suitable for google calendars
         """
+
         if time_text == "None":
-            print(f'[{str(self.__class__.__name__).upper()}](ProcessTimeForGoogleCalendars()): TIME_TEXT == NONE, INVALID')
-            return None
+            print(f"[{str(self.__class__.__name__).upper()}](ProcessTimeForGoogleCalendars()): {self._error_codes_list[1000]}")
+            return []
 
         # Form new list of accepted chars which include delims and time periods
         new_accepted_chars = self._accepted_chars + self._dt_config._period

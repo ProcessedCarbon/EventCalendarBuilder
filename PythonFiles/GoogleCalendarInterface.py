@@ -3,6 +3,7 @@ import datetime as dt
 from dateutil.parser import parse
 from Managers.DateTimeManager import DateTimeManager
 from Managers.LocationManager import LocationManager
+from Managers.ErrorConfig import ErrorCodes
 from GoogleCalendar.GoogleEvent import GoogleEvent
 
 from google.auth.transport.requests import Request
@@ -19,10 +20,16 @@ credentials_path = GoogleCalendarAPI_path + "credentials.json"
 class GoogleCalendarInterface:
     _dt_manager = DateTimeManager()
     _loc_manager = LocationManager()
+    _error_code_list = ErrorCodes()._error_codes
 
-    def __init__(self):
+    def __init__(self, establish_connection=True):
         self.creds = None
 
+        if establish_connection is True:
+            self.ConnectToGoogleCalendar()
+
+    def ConnectToGoogleCalendar(self):
+        print("ESTABLISHING CONNECTION TO GOOGLE CALENDARS......")
         if os.path.exists(r'token_path'):
             self.creds = Credentials.from_authorized_user_file(token_path)
         
@@ -39,7 +46,9 @@ class GoogleCalendarInterface:
         
         try:
             self.service = build("calendar", 'v3', credentials = self.creds)
+            print("CONNECTION SUCCESSFUL!")
         except HttpError as error:
+            print("CONNECTION FAILFURE")
             print(f'[{str(self.__class__.__name__).upper()}](__init__()): {error}')
 
     # Calendar event query
@@ -52,7 +61,7 @@ class GoogleCalendarInterface:
         """
 
         if self.service == None:
-            print(f'[{str(self.__class__.__name__).upper()}](GetUpcomingCalendarEvent()): MISSING SERVICE!')
+            print(f'[{str(self.__class__.__name__).upper()}](GetUpcomingCalendarEvent()): {self._error_code_list[1001]}')
             return
 
         now = dt.datetime.now().isoformat() + "Z"
@@ -66,12 +75,14 @@ class GoogleCalendarInterface:
         events = events_result.get('items', [])
 
         if not events:
-            print("Zero upcoming events found!")
+            print("NO UPCOMING EVENTS FOUND")
             return
             
         for event in events:
             start = event['start'].get('dateTime', event['start'].get('date'))
             print(start, event['summary'])
+
+        return events
 
     # Event creation
     def CreateCalendarEvent(self, googleEvent: GoogleEvent):
@@ -82,13 +93,19 @@ class GoogleCalendarInterface:
         """
         
         if self.service == None:
-            print(f'[{str(self.__class__.__name__).upper()}](CreateCalendarEvent()): MISSING SERVICE!')
+            print(f'[{str(self.__class__.__name__).upper()}](GetUpcomingCalendarEvent()): {self._error_code_list[1001]}')
             return
+        
+        if type(googleEvent) is not GoogleEvent:
+            print(f'[{str(self.__class__.__name__).upper()}](GetUpcomingCalendarEvent()): {self._error_code_list[1000]}')
+            print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
+            return
+
         
         new_event = self.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
         print(f"Event created {new_event.get('htmlLink')}")
 
-    def CreateGoogleEvent(self, event, location, timezone="", time_start=None, time_end=None, date_start=None, date_end=None, colorId=1):
+    def CreateGoogleEvent(self, event, location, timezone="", time=[], date=[], colorId=1):
         """
         Returns the google calendar event format with the given entities in placed to be used to parsed to create a new event on google calendars
         https://developers.google.com/calendar/api/v3/reference/events
@@ -101,6 +118,12 @@ class GoogleCalendarInterface:
         :param str time_end: End timing of the event
         :return: Event format using google calendars
         """
+
+        date_start = len(date) > 0 and date[0] or None
+        time_start = len(time) > 0 and time[0] or None
+
+        date_end = len(date) > 1 and date[1] or None
+        time_end = len(time) > 1 and time[1] or None
 
         curr_date = self._dt_manager.getCurrentDate()
         curr_time = self._dt_manager.getCurrentTime()
