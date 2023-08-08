@@ -84,7 +84,8 @@ class TextProcessingManager:
 
         # Check return None if time includes seconds, if not check if first digit of hour is single
         if len(string_obj) > 6:
-            print("Invalid format of time which includes seconds")
+            print(f"[{str(self.__class__.__name__).upper()}](ConvertToTimedFormat()): {self._error_codes_list[1000]}")
+            print(string_obj)
             return None
         elif len(string_obj) < 6:
             string_obj = "0" + string_obj
@@ -142,15 +143,14 @@ class TextProcessingManager:
         year = founded_year != None and founded_year or currentDate.year
         month = founded_month != None and founded_month or currentDate.month
 
-        formatted = []
-        for struct in list_of_processed:
+        for index, struct in enumerate(list_of_processed):
             struct['month'] = struct['month'] == None and month or struct['month']
             struct['year'] = struct['year'] == None and year or struct['year']
 
             s_date = str(struct['day']) + str(struct['month']) + str(struct['year'])
-            formatted.append(self._dt_config.FormatToDateTime(date_string=s_date, format='%Y-%m-%d'))
+            list_of_processed[index] = self._dt_config.FormatToDateTime(date_string=s_date, format='%Y-%m-%d')
 
-        return formatted
+        return len(list_of_processed) == 1 and list_of_processed[0] or list_of_processed
     
     def ProcessTimeForGoogleCalendars(self, time_text: str):
         """
@@ -193,7 +193,7 @@ class TextProcessingManager:
             if time_obj != None:
                 list_of_correct_time_format[index] = time_obj
 
-        return list_of_correct_time_format
+        return len(list_of_correct_time_format) == 1 and list_of_correct_time_format[0] or list_of_correct_time_format
     
 # For testing
 def main():

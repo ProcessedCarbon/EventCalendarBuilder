@@ -22,28 +22,41 @@ def main():
     print("------------------------------------------------------------------------------")
     print("Getting Entities from text.....")
     ner_Interface = NERInterface()
-    entities = ner_Interface.GetEntitiesFromText(text=test_text)
+    events = ner_Interface.GetEntitiesFromText(text=test_text)
 
-    event = entities["EVENT"]
-    location = entities["LOC"]
-    date = entities["DATE"]
-    time = entities["TIME"]
+    def PrintEvent(event_obj):
+        event = event_obj["EVENT"]
+        location = event_obj["LOC"]
+        date = event_obj["DATE"]
+        time = event_obj["TIME"]
 
-    print("------------------------------------------------------------------------------")
-    print("event: ", event)
-    print("location: ", location)
-    print("date: ", date)
-    print("time: ", time)
+        print("------------------------------------------------------------------------------")
+        print("event: ", event)
+        print("location: ", location)
+        print("date: ", date)
+        print("time: ", time)
+    
+    for e in events:
+        PrintEvent(e)
 
     print("------------------------------------------------------------------------------")
     print("Processing text to google format ...... ")
     text_processing = TextProcessingManager()
-    google_time = text_processing.ProcessTimeForGoogleCalendars(time_text=str(time))
-    google_date = text_processing.ProcessDateForGoogleCalendar(date_text=str(date))
+
+    for event_obj in events:
+        for d in event_obj["DATE"]:
+            i = event_obj["DATE"].index(d)
+            g_date = text_processing.ProcessDateForGoogleCalendar(date_text=str(d))
+            event_obj["DATE"][i] = g_date
+        
+        for t in event_obj["TIME"]:
+            i = event_obj["TIME"].index(t)
+            g_time = text_processing.ProcessTimeForGoogleCalendars(time_text=str(t))
+            event_obj["TIME"][i] = g_time
 
     print("------------------------------------------------------------------------------")
-    print("Google Time: ", google_time)
-    print("Google Date: ", google_date)
+    for e in events:
+        PrintEvent(e)
 
     # print("------------------------------------------------------------------------------")
     # print("Creating calendar event ......")
