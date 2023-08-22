@@ -3,28 +3,13 @@ from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
 from TextProcessing import TextProcessingManager
 
-testing_file_path = "./Testing/testing_text_working.txt"
-
-def getTestingText():
-    with open(testing_file_path, encoding='utf-8') as f:
+def getTestingText(file_path):
+    with open(file_path, encoding='utf-8') as f:
         lines = f.read().replace('\n', '')
     
     return lines
 
-def main():    
-    print("------------------------------------------------------------------------------")
-    print("Reading testing text in progress....")
-    test_text = getTestingText()
-    print(test_text)
-    print("------------------------------------------------------------------------------")
-    print("Reading Done!")
-
-    print("------------------------------------------------------------------------------")
-    print("Getting Entities from text.....")
-    ner_Interface = NERInterface()
-    events = ner_Interface.GetEntitiesFromText(text=test_text)
-
-    def PrintEvent(event_obj):
+def PrintEvent(event_obj):
         event = event_obj["EVENT"]
         location = event_obj["LOC"]
         date = event_obj["DATE"]
@@ -35,6 +20,20 @@ def main():
         print("location: ", location)
         print("date: ", date)
         print("time: ", time)
+
+def SingleEventTest():
+    print("------------------------------------------------------------------------------")
+    print("Reading testing text in progress....")
+    testing_file_path = "./Testing/testing_text_single.txt"
+    test_text = getTestingText(file_path=testing_file_path)
+    print(test_text)
+    print("------------------------------------------------------------------------------")
+    print("Reading Done!")
+
+    print("------------------------------------------------------------------------------")
+    print("Getting Entities from text.....")
+    ner_Interface = NERInterface()
+    events = ner_Interface.GetEntitiesFromText(text=test_text)
     
     for e in events:
         PrintEvent(e)
@@ -58,20 +57,32 @@ def main():
     for e in events:
         PrintEvent(e)
 
-    # print("------------------------------------------------------------------------------")
-    # print("Creating calendar event ......")
-    # g_Interface = GoogleCalendarInterface(establish_connection=False)
-    # n_event = g_Interface.CreateGoogleEvent(event=str(event), 
-    #                                           location=str(location), 
-    #                                           time=google_time, 
-    #                                           date=google_date,
-    #                                           )
-    # print("Event")
-    # print(n_event)
-    # g_Interface.ConnectToGoogleCalendar()
-    # g_Interface.CreateCalendarEvent(googleEvent=n_event)
-    # print("------------------------------------------------------------------------------")
-    # print("Done!")
+    print("------------------------------------------------------------------------------")
+    print("Creating calendar event ......")
+    g_Interface = GoogleCalendarInterface(establish_connection=False)
+    google_events = []
+
+    for e in events:
+        n_event = g_Interface.CreateGoogleEvent(event=str(e["EVENT"]), 
+                                                location=str(e["LOC"]), 
+                                                time=e["TIME"][0], 
+                                                date=e["DATE"],
+                                                )
+        print("Event")
+        print(n_event)
+        google_events.append(n_event)
+    
+    if len(google_events) > 0:
+        g_Interface.ConnectToGoogleCalendar()
+        for g_event in google_events:
+            g_Interface.CreateCalendarEvent(googleEvent=g_event)
+    else:
+        print("NO GOOGLE EVENTS IN LIST")
+    print("------------------------------------------------------------------------------")
+    print("Done!")
+
+def main():    
+    SingleEventTest()
 
 if __name__ == "__main__":
     main()
