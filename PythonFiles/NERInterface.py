@@ -30,7 +30,7 @@ class NERInterface:
             events = []                
 
             for entity in entityList:
-                print(f"{str(entity)} - {entity.label_}")
+                #print(f"{str(entity)} - {entity.label_}")
 
                 e = str(entity)
                 if entity.label_ == "EVENT":
