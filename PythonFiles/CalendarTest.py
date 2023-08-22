@@ -3,7 +3,7 @@ from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
 from TextProcessing import TextProcessingManager
 
-testing_file_path = "./Testing/testing_text_r.txt"
+testing_file_path = "./Testing/testing_text_working.txt"
 
 def getTestingText():
     with open(testing_file_path, encoding='utf-8') as f:

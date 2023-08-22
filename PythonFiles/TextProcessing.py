@@ -87,7 +87,7 @@ class TextProcessingManager:
             print(f"[{str(self.__class__.__name__).upper()}](ConvertToTimedFormat()): {self._error_codes_list[1000]}")
             print(string_obj)
             return None
-        elif len(string_obj) < 4:
+        elif len(string_obj[:len(string_obj) - 2]) < 4:
             string_obj = "0" + string_obj
 
         # check if string has seconds included
@@ -183,7 +183,7 @@ class TextProcessingManager:
                     time_list.remove(text)
             
             # Combine remaining char in list to form the time string
-            time_string = str(time_list)        
+            time_string = str(time_list)
             time_format = self.ConvertToTimedFormat(time_string)
             if time_format != None:
                 list_of_correct_time_format.append(time_format)
@@ -206,7 +206,7 @@ def main():
     #     print(f)
 
     # Testing for time
-    test_time = "12:30 am"
+    test_time = "1.30am"
     print(t.ProcessTimeForGoogleCalendars(test_time))
 
 if __name__ == "__main__":
