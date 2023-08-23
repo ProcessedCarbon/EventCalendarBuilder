@@ -11,7 +11,6 @@ class TextProcessingManager:
     _dt_config = DateTimeManager()
     _error_codes_list = ErrorCodes()._error_codes
 
-
     def MultipleDelimSplitString(self, string, delims):
         """
         Splits a string by a list of delimiters.
@@ -24,7 +23,6 @@ class TextProcessingManager:
         new_string = self.RemoveEnDashU2013(string)
         pattern = r'|'.join(delims)
         return split(pattern, new_string)
-
     
     def GetDateStruct(self, day, month, year):
         """
@@ -41,6 +39,7 @@ class TextProcessingManager:
                 "month" : self._dt_config.isMonth(month) and month or None,
                 "year" : self._dt_config.isYear(year) and year or None
             }
+    
     def RemoveUncessarySpecialChars(self, string, special_char_to_keep):
         """
         Returns the new string where all uneeded characters are removed or the original string 
@@ -77,17 +76,18 @@ class TextProcessingManager:
 
         string_obj = str(time_text)
 
-        # Remove all spaces and special char from string object
+        #Remove all spaces and special char from string object
         for c in string_obj:
             if c == " " or c.isalnum() == False:
                 string_obj = string_obj.replace(c, "")
-
+        
         # Check return None if time includes seconds, if not check if first digit of hour is single
         if len(string_obj) > 6:
             print(f"[{str(self.__class__.__name__).upper()}](ConvertToTimedFormat()): {self._error_codes_list[1000]}")
-            print(string_obj)
             return None
-        elif len(string_obj[:len(string_obj) - 2]) < 4:
+        
+        # Pad string with zeros till length is even, do not take into account last 2 char when counting len
+        while len(string_obj[:len(string_obj) - 2]) % 2 != 0:
             string_obj = "0" + string_obj
 
         # check if string has seconds included
@@ -95,6 +95,11 @@ class TextProcessingManager:
         H = string_obj[:2]
         M = self._dt_config.isAPeriod(string_obj[2:4]) and "00" or string_obj[2:4]
         P = string_obj[-2:].upper()
+
+        # Convert 24h time format to 12h to remain consistent
+        if self._dt_config.isAPeriod(P) == False:
+            P = (int(H) > 12) and "PM" or "AM"
+            H = (int(H) > 12) and str(int(H) - 12) or str(H)
         
         return H + ":" + M + ":00" + " " + P 
 
@@ -194,7 +199,31 @@ class TextProcessingManager:
                 list_of_correct_time_format[index] = time_obj
 
         return len(list_of_correct_time_format) == 1 and list_of_correct_time_format[0] or list_of_correct_time_format
-    
+
+# ================================================  TEST ======================================================================== #
+def Test_ProcessTimeForGoogleCalendars():
+    print("==========================================================================================")
+    print("Test_ProcessTimeForGoogleCalendars")
+    print("==========================================================================================")
+
+    text_process_manager = TextProcessingManager()
+    # Testing for time
+    convert12HTo24H_test_list ={
+        "12am",
+        "1.30am",
+        "1330",
+        "230pm",
+        "1pm",
+        "12.30 - 3pm",
+        "1pm - 3pm"
+    }
+
+    for t in convert12HTo24H_test_list:
+        print("Original: ", t)
+        print(f"After: {text_process_manager.ProcessTimeForGoogleCalendars(t)}")
+        print("------------------------------------------------")
+    print("==========================================================================================")
+
 # For testing
 def main():
     t = TextProcessingManager()
@@ -205,9 +234,7 @@ def main():
     # for f in formatted:
     #     print(f)
 
-    # Testing for time
-    test_time = "1.30am"
-    print(t.ProcessTimeForGoogleCalendars(test_time))
+    Test_ProcessTimeForGoogleCalendars()
 
 if __name__ == "__main__":
     main()

@@ -163,9 +163,9 @@ class DateTimeManager:
 def main():
     dt_config = DateTimeManager()
     # Testing for time
-    test_tz = "SST"
-    test_cc = "SG"
-    print(dt_config.getTimeZone(country_="Singapore"))
+    # test_tz = "SST"
+    # test_cc = "SG"
+    # print(dt_config.getTimeZone(country_="Singapore"))
 
     # test_12h = "7pm"
     # print(dt_config.convertTime12HTo24H(test_12h))
