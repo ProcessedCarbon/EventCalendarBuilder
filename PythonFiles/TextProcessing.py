@@ -72,9 +72,7 @@ class TextProcessingManager:
         :param time_text (str): string of text to convert to
 
         return: accpetable format for datetime parsing
-        """
-        # TODO: Handle single digit cases
-        
+        """        
         string_obj = str(time_text)
 
         # Remove all spaces and special char from string object
@@ -95,14 +93,9 @@ class TextProcessingManager:
         # Disregard seconds because timing of an event rarely comes in w/ seconds
 
         H = string_obj[:2]
-        M = self._dt_config.isAPeriod(string_obj[2:4]) and "00" or string_obj[2:4]
+        M = (self._dt_config.isAPeriod(string_obj[2:4]) or string_obj[2:4] == "")and "00" or string_obj[2:4]
         P = self._dt_config.isAPeriod(string_obj[-2:]) and string_obj[-2:].upper() or ""
 
-        # Convert 24h time format to 12h to remain consistent
-        #if self._dt_config.isAPeriod(P) == False:
-            # P = (int(H) > 12) and "PM" or "AM"
-            # H = (int(H) > 12) and str(int(H) - 12) or str(H)
-        
         return H + ":" + M + ":00" + " " + P 
 
     def ProcessDateForGoogleCalendar(self, date_text: str):
@@ -196,14 +189,13 @@ class TextProcessingManager:
                 list_of_correct_time_format.append(time_format)
             
         # Check if there are any time format without a period
-        # 2 Problems with this
-        #   1. Still encounter problems like these (4-6pm, ['4::00 PM', '18:00:00'])
         period = ""
         for format in list_of_correct_time_format:
             if self._dt_config.isAPeriod(format[-2:]):
                 period = format[-2:].upper()
                 break
-
+        
+        # If period is found, assume rest of timing uses that period else do own calculation to get period and 12hr format
         if period != "":
             for i in range(len(list_of_correct_time_format)):
                 format = list_of_correct_time_format[i]
@@ -221,12 +213,15 @@ class TextProcessingManager:
                 new_format += period
                 list_of_correct_time_format[i] = new_format
 
-        for index, time_format in enumerate(list_of_correct_time_format):
+        # Convert all 12H to 24H format and return the result
+        result = []
+        for time_format in list_of_correct_time_format:
             time_obj = self._dt_config.convertTime12HTo24H(time_format)
             if time_obj != None:
-                list_of_correct_time_format[index] = time_obj
+                result.append(time_obj)
 
-        return len(list_of_correct_time_format) == 1 and list_of_correct_time_format[0] or list_of_correct_time_format
+        # If result only contains a single value just return that value
+        return len(result) == 1 and result[0] or result
 
 # ================================================  TEST ======================================================================== #
 def Test_ProcessTimeForGoogleCalendars():
@@ -239,12 +234,12 @@ def Test_ProcessTimeForGoogleCalendars():
     convert12HTo24H_test_list ={
         # "12am",
         # "1.30am",
-        # "1330",
+        "1330",
         # "230pm",
         # "1pm",
         # "12.30 - 3pm",
         # "1pm - 3pm",
-        "4-6pm"
+        # "4-6pm"
     }
 
     for t in convert12HTo24H_test_list:

@@ -68,8 +68,8 @@ def SingleEventTest():
                                                 time=e["TIME"][0], 
                                                 date=e["DATE"],
                                                 )
-        print("Event")
-        print(n_event)
+        #print("Event")
+        #print(n_event)
         google_events.append(n_event)
     
     if len(google_events) > 0:
