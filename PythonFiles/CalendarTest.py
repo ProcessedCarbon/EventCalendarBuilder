@@ -5,7 +5,7 @@ from TextProcessing import TextProcessingManager
 
 def getTestingText(file_path):
     with open(file_path, encoding='utf-8') as f:
-        lines = f.read().replace('\n', '')
+        lines = f.read()
     
     return lines
 

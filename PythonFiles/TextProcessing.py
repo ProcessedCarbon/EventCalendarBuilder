@@ -73,10 +73,11 @@ class TextProcessingManager:
 
         return: accpetable format for datetime parsing
         """
-
+        # TODO: Handle single digit cases
+        
         string_obj = str(time_text)
 
-        #Remove all spaces and special char from string object
+        # Remove all spaces and special char from string object
         for c in string_obj:
             if c == " " or c.isalnum() == False:
                 string_obj = string_obj.replace(c, "")
@@ -92,14 +93,15 @@ class TextProcessingManager:
 
         # check if string has seconds included
         # Disregard seconds because timing of an event rarely comes in w/ seconds
+
         H = string_obj[:2]
         M = self._dt_config.isAPeriod(string_obj[2:4]) and "00" or string_obj[2:4]
-        P = string_obj[-2:].upper()
+        P = self._dt_config.isAPeriod(string_obj[-2:]) and string_obj[-2:].upper() or ""
 
         # Convert 24h time format to 12h to remain consistent
-        if self._dt_config.isAPeriod(P) == False:
-            P = (int(H) > 12) and "PM" or "AM"
-            H = (int(H) > 12) and str(int(H) - 12) or str(H)
+        #if self._dt_config.isAPeriod(P) == False:
+            # P = (int(H) > 12) and "PM" or "AM"
+            # H = (int(H) > 12) and str(int(H) - 12) or str(H)
         
         return H + ":" + M + ":00" + " " + P 
 
@@ -192,6 +194,32 @@ class TextProcessingManager:
             time_format = self.ConvertToTimedFormat(time_string)
             if time_format != None:
                 list_of_correct_time_format.append(time_format)
+            
+        # Check if there are any time format without a period
+        # 2 Problems with this
+        #   1. Still encounter problems like these (4-6pm, ['4::00 PM', '18:00:00'])
+        period = ""
+        for format in list_of_correct_time_format:
+            if self._dt_config.isAPeriod(format[-2:]):
+                period = format[-2:].upper()
+                break
+
+        if period != "":
+            for i in range(len(list_of_correct_time_format)):
+                format = list_of_correct_time_format[i]
+                if self._dt_config.isAPeriod(format[-2:]) == False:
+                    list_of_correct_time_format[i] += str(period)
+        else:
+            for i in range(len(list_of_correct_time_format)):
+                format = list_of_correct_time_format[i]
+                split = format.split(":")
+                H = split[0]
+                period = (int(H) >= 12) and "PM" or "AM"
+                H = (int(H) >= 12) and str(int(H) - 12) or str(H)
+                split[0] = H
+                new_format = ':'.join(split)
+                new_format += period
+                list_of_correct_time_format[i] = new_format
 
         for index, time_format in enumerate(list_of_correct_time_format):
             time_obj = self._dt_config.convertTime12HTo24H(time_format)
@@ -209,13 +237,14 @@ def Test_ProcessTimeForGoogleCalendars():
     text_process_manager = TextProcessingManager()
     # Testing for time
     convert12HTo24H_test_list ={
-        "12am",
-        "1.30am",
-        "1330",
-        "230pm",
-        "1pm",
-        "12.30 - 3pm",
-        "1pm - 3pm"
+        # "12am",
+        # "1.30am",
+        # "1330",
+        # "230pm",
+        # "1pm",
+        # "12.30 - 3pm",
+        # "1pm - 3pm",
+        "4-6pm"
     }
 
     for t in convert12HTo24H_test_list:

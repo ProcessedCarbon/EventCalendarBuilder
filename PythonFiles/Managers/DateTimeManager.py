@@ -67,7 +67,7 @@ class DateTimeManager:
             return False
         
     def isAPeriod(self, period_: str):
-        period_string = str(period_)
+        period_string = str(period_).lower()
         return period_string.lower() in self._period
     
     def getTimeZone(self, timezone_abrev_="", country_code_="", country_=""):
