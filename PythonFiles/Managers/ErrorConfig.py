@@ -7,6 +7,7 @@ class ErrorCodes:
             _key() : "MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST",    # 1001
         }
     
+    # Dynamically returns a key
     def getKey(self):
         info = {"count" : 999}
         def number():

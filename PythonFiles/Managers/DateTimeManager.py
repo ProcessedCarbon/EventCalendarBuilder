@@ -41,6 +41,7 @@ class DateTimeManager:
     def isYear(self, year):
         return (year in self._years)
     
+    # Attempts to format date time to datetime datatype
     def FormatToDateTime(self, date_string: str, format: str):
         """
         Try and convert date string into a datetime obj in the given format. 
@@ -70,6 +71,7 @@ class DateTimeManager:
         period_string = str(period_).lower()
         return period_string.lower() in self._period
     
+    # Gets the current timezone of the user using country code and country
     def getTimeZone(self, timezone_abrev_="", country_code_="", country_=""):
         """
         Attempt to get timezone given the abbreviation, country code and country.
@@ -114,6 +116,7 @@ class DateTimeManager:
             
         return None
 
+    # Converts a given 12H time in HH MM SS pp to 24H format
     def convertTime12HTo24H(self, time_12h: str):
         """
         Try and convert a 12 hour format to 24 hours. 
@@ -138,6 +141,9 @@ class DateTimeManager:
         now_format = now.strftime("%H:%M:%S")
         return now_format
     
+        # Converts a given 12H time in HH MM SS pp to 24H format
+    
+    # Performs addition to a time given
     def AddToTime(self, time: str, s=0, min=0, hrs=0):
         try:
             time_obj = parse(time)
@@ -150,6 +156,7 @@ class DateTimeManager:
             print(f'[{str(self.__class__.__name__).upper()}](AddToTim())): {e}')
             return None
     
+    # Performs addition to a date
     def AddToDate(self, date: str, d=0, wks=0):
         try:
             date_obj = parse(date)

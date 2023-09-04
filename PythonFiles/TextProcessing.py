@@ -11,6 +11,7 @@ class TextProcessingManager:
     _dt_config = DateTimeManager()
     _error_codes_list = ErrorCodes()._error_codes
 
+    # Splits string based on a list of delimiters
     def MultipleDelimSplitString(self, string, delims):
         """
         Splits a string by a list of delimiters.
@@ -24,6 +25,7 @@ class TextProcessingManager:
         pattern = r'|'.join(delims)
         return split(pattern, new_string)
     
+    # Creates a date dictionary 
     def GetDateStruct(self, day, month, year):
         """
         Returns a structure with day, month and year. 
@@ -40,6 +42,7 @@ class TextProcessingManager:
                 "year" : self._dt_config.isYear(year) and year or None
             }
     
+    # Checks each special char in string and removes ones that are not in special_char_to_keep
     def RemoveUncessarySpecialChars(self, string, special_char_to_keep):
         """
         Returns the new string where all uneeded characters are removed or the original string 
@@ -57,13 +60,16 @@ class TextProcessingManager:
 
         return string
 
+    # Split word into a list and removes the empty elements
     def SplitWordAndRemoveEmptySlots(self, text):
         splitted = wordninja.split(text)
         return [x for x in splitted if x != '']
 
+    # Removes the special char of dash not from UTF8
     def RemoveEnDashU2013(self, text):
         return text.replace(u'\u2013', "-")
 
+    # Converts any time given to a 12H format
     def ConvertToTimedFormat(self, time_text: str):
         """
         Converts time_text to a acceptable time format for datetime parsing. Does not handle seconds,
@@ -98,6 +104,7 @@ class TextProcessingManager:
 
         return H + ":" + M + ":00" + " " + P 
 
+    # Formats date to comply with google calendar API
     def ProcessDateForGoogleCalendar(self, date_text: str):
         """
         Returns a list of strings formatted in the way that can be used for Google Calendars. 
@@ -152,6 +159,7 @@ class TextProcessingManager:
 
         return len(list_of_processed) == 1 and list_of_processed[0] or list_of_processed
     
+    # Format date to comply with google calendar
     def ProcessTimeForGoogleCalendars(self, time_text: str):
         """
         Returns a list of time strings formatted in the way that can be used for Google Calendars. 

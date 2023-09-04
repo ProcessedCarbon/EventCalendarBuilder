@@ -3,12 +3,14 @@ from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
 from TextProcessing import TextProcessingManager
 
+# Extracts text from plain text file 
 def getTestingText(file_path):
     with open(file_path, encoding='utf-8') as f:
         lines = f.read()
     
     return lines
 
+# Prints entity per event in list
 def PrintEvent(event_obj):
         event = event_obj["EVENT"]
         location = event_obj["LOC"]
@@ -21,6 +23,7 @@ def PrintEvent(event_obj):
         print("date: ", date)
         print("time: ", time)
 
+# Test case for single event w/ its corresponding details
 def SingleEventTest():
     print("------------------------------------------------------------------------------")
     print("Reading testing text in progress....")

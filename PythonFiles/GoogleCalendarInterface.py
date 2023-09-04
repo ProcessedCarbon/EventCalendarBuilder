@@ -28,6 +28,7 @@ class GoogleCalendarInterface:
         if establish_connection is True:
             self.ConnectToGoogleCalendar()
 
+    # Tries to establish connection with Google Calendar API
     def ConnectToGoogleCalendar(self):
         print("ESTABLISHING CONNECTION TO GOOGLE CALENDARS......")
         if os.path.exists(r'token_path'):
@@ -105,6 +106,7 @@ class GoogleCalendarInterface:
         new_event = self.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
         print(f"Event created {new_event.get('htmlLink')}")
 
+    # Creates event datatype
     def CreateGoogleEvent(self, event, location, timezone="", time=[], date=[], colorId=1):
         """
         Returns the google calendar event format with the given entities in placed to be used to parsed to create a new event on google calendars

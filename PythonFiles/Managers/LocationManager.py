@@ -4,6 +4,7 @@ import pycountry
 class LocationManager:
     _default_country = "Singapore"
 
+    # Returns current country of user
     def getCurrentCountry(self):
         """
         Try and get the country of current computer is in by going online. Requires internet to do so. 
@@ -19,6 +20,7 @@ class LocationManager:
             print(f'[{str(self.__class__.__name__).upper()}](getCurrentCountry()): {e}')
             return None
     
+    #  Returns country code of user
     def getCountryCode(self, country_name: str):
         """
         Attempt to get the country code given the name of a country

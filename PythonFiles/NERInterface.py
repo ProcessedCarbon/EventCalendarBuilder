@@ -7,6 +7,7 @@ class NERInterface:
     def __init__(self, model_path = r"./model/model-best" ):
         self.nlp = spacy.load(model_path) #load model       
  
+    # Extracts entities from given text
     def GetEntitiesFromText(self, text:str):
         """
         Get the entities from doc and returns them. Current assumes that doc only has 1 of each
@@ -63,6 +64,7 @@ class NERInterface:
                 
         return events
     
+    # Creates NER entity dataype
     def getEntities(self, e : str, t : list, d : list, l : str):
         return {
             "EVENT" : e,
