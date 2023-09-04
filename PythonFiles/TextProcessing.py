@@ -232,14 +232,14 @@ def Test_ProcessTimeForGoogleCalendars():
     text_process_manager = TextProcessingManager()
     # Testing for time
     convert12HTo24H_test_list ={
-        # "12am",
-        # "1.30am",
+        "12am",
+        "1.30am",
         "1330",
-        # "230pm",
-        # "1pm",
-        # "12.30 - 3pm",
-        # "1pm - 3pm",
-        # "4-6pm"
+        "230pm",
+        "1pm",
+        "12.30 - 3pm",
+        "1pm - 3pm",
+        "4-6pm"
     }
 
     for t in convert12HTo24H_test_list:
