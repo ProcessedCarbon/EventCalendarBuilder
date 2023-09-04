@@ -2,6 +2,7 @@
 from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
 from TextProcessing import TextProcessingManager
+from Managers.GUIInterface import GUIInterface
 
 # Extracts text from plain text file 
 def getTestingText(file_path):
@@ -84,8 +85,21 @@ def SingleEventTest():
     print("------------------------------------------------------------------------------")
     print("Done!")
 
+def TkinterTest():
+    def ButtonTestMethod(test : str):
+        print(test)
+
+    gui_interface = GUIInterface(default_size="380x400")
+    gui_interface.CreateLabel(text="Event Calendar Builder")
+    gui_interface.CreateEntry(default_text="Enter your text:")
+    gui_interface.CreateButton(on_click= lambda:ButtonTestMethod("Testing"))
+
+    gui_interface.MainLoop()
+
 def main():    
-    SingleEventTest()
+    #SingleEventTest()
+    TkinterTest()
+    
 
 if __name__ == "__main__":
     main()
