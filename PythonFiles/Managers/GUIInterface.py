@@ -11,8 +11,8 @@ class GUIInterface:
 
         self.root.geometry(f"{str(self.app_width)}x{str(self.app_height)}")
 
-    def CreateButton(self, on_click):
-        myButton = ttk.Button(self.root, text="Click", command=on_click)
+    def CreateButton(self, on_click, text="Click"):
+        myButton = ttk.Button(self.root, text=text, command=on_click)
         myButton.pack()
     
     def CreateLabel(self, text : str):
