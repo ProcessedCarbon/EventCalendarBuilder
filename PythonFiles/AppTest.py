@@ -1,8 +1,10 @@
 
 from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
+from PythonFiles.NERInterface import PrintEvents
 from TextProcessing import TextProcessingManager
 from Managers.GUIInterface import GUIInterface
+from screeninfo import get_monitors
 
 # Extracts text from plain text file 
 def getTestingText(file_path):
@@ -10,19 +12,6 @@ def getTestingText(file_path):
         lines = f.read()
     
     return lines
-
-# Prints entity per event in list
-def PrintEvent(event_obj):
-        event = event_obj["EVENT"]
-        location = event_obj["LOC"]
-        date = event_obj["DATE"]
-        time = event_obj["TIME"]
-
-        print("------------------------------------------------------------------------------")
-        print("event: ", event)
-        print("location: ", location)
-        print("date: ", date)
-        print("time: ", time)
 
 # Test case for single event w/ its corresponding details
 def SingleEventTest():
@@ -39,8 +28,7 @@ def SingleEventTest():
     ner_Interface = NERInterface()
     events = ner_Interface.GetEntitiesFromText(text=test_text)
     
-    for e in events:
-        PrintEvent(e)
+    ner_Interface.PrintEvents(events)
 
     print("------------------------------------------------------------------------------")
     print("Processing text to google format ...... ")
@@ -58,8 +46,7 @@ def SingleEventTest():
             event_obj["TIME"][i] = g_time
 
     print("------------------------------------------------------------------------------")
-    for e in events:
-        PrintEvent(e)
+    ner_Interface.PrintEvents(events)
 
     print("------------------------------------------------------------------------------")
     print("Creating calendar event ......")
@@ -85,22 +72,9 @@ def SingleEventTest():
     print("------------------------------------------------------------------------------")
     print("Done!")
 
-def TkinterTest():
-    def ButtonTestMethod(test : str):
-        print(test)
-
-    gui_interface = GUIInterface(default_size="380x400")
-    gui_interface.CreateLabel(text="Event Calendar Builder")
-    gui_interface.CreateEntry(default_text="Enter your text:")
-    gui_interface.CreateButton(on_click= lambda:ButtonTestMethod("Testing"))
-
-    gui_interface.MainLoop()
-
 def main():    
     #SingleEventTest()
-    TkinterTest()
-    
+    pass
 
 if __name__ == "__main__":
     main()
-    

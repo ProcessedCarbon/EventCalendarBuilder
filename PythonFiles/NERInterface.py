@@ -73,6 +73,20 @@ class NERInterface:
             "LOC" : l,
         }
 
+    # Prints entity per event in list
+    def PrintEvents(self, events : list[dict]):
+        for e in events:
+            event = e["EVENT"]
+            location = e["LOC"]
+            date = e["DATE"]
+            time = e["TIME"]
+
+            print("------------------------------------------------------------------------------")
+            print("event: ", event)
+            print("location: ", location)
+            print("date: ", date)
+            print("time: ", time)
+
 def main():
     NER = NERInterface()
 
