@@ -110,7 +110,6 @@ def SchedulePromptPage():
     gui.CreateText(w=50, h=50)
 
     pages.append(schedule_page)
-    pass
 
 # Stored in pages in order
 MainPage()
