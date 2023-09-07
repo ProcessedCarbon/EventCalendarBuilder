@@ -17,9 +17,9 @@ class CalendarInterface:
         self._cal.add('version', '2.0')
         pass
 
-    def CreateEvent(self, e_name:str, e_description:str, e_date:datetime, e_dtend:datetime, 
-                    e_organizer_addr:str, e_organizer_name:str, e_organizer_role:str,
-                    e_location:str, e_priority:str):
+    def CreateICSEvent(self, e_name:str, e_description:str, e_date:datetime, e_dtend:datetime, 
+                    e_organizer_addr:str="", e_organizer_name:str="", e_organizer_role:str="",
+                    e_location:str="", e_priority:int=5):
         # Add subcomponents
         event = Event()
         event.add('name', e_name)
@@ -28,16 +28,16 @@ class CalendarInterface:
         event.add('dtend', datetime(2022, 1, 25, 10, 0, 0, tzinfo=pytz.utc))
         
         # Add the organizer
-        organizer = vCalAddress('MAILTO:jdoe@example.com')
+        organizer = vCalAddress(e_organizer_addr)
         
         # Add parameters of the event
-        organizer.params['name'] = vText('John Doe')
-        organizer.params['role'] = vText('CEO')
+        organizer.params['name'] = vText(e_organizer_name)
+        organizer.params['role'] = vText(e_organizer_role)
         event['organizer'] = organizer
-        event['location'] = vText('New York, USA')
+        event['location'] = vText(e_location)
         
         event['uid'] = '2022125T111010/272356262376@example.com'
-        event.add('priority', 5)
+        event.add('priority', e_priority)
 
         # Not handling attendees for now
         # attendee = vCalAddress('MAILTO:rdoe@example.com')
@@ -78,7 +78,7 @@ class CalendarInterface:
 
 def BasicTest():
     cal_interface = CalendarInterface()
-    cal_interface.CreateEvent()
+    cal_interface.CreateICSEvent()
     cal_interface.WriteToFile()
     cal_interface.ReadICSFile()
 
