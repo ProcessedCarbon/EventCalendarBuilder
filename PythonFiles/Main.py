@@ -70,25 +70,53 @@ def CheckText(text):
     print("------------------------------------------------------------------------------")
     print("Done!")
 
-def InitMainGUI(monitor_info):
-    monitor_width = int(monitor_info["width"])
-    monitor_height = int(monitor_info["height"])
-    gui.CreateAppScreen(screen_width=monitor_width, screen_height=monitor_height)
-
-    # Title
-    gui.CreateLabel(text="Event Calendar Builder")
-
-    # Text box
-    textBox = gui.CreateText(w=150, h=50)
-
-    # Button
-    gui.CreateButton(on_click=lambda:CheckText(textBox))
-
-    gui.MainLoop()
-
 monitor_info = GetCurrentMonitorInfo()
 
-if len(monitor_info) > 0:
-    InitMainGUI(monitor_info=monitor_info)
-else:
-    print("No monitor detected!")
+# Initialzation
+monitor_width = int(monitor_info["width"])
+monitor_height = int(monitor_info["height"])
+gui.CreateAppScreen(screen_width=monitor_width, screen_height=monitor_height)
+
+pages = []
+current_page = None
+
+def SwitchPages(page:int=0):
+    global current_page
+    if current_page != None:
+        current_page.pack_forget()
+    current_page = pages[page]
+    current_page.pack()
+
+# PAGES
+def MainPage():
+    main_page = gui.CreateFrame(gui.main_frame)
+    gui.SetCurrentFrame(main_page)
+    # Title
+    gui.CreateLabel(text="Event Calendar Builder", font_type='Bold', font_size=20)
+    # Text box
+    gui.CreateText(w=150, h=50)
+    # Button
+    gui.CreateButton(on_click=lambda:SwitchPages(1))
+
+    pages.append(main_page)
+
+def SchedulePromptPage():
+    schedule_page = gui.CreateFrame(gui.main_frame)
+    gui.SetCurrentFrame(schedule_page)
+
+    # Title
+    gui.CreateLabel(text="Schedule Page")
+    # Text box
+    gui.CreateText(w=50, h=50)
+
+    pages.append(schedule_page)
+    pass
+
+# Stored in pages in order
+MainPage()
+SchedulePromptPage()
+
+SwitchPages()
+
+gui.MainLoop()
+    
