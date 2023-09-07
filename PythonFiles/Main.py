@@ -1,11 +1,12 @@
 
 from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
-from Managers.GUIInterface import GUIInterface
 from TextProcessing import TextProcessingManager
 from screeninfo import get_monitors
 
-gui = GUIInterface()
+from tkinter import *
+from tkinter import ttk
+
 ner_Interface = NERInterface()
 text_processing = TextProcessingManager()
 #google_Interface = GoogleCalendarInterface()
@@ -73,9 +74,17 @@ def CheckText(text):
 monitor_info = GetCurrentMonitorInfo()
 
 # Initialzation
+root = Tk()
+main_frame = ttk.Frame(root)
+main_frame.pack(fill=BOTH, expand=True)
+aspect = 0.8
+
+# Screen App creation
 monitor_width = int(monitor_info["width"])
 monitor_height = int(monitor_info["height"])
-gui.CreateAppScreen(screen_width=monitor_width, screen_height=monitor_height)
+app_width = int(monitor_width * aspect)
+app_height = int(monitor_height * aspect)
+root.geometry(f"{str(app_width)}x{str(app_height)}")
 
 pages = []
 current_page = None
@@ -89,25 +98,32 @@ def SwitchPages(page:int=0):
 
 # PAGES
 def MainPage():
-    main_page = gui.CreateFrame(gui.main_frame)
-    gui.SetCurrentFrame(main_page)
+    main_page = ttk.Frame(main_frame)
+
     # Title
-    gui.CreateLabel(text="Event Calendar Builder", font_type='Bold', font_size=20)
+    title = ttk.Label(main_page, text="Event Calendar Builder", font=("Bold", 20))
+    title.pack()
+
     # Text box
-    gui.CreateText(w=150, h=50)
+    textbox = Text(main_page, width=150, height=50)
+    textbox.pack()
+
     # Button
-    gui.CreateButton(on_click=lambda:SwitchPages(1))
+    button = ttk.Button(main_page, text="Submit", command=lambda:SwitchPages(1))
+    button.pack()
 
     pages.append(main_page)
 
 def SchedulePromptPage():
-    schedule_page = gui.CreateFrame(gui.main_frame)
-    gui.SetCurrentFrame(schedule_page)
+    schedule_page = ttk.Frame(main_frame)
 
     # Title
-    gui.CreateLabel(text="Schedule Page")
-    # Text box
-    gui.CreateText(w=50, h=50)
+    title = ttk.Label(schedule_page, text="Schedule")
+    title.pack()
+
+    # Button
+    button = ttk.Button(schedule_page, text="Submit", command=lambda:SwitchPages(0))
+    button.pack(side=LEFT)
 
     pages.append(schedule_page)
 
@@ -117,5 +133,4 @@ SchedulePromptPage()
 
 SwitchPages()
 
-gui.MainLoop()
-    
+root.mainloop()    
