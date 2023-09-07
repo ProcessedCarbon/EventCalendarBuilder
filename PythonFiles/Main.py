@@ -30,23 +30,23 @@ def GetCurrentMonitorInfo()->dict:
 
     return current
 
-def CreateGoogleCalendarEvent(event_list:list[dict]):
-    google_events = []
-    for e in event_list:
-        n_event = google_Interface.CreateGoogleEvent(event=str(e["EVENT"]), 
-                                                location=str(e["LOC"]), 
-                                                time=e["TIME"][0], 
-                                                date=e["DATE"],
-                                                )
-        #print("Event")
-        #print(n_event)
-        google_events.append(n_event)
+# def CreateGoogleCalendarEvent(event_list:list[dict]):
+#     google_events = []
+#     for e in event_list:
+#         n_event = google_Interface.CreateGoogleEvent(event=str(e["EVENT"]), 
+#                                                 location=str(e["LOC"]), 
+#                                                 time=e["TIME"][0], 
+#                                                 date=e["DATE"],
+#                                                 )
+#         #print("Event")
+#         #print(n_event)
+#         google_events.append(n_event)
     
-    if len(google_events) > 0:
-        for g_event in google_events:
-            google_Interface.CreateCalendarEvent(googleEvent=g_event)
-    else:
-        print("NO GOOGLE EVENTS IN LIST")
+#     if len(google_events) > 0:
+#         for g_event in google_events:
+#             google_Interface.CreateCalendarEvent(googleEvent=g_event)
+#     else:
+#         print("NO GOOGLE EVENTS IN LIST")
 
 def CheckText(text):
     t = gui.RetrieveCurrentInputFromText(text)
