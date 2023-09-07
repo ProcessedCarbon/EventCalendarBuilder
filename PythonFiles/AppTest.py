@@ -70,7 +70,7 @@ def SingleEventTest():
     print("Done!")
 
 def main():    
-    #SingleEventTest()
+    SingleEventTest()
     pass
 
 if __name__ == "__main__":
