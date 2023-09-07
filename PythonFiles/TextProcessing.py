@@ -14,7 +14,7 @@ class TextProcessingManager:
     # Splits string based on a list of delimiters
     def MultipleDelimSplitString(self, string, delims):
         """
-        Splits a string by a list of delimiters.
+        Splits a string by a list of delimiters. Does not function well with brackets as delimiters
 
         :param string (str): string to be split
         :param delimiters (list): list of delimiters
