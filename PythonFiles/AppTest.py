@@ -34,12 +34,12 @@ def SingleEventTest():
     for event_obj in events:
         for d in event_obj["DATE"]:
             i = event_obj["DATE"].index(d)
-            g_date = text_processing.ProcessDateForGoogleCalendar(date_text=str(d))
+            g_date = text_processing.ProcessDate(date_text=str(d))
             event_obj["DATE"][i] = g_date
         
         for t in event_obj["TIME"]:
             i = event_obj["TIME"].index(t)
-            g_time = text_processing.ProcessTimeForGoogleCalendars(time_text=str(t))
+            g_time = text_processing.ProcessTimeTo12HFormat(time_text=str(t))
             event_obj["TIME"][i] = g_time
 
     print("------------------------------------------------------------------------------")

@@ -8,7 +8,7 @@ from screeninfo import get_monitors
 gui = GUIInterface()
 ner_Interface = NERInterface()
 text_processing = TextProcessingManager()
-google_Interface = GoogleCalendarInterface()
+#google_Interface = GoogleCalendarInterface()
 
 def GetCurrentMonitorInfo()->dict:
     # Monitor(x=0, y=0, width=3840, height=2160, width_mm=708, height_mm=399, name='DP-0', is_primary=True)
@@ -54,22 +54,19 @@ def CheckText(text):
     events = ner_Interface.GetEntitiesFromText(text=t)
     ner_Interface.PrintEvents(events)
     print("------------------------------------------------------------------------------")
-    print("Processing text to google format ...... ")
+    print("Processing text...... ")
     for event_obj in events:
         for d in event_obj["DATE"]:
             i = event_obj["DATE"].index(d)
-            g_date = text_processing.ProcessDateForGoogleCalendar(date_text=str(d))
-            event_obj["DATE"][i] = g_date
+            ics_date = text_processing.ProcessDateToICSFormat(date=str(d))
+            event_obj["DATE"][i] = ics_date
         
         for t in event_obj["TIME"]:
             i = event_obj["TIME"].index(t)
-            g_time = text_processing.ProcessTimeForGoogleCalendars(time_text=str(t))
-            event_obj["TIME"][i] = g_time
+            ics_time = text_processing.ProcessTimeToICSFormat(time=str(t))
+            event_obj["TIME"][i] = ics_time
     print("------------------------------------------------------------------------------")
-    ner_Interface.PrintEvents(events)
-    print("------------------------------------------------------------------------------")
-    print("Creating calendar event ......")
-    CreateGoogleCalendarEvent(events)
+    print(events)
     print("------------------------------------------------------------------------------")
     print("Done!")
 

@@ -2,6 +2,8 @@ import datetime as dt
 import pytz
 from datetime import datetime, timedelta
 from dateutil.parser import parse
+from zoneinfo import ZoneInfo
+from Managers.LocationManager import LocationManager
 
 class DateTimeManager:
     _months = [
@@ -34,6 +36,10 @@ class DateTimeManager:
     _period = ["am", "pm"]
     
     _years = {str(x) for x in range(2000, dt.date.today().year)}
+
+    def __init__(self):
+        self.location_manager = LocationManager()
+        pass
 
     def isMonth(self, month: str):
         return (str(month).lower() in self._months)
@@ -165,6 +171,12 @@ class DateTimeManager:
         except Exception as e:
             print(f'[{str(self.__class__.__name__).upper()}](AddToDate()): {e}')
             return None
+    
+    def ConvertStrToDateTime(self, hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
+        # Handle timezone
+        country = self.location_manager.getCurrentCountry()
+        tz = ZoneInfo(country) if country != None else ZoneInfo("Singapore")
+        return datetime(year, month, day, hour, min, sec, tzinfo=tz)
     
 # For testing
 def main():

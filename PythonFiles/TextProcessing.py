@@ -104,8 +104,8 @@ class TextProcessingManager:
 
         return H + ":" + M + ":00" + " " + P 
 
-    # Formats date to comply with google calendar API
-    def ProcessDateForGoogleCalendar(self, date_text: str):
+    # Formats date to comply with google calendar API (2023-05-17)
+    def ProcessDate(self, date_text: str)->str:
         """
         Returns a list of strings formatted in the way that can be used for Google Calendars. 
 
@@ -159,8 +159,8 @@ class TextProcessingManager:
 
         return len(list_of_processed) == 1 and list_of_processed[0] or list_of_processed
     
-    # Format date to comply with google calendar
-    def ProcessTimeForGoogleCalendars(self, time_text: str):
+    # Format date to comply with google calendar (16:30:00)
+    def ProcessTimeTo12HFormat(self, time_text: str)->str:
         """
         Returns a list of time strings formatted in the way that can be used for Google Calendars. 
 
@@ -231,8 +231,30 @@ class TextProcessingManager:
         # If result only contains a single value just return that value
         return len(result) == 1 and result[0] or result
 
+    def ProcessDateToICSFormat(self, date:str)->dict:
+        processed = self.ProcessDate(date_text=date)        
+        if date != None:
+            params = processed.split("-")
+            return {
+                "year" : int(params[0]),
+                "month" : int(params[1]),
+                "day" : int(params[2])
+            }
+        return None
+
+    def ProcessTimeToICSFormat(self, time:str)->dict:
+        processed = self.ProcessTimeTo12HFormat(time_text=time)
+        if time != None:
+            params = processed.split(":")
+            return {
+                "hour" : int(params[0]),
+                "min" : int(params[1]),
+                "second" : int(params[2]),
+            }
+        return None
+
 # ================================================  TEST ======================================================================== #
-def Test_ProcessTimeForGoogleCalendars():
+def Test_ProcessTimeTo12HFormat():
     print("==========================================================================================")
     print("Test_ProcessTimeForGoogleCalendars")
     print("==========================================================================================")
@@ -252,7 +274,7 @@ def Test_ProcessTimeForGoogleCalendars():
 
     for t in convert12HTo24H_test_list:
         print("Original: ", t)
-        print(f"After: {text_process_manager.ProcessTimeForGoogleCalendars(t)}")
+        print(f"After: {text_process_manager.ProcessTimeTo12HFormat(t)}")
         print("------------------------------------------------")
     print("==========================================================================================")
 
@@ -266,7 +288,7 @@ def main():
     # for f in formatted:
     #     print(f)
 
-    Test_ProcessTimeForGoogleCalendars()
+    Test_ProcessTimeTo12HFormat()
 
 if __name__ == "__main__":
     main()
