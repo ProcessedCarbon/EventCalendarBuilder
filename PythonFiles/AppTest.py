@@ -1,10 +1,7 @@
 
 from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
-from PythonFiles.NERInterface import PrintEvents
 from TextProcessing import TextProcessingManager
-from Managers.GUIInterface import GUIInterface
-from screeninfo import get_monitors
 
 # Extracts text from plain text file 
 def getTestingText(file_path):
