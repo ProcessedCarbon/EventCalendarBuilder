@@ -244,14 +244,16 @@ class TextProcessingManager:
 
     def ProcessTimeToICSFormat(self, time:str)->dict:
         processed = self.ProcessTimeTo12HFormat(time_text=time)
-        if time != None:
-            params = processed.split(":")
-            return {
-                "hour" : int(params[0]),
-                "min" : int(params[1]),
-                "second" : int(params[2]),
-            }
-        return None
+        res = []
+        for p in processed:
+            if p != None:
+                params = p.split(":")
+                res.append({
+                    "hour" : int(params[0]),
+                    "min" : int(params[1]),
+                    "second" : int(params[2]),
+                })
+        return res if len(res) > 0 else None
 
 # ================================================  TEST ======================================================================== #
 def Test_ProcessTimeTo12HFormat():
