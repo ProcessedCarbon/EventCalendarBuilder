@@ -29,8 +29,8 @@ class GUIInterface:
 
         return textInput
     
-    def CreateText(self,h : int, w : int)->Text:
-        text = Text(self.current_frame, height=h, width=w)
+    def CreateText(self,h : int, w : int)->CTkTextbox:
+        text = CTkTextbox(self.current_frame, height=h, width=w)
         return text
     
     def CreateFrame(self, frame_target, b_color:str='', b_width:int=0, fg_color:str='transparent')->CTkFrame:
@@ -55,8 +55,8 @@ class GUIInterface:
         entry_frame.grid(row=frame_row, padx=padx, pady=pady, sticky=NSEW, ipadx=gap)
         self.ClearCurrentFrame()
 
-    def RetrieveCurrentInputFromText(self, text:Text):
-        input = text.get("1.0", END)
+    def RetrieveCurrentInputFromText(self, text:CTkTextbox):
+        input = text.get("0.0", END)
         return input
     
     def getSize(self)->tuple:

@@ -48,8 +48,8 @@ def GetCurrentMonitorInfo()->dict:
 #     else:
 #         print("NO GOOGLE EVENTS IN LIST")
 
-def CheckText(text):
-    t = gui.RetrieveCurrentInputFromText(text)
+def CheckText(textbox):
+    t = gui.RetrieveCurrentInputFromText(textbox)
     t.strip("\n").strip()
     events = ner_Interface.GetEntitiesFromText(text=t)
     ner_Interface.PrintEvents(events)
@@ -69,6 +69,7 @@ def CheckText(text):
     print(events)
     print("------------------------------------------------------------------------------")
     print("Done!")
+    #SwitchPages(1)
 
 monitor_info = GetCurrentMonitorInfo()
 # Initialzation
@@ -88,20 +89,26 @@ def SwitchPages(page:int=0):
 
 # PAGES
 def MainPage():
+    columns = 3
+
     main_page = gui.CreateFrame(frame_target=gui.main_frame)
     gui.SetCurrentFrame(main_page)
+
+    for i in range(columns):
+        main_page.columnconfigure(i, weight=1)
+        main_page.rowconfigure(i, weight=1)
     
     # Title
     title = gui.CreateLabel(text="Event Calendar Builder", font=("Bold",20))
-    title.pack()
+    title.grid(row=0, column=1, sticky='n', pady=10)
 
     # Text box
-    textbox = gui.CreateText(w=150, h=50)
-    textbox.pack()
+    textbox = gui.CreateText(w=gui.app_width * 0.5, h=gui.app_height * 0.5)
+    textbox.grid(row=1, column=1, sticky='nsew')
 
     # Button
-    button = gui.CreateButton(text="Submit", on_click=lambda:SwitchPages(1))
-    button.pack()
+    button = gui.CreateButton(text="Submit", on_click=lambda:CheckText(textbox))
+    button.grid(row=2, column=1, stick='s', pady=10)
 
     pages.append(main_page)
     gui.ClearCurrentFrame()
@@ -148,6 +155,6 @@ def SchedulePromptPage():
 MainPage()
 SchedulePromptPage()
 
-SwitchPages(1)
+SwitchPages(0)
 
 gui.MainLoop()    
