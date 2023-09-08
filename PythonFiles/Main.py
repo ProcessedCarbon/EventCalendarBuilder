@@ -50,8 +50,8 @@ def GetCurrentMonitorInfo()->dict:
 #     else:
 #         print("NO GOOGLE EVENTS IN LIST")
 
-def CheckText(text):
-    t = gui.RetrieveCurrentInputFromText(text)
+def CheckText(textbox):
+    t = gui.RetrieveCurrentInputFromText(textbox)
     t.strip("\n").strip()
     events = ner_Interface.GetEntitiesFromText(text=t)
     ner_Interface.PrintEvents(events)
@@ -72,26 +72,92 @@ def CheckText(text):
     print("Generating ICS File")
     print("------------------------------------------------------------------------------")
     print("Done!")
-
-def InitMainGUI(monitor_info):
-    monitor_width = int(monitor_info["width"])
-    monitor_height = int(monitor_info["height"])
-    gui.CreateAppScreen(screen_width=monitor_width, screen_height=monitor_height)
-
-    # Title
-    gui.CreateLabel(text="Event Calendar Builder")
-
-    # Text box
-    textBox = gui.CreateText(w=150, h=50)
-
-    # Button
-    gui.CreateButton(on_click=lambda:CheckText(textBox))
-
-    gui.MainLoop()
+    #SwitchPages(1)
 
 monitor_info = GetCurrentMonitorInfo()
+# Initialzation
+monitor_width = int(monitor_info["width"])
+monitor_height = int(monitor_info["height"])
+gui.CreateAppScreen(screen_width=monitor_width, screen_height=monitor_height)
 
-if len(monitor_info) > 0:
-    InitMainGUI(monitor_info=monitor_info)
-else:
-    print("No monitor detected!")
+pages = []
+current_page = None
+
+def SwitchPages(page:int=0):
+    global current_page
+    if current_page != None:
+        current_page.pack_forget()
+    current_page = pages[page]
+    current_page.pack(fill='both', expand=True)
+
+# PAGES
+def MainPage():
+    columns = 3
+
+    main_page = gui.CreateFrame(frame_target=gui.main_frame)
+    gui.SetCurrentFrame(main_page)
+
+    for i in range(columns):
+        main_page.columnconfigure(i, weight=1)
+        main_page.rowconfigure(i, weight=1)
+    
+    # Title
+    title = gui.CreateLabel(text="Event Calendar Builder", font=("Bold",20))
+    title.grid(row=0, column=1, sticky='n', pady=10)
+
+    # Text box
+    textbox = gui.CreateText(w=gui.app_width * 0.5, h=gui.app_height * 0.5)
+    textbox.grid(row=1, column=1, sticky='nsew')
+
+    # Button
+    button = gui.CreateButton(text="Submit", on_click=lambda:CheckText(textbox))
+    button.grid(row=2, column=1, stick='s', pady=10)
+
+    pages.append(main_page)
+    gui.ClearCurrentFrame()
+
+def SchedulePromptPage():
+    #Schedule Page Params
+    columns = 3
+
+    # GUI
+    schedule_page = gui.CreateFrame(gui.main_frame)
+    gui.SetCurrentFrame(schedule_page)
+
+    for i in range(columns):
+        schedule_page.columnconfigure(i, weight=1)
+        schedule_page.rowconfigure(i, weight=1)
+
+    # Back Button
+    button = gui.CreateButton(text="<", on_click=lambda:SwitchPages(0))
+    button.grid(row=0, column=0, sticky='nw')
+
+    # Title
+    title = gui.CreateLabel(text="Schedule", font=("Bold",20))
+    title.grid(row=0, column=1, sticky='n')
+
+    details_frame = gui.CreateFrame(schedule_page)
+    num_details = 6
+    for i in range(num_details):
+        details_frame.rowconfigure(i, weight=1)
+    details_frame.grid(row=1, column=1, sticky='nsew')
+
+    # Details entry
+    paddint_y = 10
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Event:", frame_row=0, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Description:", frame_row=1, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Priority:", frame_row=2, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Location:", frame_row=3, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Start Datetime:", frame_row=4, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="End Datetime:", frame_row=5, pady=paddint_y)
+
+    pages.append(schedule_page)
+    gui.ClearCurrentFrame()
+
+# Stored in pages in order
+MainPage()
+SchedulePromptPage()
+
+SwitchPages(0)
+
+gui.MainLoop()    
