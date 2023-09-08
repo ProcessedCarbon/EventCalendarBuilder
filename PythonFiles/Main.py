@@ -144,7 +144,8 @@ def SchedulePromptPage():
     details_frame.grid(row=1, column=1, sticky=N)
 
     details_frame = ttk.Frame(schedule_page)
-    for i in range(6):
+    num_details = 6
+    for i in range(num_details):
         details_frame.rowconfigure(i, weight=1)
     details_frame.grid(row=1, column=1)
 
