@@ -38,6 +38,22 @@ class GUIInterface:
         frame = ttk.Frame(frame_target)
         return frame
     
+    def CreateEntryWithLabel(self, frame_target, label:str, frame_row:int, frame_col:int, padx:int=0, pady:int=0):
+        entry_frame = ttk.Frame(frame_target)
+
+        entry_frame.columnconfigure(0, weight=1)
+        entry_frame.columnconfigure(1, weight=3)
+
+        # Entry label
+        label = ttk.Label(entry_frame, text=label)
+        label.grid(row=0, column=0, sticky=E)
+
+        # Entry
+        entry = ttk.Entry(entry_frame, width=50)
+        entry.grid(row=0, column=1, sticky=W)
+
+        entry_frame.grid(row=frame_row, column=frame_col, padx=padx, pady=pady)
+
     def RetrieveCurrentInputFromText(self, text:Text):
         input = text.get("1.0", END)
         return input

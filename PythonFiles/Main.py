@@ -1,6 +1,7 @@
 
 from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
+from Managers.GUIInterface import GUIInterface
 from TextProcessing import TextProcessingManager
 from screeninfo import get_monitors
 
@@ -8,6 +9,7 @@ from tkinter import *
 from tkinter import ttk
 
 
+gui = GUIInterface()
 ner_Interface = NERInterface()
 text_processing = TextProcessingManager()
 #google_Interface = GoogleCalendarInterface()
@@ -128,7 +130,7 @@ def SchedulePromptPage():
         schedule_page.columnconfigure(i, weight=1)
         schedule_page.rowconfigure(i, weight=1)
     
-    # Button
+    # Back Button
     button = ttk.Button(schedule_page, text="<", command=lambda:SwitchPages(0))
     button.grid(row=0, column=0, sticky=NW)
 
@@ -136,9 +138,24 @@ def SchedulePromptPage():
     title = ttk.Label(schedule_page, text="Schedule", font=("Bold", 20))
     title.grid(row=0, column=1, sticky=N)
 
-    # Event name input
-    event_name_entry = ttk.Entry(schedule_page, width=50)
-    event_name_entry.grid(row=1, column=1, sticky=N)
+    details_frame = ttk.Frame(schedule_page)
+    details_frame.columnconfigure(0, weight=1)
+    details_frame.columnconfigure(1, weight=3)
+    details_frame.grid(row=1, column=1, sticky=N)
+
+    details_frame = ttk.Frame(schedule_page)
+    for i in range(6):
+        details_frame.rowconfigure(i, weight=1)
+    details_frame.grid(row=1, column=1)
+
+    # Details entry
+    paddint_y = 10
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Event:", frame_row=0, frame_col=1, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Description:", frame_row=1, frame_col=1,pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Priority:", frame_row=2, frame_col=1, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Location:", frame_row=3, frame_col=1, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Start Datetime:", frame_row=4, frame_col=1, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="End Datetime:", frame_row=5, frame_col=1, pady=paddint_y)
 
     pages.append(schedule_page)
 
@@ -146,6 +163,6 @@ def SchedulePromptPage():
 MainPage()
 SchedulePromptPage()
 
-SwitchPages()
+SwitchPages(1)
 
 root.mainloop()    
