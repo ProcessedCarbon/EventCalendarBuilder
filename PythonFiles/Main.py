@@ -5,10 +5,6 @@ from Managers.GUIInterface import GUIInterface
 from TextProcessing import TextProcessingManager
 from screeninfo import get_monitors
 
-from tkinter import *
-from tkinter import ttk
-
-
 gui = GUIInterface()
 ner_Interface = NERInterface()
 text_processing = TextProcessingManager()
@@ -75,22 +71,10 @@ def CheckText(text):
     print("Done!")
 
 monitor_info = GetCurrentMonitorInfo()
-#PAGE PARAMS
-margin = 10
-
 # Initialzation
-root = Tk()
-main_frame = ttk.Frame(root)
-main_frame.pack(fill=BOTH, expand=True, padx=margin, pady=margin)
-page_parent = main_frame
-aspect = 0.8
-
-# Screen App creation
 monitor_width = int(monitor_info["width"])
 monitor_height = int(monitor_info["height"])
-app_width = int(monitor_width * aspect)
-app_height = int(monitor_height * aspect)
-root.geometry(f"{str(app_width)}x{str(app_height)}")
+gui.CreateAppScreen(screen_width=monitor_width, screen_height=monitor_height)
 
 pages = []
 current_page = None
@@ -100,65 +84,65 @@ def SwitchPages(page:int=0):
     if current_page != None:
         current_page.pack_forget()
     current_page = pages[page]
-    current_page.pack(fill=BOTH, expand=True)
+    current_page.pack(fill='both', expand=True)
 
 # PAGES
 def MainPage():
-    main_page = ttk.Frame(page_parent)
+    main_page = gui.CreateFrame(frame_target=gui.main_frame)
+    gui.SetCurrentFrame(main_page)
     
     # Title
-    title = ttk.Label(main_page, text="Event Calendar Builder", font=("Bold", 20))
+    title = gui.CreateLabel(text="Event Calendar Builder", font=("Bold",20))
     title.pack()
 
     # Text box
-    textbox = Text(main_page, width=150, height=50)
+    textbox = gui.CreateText(w=150, h=50)
     textbox.pack()
 
     # Button
-    button = ttk.Button(main_page, text="Submit", command=lambda:SwitchPages(1))
+    button = gui.CreateButton(text="Submit", on_click=lambda:SwitchPages(1))
     button.pack()
 
     pages.append(main_page)
+    gui.ClearCurrentFrame()
 
 def SchedulePromptPage():
     #Schedule Page Params
     columns = 3
 
     # GUI
-    schedule_page = ttk.Frame(page_parent)
+    schedule_page = gui.CreateFrame(gui.main_frame)
+    gui.SetCurrentFrame(schedule_page)
+
     for i in range(columns):
         schedule_page.columnconfigure(i, weight=1)
         schedule_page.rowconfigure(i, weight=1)
-    
+
     # Back Button
-    button = ttk.Button(schedule_page, text="<", command=lambda:SwitchPages(0))
-    button.grid(row=0, column=0, sticky=NW)
+    button = gui.CreateButton(text="<", on_click=lambda:SwitchPages(0))
+    button.grid(row=0, column=0, sticky='nw')
 
     # Title
-    title = ttk.Label(schedule_page, text="Schedule", font=("Bold", 20))
-    title.grid(row=0, column=1, sticky=N)
+    title = gui.CreateLabel(text="Schedule", font=("Bold",20))
+    title.grid(row=0, column=1, sticky='n')
 
-    details_frame = ttk.Frame(schedule_page)
-    details_frame.columnconfigure(0, weight=1)
-    details_frame.columnconfigure(1, weight=3)
-    details_frame.grid(row=1, column=1, sticky=N)
-
-    details_frame = ttk.Frame(schedule_page)
+    details_frame = gui.CreateFrame(schedule_page)
     num_details = 6
     for i in range(num_details):
         details_frame.rowconfigure(i, weight=1)
-    details_frame.grid(row=1, column=1)
+    details_frame.grid(row=1, column=1, sticky='nsew')
 
     # Details entry
     paddint_y = 10
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Event:", frame_row=0, frame_col=1, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Description:", frame_row=1, frame_col=1,pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Priority:", frame_row=2, frame_col=1, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Location:", frame_row=3, frame_col=1, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Start Datetime:", frame_row=4, frame_col=1, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="End Datetime:", frame_row=5, frame_col=1, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Event:", frame_row=0, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Description:", frame_row=1, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Priority:", frame_row=2, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Location:", frame_row=3, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="Start Datetime:", frame_row=4, pady=paddint_y)
+    gui.CreateEntryWithLabel(frame_target=details_frame, label="End Datetime:", frame_row=5, pady=paddint_y)
 
     pages.append(schedule_page)
+    gui.ClearCurrentFrame()
 
 # Stored in pages in order
 MainPage()
@@ -166,4 +150,4 @@ SchedulePromptPage()
 
 SwitchPages(1)
 
-root.mainloop()    
+gui.MainLoop()    

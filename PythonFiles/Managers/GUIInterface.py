@@ -1,11 +1,11 @@
 from tkinter import *
-from tkinter import ttk
+from customtkinter import *
 
 class GUIInterface:
     def __init__(self):
-        self.root = Tk()
+        self.root = CTk()
         self.main_frame = self.CreateFrame(frame_target=self.root)
-        self.current_frame = self.main_frame
+        self.SetCurrentFrame(self.main_frame)
         self.main_frame.pack(fill=BOTH, expand=True)
 
     def CreateAppScreen(self, screen_width:int, screen_height:int, aspect=0.8):
@@ -13,46 +13,47 @@ class GUIInterface:
         self.app_height = int(screen_height * aspect)
         self.root.geometry(f"{str(self.app_width)}x{str(self.app_height)}")
 
-    def CreateButton(self,on_click, text="Click", pack_side=TOP, pack_anchor:str=""):
-        myButton = ttk.Button(self.current_frame, text=text, command=on_click)
-        myButton.pack(side=pack_side, anchor=pack_anchor)
-    
-    def CreateLabel(self,text : str, font_type:str="", font_size:int=0):
-        myLabel = ttk.Label(self.current_frame, text=text, font=(font_type, font_size))
-        myLabel.pack()
+    def CreateButton(self,on_click, text="Click")->CTkButton:
+        myButton = CTkButton(self.current_frame, text=text, command=on_click, corner_radius=10)
+        return myButton
+        
+    def CreateLabel(self,text : str, font=("",0))->CTkLabel:
+        myLabel = CTkLabel(self.current_frame, text=text, font=font)
+        return myLabel
 
-    def CreateEntry(self,width=50, default_text=""):
-        textInput = ttk.Entry(self.current_frame, width=width)
+    def CreateEntry(self,width=50, default_text="")->CTkEntry:
+        textInput = CTkEntry(self.current_frame, width=width)
 
         if default_text != "" and default_text != " ":
             textInput.insert(0, default_text)
 
-        textInput.pack()
+        return textInput
     
     def CreateText(self,h : int, w : int)->Text:
         text = Text(self.current_frame, height=h, width=w)
-        text.pack()
         return text
     
-    def CreateFrame(self, frame_target)->ttk.Frame:
-        frame = ttk.Frame(frame_target)
+    def CreateFrame(self, frame_target, b_color:str='', b_width:int=0, fg_color:str='transparent')->CTkFrame:
+        frame = CTkFrame(frame_target, fg_color=fg_color, border_color=b_color, border_width=b_width)
         return frame
     
-    def CreateEntryWithLabel(self, frame_target, label:str, frame_row:int, frame_col:int, padx:int=0, pady:int=0):
-        entry_frame = ttk.Frame(frame_target)
+    def CreateEntryWithLabel(self, frame_target, label:str, frame_row:int, padx:int=0, pady:int=0, gap:int=10):
+        entry_frame = self.CreateFrame(frame_target=frame_target)
+        self.SetCurrentFrame(entry_frame)
 
         entry_frame.columnconfigure(0, weight=1)
         entry_frame.columnconfigure(1, weight=3)
 
         # Entry label
-        label = ttk.Label(entry_frame, text=label)
-        label.grid(row=0, column=0, sticky=E)
+        label = self.CreateLabel(text=label)
+        label.grid(row=0, column=0)
 
         # Entry
-        entry = ttk.Entry(entry_frame, width=50)
-        entry.grid(row=0, column=1, sticky=W)
+        entry = self.CreateEntry(self.app_width * 0.5)
+        entry.grid(row=0, column=1, sticky=E)
 
-        entry_frame.grid(row=frame_row, column=frame_col, padx=padx, pady=pady)
+        entry_frame.grid(row=frame_row, padx=padx, pady=pady, sticky=NSEW, ipadx=gap)
+        self.ClearCurrentFrame()
 
     def RetrieveCurrentInputFromText(self, text:Text):
         input = text.get("1.0", END)
@@ -60,6 +61,9 @@ class GUIInterface:
     
     def getSize(self)->tuple:
         return (self.app_width, self.app_height)
+
+    def ClearCurrentFrame(self):
+        self.current_frame=None
 
     def SetCurrentFrame(self, frame):
         self.current_frame = frame
