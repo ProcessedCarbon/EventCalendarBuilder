@@ -76,15 +76,8 @@ class CalendarInterface:
                 print(component.decoded("dtend"))
             e.close()
 
-def BasicTest():
-    cal_interface = CalendarInterface()
-    cal_interface.CreateICSEvent()
-    cal_interface.WriteToFile()
-    cal_interface.ReadICSFile()
-
-def main():
-    BasicTest()
-    pass
-
-if __name__ == "__main__":
-    main()
+# def UsageExample():
+#     cal_interface = CalendarInterface()
+#     cal_interface.CreateICSEvent()
+#     cal_interface.WriteToFile()
+#     cal_interface.ReadICSFile()

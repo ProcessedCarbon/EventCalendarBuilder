@@ -73,6 +73,14 @@ class NERInterface:
             "LOC" : l,
         }
 
+    def getSingleEntity(self, e:str, t:str, d:str, l:str):
+        return {
+            "EVENT" : e,
+            "TIME" : t,
+            "DATE" : d,
+            "LOC" : l,
+        }
+    
     # Prints entity per event in list
     def PrintEvents(self, events : list[dict]):
         for e in events:
@@ -87,6 +95,19 @@ class NERInterface:
             print("date: ", date)
             print("time: ", time)
 
+    # Returns a list of event with single date time pairing
+    def ProcessEvents(self,event_list:list[dict])->list:
+        """
+        Per date in each event in event_list, creates a single date time pairing and
+        creates  duplicate of that event
+        """
+        processed_events = []
+        for e in event_list:
+            for d in e["DATE"]:
+                for t in e["TIME"]:
+                    new_event = self.getSingleEntity(e=e["EVENT"], t=t,d=d, l=e["LOC"])
+                    processed_events.append(new_event)
+        return processed_events
 def main():
     NER = NERInterface()
 

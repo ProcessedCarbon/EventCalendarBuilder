@@ -3,11 +3,13 @@ from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
 from Managers.GUIInterface import GUIInterface
 from TextProcessing import TextProcessingManager
+from Managers.CalendarInterface import CalendarInterface
 from screeninfo import get_monitors
 
 gui = GUIInterface()
 ner_Interface = NERInterface()
 text_processing = TextProcessingManager()
+calendar_interface = CalendarInterface()
 #google_Interface = GoogleCalendarInterface()
 
 def GetCurrentMonitorInfo()->dict:
@@ -54,19 +56,20 @@ def CheckText(text):
     events = ner_Interface.GetEntitiesFromText(text=t)
     ner_Interface.PrintEvents(events)
     print("------------------------------------------------------------------------------")
-    print("Processing text...... ")
-    for event_obj in events:
-        for d in event_obj["DATE"]:
-            i = event_obj["DATE"].index(d)
-            ics_date = text_processing.ProcessDateToICSFormat(date=str(d))
-            event_obj["DATE"][i] = ics_date
-        
-        for t in event_obj["TIME"]:
-            i = event_obj["TIME"].index(t)
-            ics_time = text_processing.ProcessTimeToICSFormat(time=str(t))
-            event_obj["TIME"][i] = ics_time
+    print("Process events.....")
+    events = ner_Interface.ProcessEvents(events)
+    ner_Interface.PrintEvents(events)
     print("------------------------------------------------------------------------------")
-    print(events)
+    print("Processing text...... ")
+    for i in range(len(events)):
+        date = events[i]["DATE"]
+        events[i]["DATE"] = text_processing.ProcessDateToICSFormat(date=str(date))
+
+        time = events[i]["TIME"]        
+        events[i]["TIME"] = text_processing.ProcessTimeToICSFormat(time=str(time))
+    ner_Interface.PrintEvents(events)
+    print("------------------------------------------------------------------------------")
+    print("Generating ICS File")
     print("------------------------------------------------------------------------------")
     print("Done!")
 
