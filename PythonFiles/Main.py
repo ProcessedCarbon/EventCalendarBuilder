@@ -7,6 +7,7 @@ from screeninfo import get_monitors
 from tkinter import *
 from tkinter import ttk
 
+
 ner_Interface = NERInterface()
 text_processing = TextProcessingManager()
 #google_Interface = GoogleCalendarInterface()
@@ -72,11 +73,14 @@ def CheckText(text):
     print("Done!")
 
 monitor_info = GetCurrentMonitorInfo()
+#PAGE PARAMS
+margin = 10
 
 # Initialzation
 root = Tk()
 main_frame = ttk.Frame(root)
-main_frame.pack(fill=BOTH, expand=True)
+main_frame.pack(fill=BOTH, expand=True, padx=margin, pady=margin)
+page_parent = main_frame
 aspect = 0.8
 
 # Screen App creation
@@ -94,12 +98,12 @@ def SwitchPages(page:int=0):
     if current_page != None:
         current_page.pack_forget()
     current_page = pages[page]
-    current_page.pack()
+    current_page.pack(fill=BOTH, expand=True)
 
 # PAGES
 def MainPage():
-    main_page = ttk.Frame(main_frame)
-
+    main_page = ttk.Frame(page_parent)
+    
     # Title
     title = ttk.Label(main_page, text="Event Calendar Builder", font=("Bold", 20))
     title.pack()
@@ -115,15 +119,26 @@ def MainPage():
     pages.append(main_page)
 
 def SchedulePromptPage():
-    schedule_page = ttk.Frame(main_frame)
+    #Schedule Page Params
+    columns = 3
+
+    # GUI
+    schedule_page = ttk.Frame(page_parent)
+    for i in range(columns):
+        schedule_page.columnconfigure(i, weight=1)
+        schedule_page.rowconfigure(i, weight=1)
+    
+    # Button
+    button = ttk.Button(schedule_page, text="<", command=lambda:SwitchPages(0))
+    button.grid(row=0, column=0, sticky=NW)
 
     # Title
-    title = ttk.Label(schedule_page, text="Schedule")
-    title.pack()
+    title = ttk.Label(schedule_page, text="Schedule", font=("Bold", 20))
+    title.grid(row=0, column=1, sticky=N)
 
-    # Button
-    button = ttk.Button(schedule_page, text="Submit", command=lambda:SwitchPages(0))
-    button.pack(side=LEFT)
+    # Event name input
+    event_name_entry = ttk.Entry(schedule_page, width=50)
+    event_name_entry.grid(row=1, column=1, sticky=N)
 
     pages.append(schedule_page)
 
