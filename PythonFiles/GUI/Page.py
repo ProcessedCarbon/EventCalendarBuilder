@@ -4,12 +4,11 @@ from GUI.MainAppWindow import MainAppWindow
 
 class Page:
     pages = []
-    err_code = ErrorCodes()
     current_page = None
 
     def __init__(self):
         if MainAppWindow.main_frame == None:
-            print(Page.err_code._error_codes[1003])
+            ErrorCodes.PrintError(1003)
             return
 
         self.page = gui.CreateFrame(MainAppWindow.main_frame)
@@ -29,11 +28,11 @@ class Page:
 
     def SwitchPages(self, page:int=0):
         if len(Page.pages) < 1:
-            print(f'[{str(Page.__class__.__name__).upper()}](SwitchPages())): {Page.err_code._error_codes[1002]}')
+            ErrorCodes.PrintError(1002)
             return
         
         if page > len(Page.pages) - 1:
-            print(f'[{str(Page.__class__.__name__).upper()}](SwitchPages())): {Page.err_code._error_codes[1003]}')
+            ErrorCodes.PrintError(1003)
             return
         
         if Page.current_page != None:

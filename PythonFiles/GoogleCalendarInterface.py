@@ -20,7 +20,6 @@ credentials_path = GoogleCalendarAPI_path + "credentials.json"
 class GoogleCalendarInterface:
     _dt_manager = DateTimeManager()
     _loc_manager = LocationManager()
-    _error_code_list = ErrorCodes()._error_codes
 
     def __init__(self, establish_connection=True):
         self.creds = None
@@ -62,7 +61,7 @@ class GoogleCalendarInterface:
         """
 
         if self.service == None:
-            print(f'[{str(self.__class__.__name__).upper()}](GetUpcomingCalendarEvent()): {self._error_code_list[1001]}')
+            ErrorCodes.PrintError(1001)
             return
 
         now = dt.datetime.now().isoformat() + "Z"
@@ -94,11 +93,11 @@ class GoogleCalendarInterface:
         """
         
         if self.service == None:
-            print(f'[{str(self.__class__.__name__).upper()}](GetUpcomingCalendarEvent()): {self._error_code_list[1001]}')
+            ErrorCodes.PrintError(1001)
             return
         
         if type(googleEvent) is not GoogleEvent:
-            print(f'[{str(self.__class__.__name__).upper()}](GetUpcomingCalendarEvent()): {self._error_code_list[1000]}')
+            ErrorCodes.PrintError(__class__.__name__, "CreateCalendarEvent", 1000)
             print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             return
 

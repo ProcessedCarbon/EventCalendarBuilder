@@ -9,7 +9,6 @@ class TextProcessingManager:
     _accepted_chars = ["-", "to"]
     _special_chars = string.punctuation
     _dt_config = DateTimeManager()
-    _error_codes_list = ErrorCodes()._error_codes
 
     # Splits string based on a list of delimiters
     def MultipleDelimSplitString(self, string, delims):
@@ -88,7 +87,7 @@ class TextProcessingManager:
         
         # Check return None if time includes seconds, if not check if first digit of hour is single
         if len(string_obj) > 6:
-            print(f"[{str(self.__class__.__name__).upper()}](ConvertToTimedFormat()): {self._error_codes_list[1000]}")
+            ErrorCodes.PrintError(1000)
             return None
         
         # Pad string with zeros till length is even, do not take into account last 2 char when counting len
@@ -115,7 +114,7 @@ class TextProcessingManager:
         """
 
         if date_text == "None" or "" or len(date_text) <= 0:
-            print(f"[{str(self.__class__.__name__).upper()}](ProcessTimeForGoogleCalendars()): {self._error_codes_list[1000]}")
+            ErrorCodes.PrintError(1000)
             return []
 
         date_to_use = self.RemoveUncessarySpecialChars(string=date_text, special_char_to_keep=self._accepted_chars)
@@ -170,7 +169,7 @@ class TextProcessingManager:
         """
 
         if time_text == "None" or "" or len(time_text) <= 0:
-            print(f"[{str(self.__class__.__name__).upper()}](ProcessTimeForGoogleCalendars()): {self._error_codes_list[1000]}")
+            ErrorCodes.PrintError(1000)
             return []
 
         # Form new list of accepted chars which include delims and time periods
@@ -291,7 +290,6 @@ def main():
     #     print(f)
 
     Test_ProcessTimeTo12HFormat()
-
 if __name__ == "__main__":
     main()
 

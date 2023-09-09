@@ -2,8 +2,6 @@ import spacy
 from Managers.ErrorConfig import ErrorCodes
 
 class NERInterface:
-    _error_code_list = ErrorCodes()._error_codes
-
     def __init__(self, model_path = r"./model/model-best" ):
         self.nlp = spacy.load(model_path) #load model       
  
@@ -16,7 +14,7 @@ class NERInterface:
         :return: The entities of event, time, date and loc. They can be null
         """
         if text == None or "":
-            print(f'[{str(self.__class__.__name__).upper()}](GetEntitiesFromText()): {self._error_code_list[1000]}')
+            ErrorCodes.PrintError(1000)
             return
 
         doc = self.nlp(text) 
