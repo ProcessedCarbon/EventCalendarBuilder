@@ -6,20 +6,20 @@ import os
 import pytz
 
 class CalendarInterface:
-    def __init__(self):
-        self._cal = Calendar()
-        parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent.absolute()
-        self._calendar_file_dir = Path(os.path.join(parent_dir,"CalendarFiles"))
-        print(self._calendar_file_dir)
+    _cal = Calendar()
+    parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent.absolute()
+    _calendar_file_dir = Path(os.path.join(parent_dir,"CalendarFiles"))
 
+    def __init__(self):
         # Some properties are required to be compliant
-        self._cal.add('prodid', '-//My calendar product//example.com//')
-        self._cal.add('version', '2.0')
+        CalendarInterface._cal.add('prodid', '-//My calendar product//example.com//')
+        CalendarInterface._cal.add('version', '2.0')
         pass
 
-    def CreateICSEvent(self, e_name:str, e_description:str, e_date:datetime, e_dtend:datetime, 
+    def CreateICSEvent(e_name:str, e_description:str, e_date:datetime, e_dtend:datetime, 
                     e_organizer_addr:str="", e_organizer_name:str="", e_organizer_role:str="",
                     e_location:str="", e_priority:int=5):
+        
         # Add subcomponents
         event = Event()
         event.add('name', e_name)
@@ -51,20 +51,20 @@ class CalendarInterface:
         # event.add('attendee', attendee, encode=0)
         
         # Add the event to the calendar
-        self._cal.add_component(event)
+        CalendarInterface._cal.add_component(event)
 
-    def WriteToFile(self):
+    def WriteToFile():
         try:
-            self._calendar_file_dir.mkdir(parents=True, exist_ok=False)
+            CalendarInterface._calendar_file_dir.mkdir(parents=True, exist_ok=False)
         except:
             pass
 
-        f = open(os.path.join(self._calendar_file_dir, 'example.ics'), 'wb')
-        f.write(self._cal.to_ical())
+        f = open(os.path.join(CalendarInterface._calendar_file_dir, 'example.ics'), 'wb')
+        f.write(CalendarInterface._cal.to_ical())
         f.close()
     
     def ReadICSFile(self):
-        e = open(os.path.join(self._calendar_file_dir, 'example.ics'), 'rb')
+        e = open(os.path.join(CalendarInterface._calendar_file_dir, 'example.ics'), 'rb')
         ecal = icalendar.Calendar.from_ical(e.read())
         for component in ecal.walk():
             if component.name == "VEVENT":
