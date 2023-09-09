@@ -1,163 +1,29 @@
-
-from GoogleCalendarInterface import GoogleCalendarInterface
 from NERInterface import NERInterface
-from Managers.GUIInterface import GUIInterface
+from GUI.GUIInterface import GUIInterface
 from TextProcessing import TextProcessingManager
 from Managers.CalendarInterface import CalendarInterface
-from screeninfo import get_monitors
+
+from GUI.MainAppWindow import MainAppWindow
+from GUI.Page import Page
+from GUI.MainPage import MainPage
+from GUI.SchedulePage import SchedulePage
 
 gui = GUIInterface()
-ner_Interface = NERInterface()
+ner = NERInterface()
 text_processing = TextProcessingManager()
-calendar_interface = CalendarInterface()
-#google_Interface = GoogleCalendarInterface()
+cal = CalendarInterface()
 
-def GetCurrentMonitorInfo()->dict:
-    # Monitor(x=0, y=0, width=3840, height=2160, width_mm=708, height_mm=399, name='DP-0', is_primary=True)
-    current = {}
-    for m in get_monitors():
-        s = str(m)
-        # Had to do this way cause splitting with brackets as pattern causes issues
-        s = s.replace("Monitor","").replace("(", "").replace(")", "").replace(" ","")
-        split = s.split(",")
-
-        is_primary_split = split[len(split) - 1].split("=")
-        is_primary = bool(is_primary_split[1])
-        if is_primary == False:
-            continue
-
-        for i in range(len(split)):
-            var_split = split[i].split("=")
-            current[var_split[0]] = var_split[1]
-
-    return current
-
-# def CreateGoogleCalendarEvent(event_list:list[dict]):
-#     google_events = []
-#     for e in event_list:
-#         n_event = google_Interface.CreateGoogleEvent(event=str(e["EVENT"]), 
-#                                                 location=str(e["LOC"]), 
-#                                                 time=e["TIME"][0], 
-#                                                 date=e["DATE"],
-#                                                 )
-#         #print("Event")
-#         #print(n_event)
-#         google_events.append(n_event)
-    
-#     if len(google_events) > 0:
-#         for g_event in google_events:
-#             google_Interface.CreateCalendarEvent(googleEvent=g_event)
-#     else:
-#         print("NO GOOGLE EVENTS IN LIST")
-
-def CheckText(textbox):
-    t = gui.RetrieveCurrentInputFromText(textbox)
-    t.strip("\n").strip()
-    events = ner_Interface.GetEntitiesFromText(text=t)
-    ner_Interface.PrintEvents(events)
-    print("------------------------------------------------------------------------------")
-    print("Process events.....")
-    events = ner_Interface.ProcessEvents(events)
-    ner_Interface.PrintEvents(events)
-    print("------------------------------------------------------------------------------")
-    print("Processing text...... ")
-    for i in range(len(events)):
-        date = events[i]["DATE"]
-        events[i]["DATE"] = text_processing.ProcessDateToICSFormat(date=str(date))
-
-        time = events[i]["TIME"]        
-        events[i]["TIME"] = text_processing.ProcessTimeToICSFormat(time=str(time))
-    ner_Interface.PrintEvents(events)
-    print("------------------------------------------------------------------------------")
-    print("Generating ICS File")
-    print("------------------------------------------------------------------------------")
-    print("Done!")
-    #SwitchPages(1)
-
-monitor_info = GetCurrentMonitorInfo()
 # Initialzation
-monitor_width = int(monitor_info["width"])
-monitor_height = int(monitor_info["height"])
-gui.CreateAppScreen(screen_width=monitor_width, screen_height=monitor_height)
 
-pages = []
-current_page = None
+events = []
+list_of_globals = globals()
 
-def SwitchPages(page:int=0):
-    global current_page
-    if current_page != None:
-        current_page.pack_forget()
-    current_page = pages[page]
-    current_page.pack(fill='both', expand=True)
+MainAppWindow.Setup()
+main_page = MainPage()
+schedule_page = SchedulePage()
 
-# PAGES
-def MainPage():
-    columns = 3
-
-    main_page = gui.CreateFrame(frame_target=gui.main_frame)
-    gui.SetCurrentFrame(main_page)
-
-    for i in range(columns):
-        main_page.columnconfigure(i, weight=1)
-        main_page.rowconfigure(i, weight=1)
-    
-    # Title
-    title = gui.CreateLabel(text="Event Calendar Builder", font=("Bold",20))
-    title.grid(row=0, column=1, sticky='n', pady=10)
-
-    # Text box
-    textbox = gui.CreateText(w=gui.app_width * 0.5, h=gui.app_height * 0.5)
-    textbox.grid(row=1, column=1, sticky='nsew')
-
-    # Button
-    button = gui.CreateButton(text="Submit", on_click=lambda:CheckText(textbox))
-    button.grid(row=2, column=1, stick='s', pady=10)
-
-    pages.append(main_page)
-    gui.ClearCurrentFrame()
-
-def SchedulePromptPage():
-    #Schedule Page Params
-    columns = 3
-
-    # GUI
-    schedule_page = gui.CreateFrame(gui.main_frame)
-    gui.SetCurrentFrame(schedule_page)
-
-    for i in range(columns):
-        schedule_page.columnconfigure(i, weight=1)
-        schedule_page.rowconfigure(i, weight=1)
-
-    # Back Button
-    button = gui.CreateButton(text="<", on_click=lambda:SwitchPages(0))
-    button.grid(row=0, column=0, sticky='nw')
-
-    # Title
-    title = gui.CreateLabel(text="Schedule", font=("Bold",20))
-    title.grid(row=0, column=1, sticky='n')
-
-    details_frame = gui.CreateFrame(schedule_page)
-    num_details = 6
-    for i in range(num_details):
-        details_frame.rowconfigure(i, weight=1)
-    details_frame.grid(row=1, column=1, sticky='nsew')
-
-    # Details entry
-    paddint_y = 10
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Event:", frame_row=0, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Description:", frame_row=1, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Priority:", frame_row=2, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Location:", frame_row=3, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="Start Datetime:", frame_row=4, pady=paddint_y)
-    gui.CreateEntryWithLabel(frame_target=details_frame, label="End Datetime:", frame_row=5, pady=paddint_y)
-
-    pages.append(schedule_page)
-    gui.ClearCurrentFrame()
-
-# Stored in pages in order
-MainPage()
-SchedulePromptPage()
-
-SwitchPages(0)
+Page.current_page = Page.pages[0]
+Page.current_page.pack(fill='both', expand=True)
 
 gui.MainLoop()    
+

@@ -160,7 +160,7 @@ class TextProcessingManager:
         return len(list_of_processed) == 1 and list_of_processed[0] or list_of_processed
     
     # Format date to comply with google calendar (16:30:00)
-    def ProcessTimeTo12HFormat(self, time_text: str)->str:
+    def ProcessTime(self, time_text: str)->str:
         """
         Returns a list of time strings formatted in the way that can be used for Google Calendars. 
 
@@ -243,7 +243,7 @@ class TextProcessingManager:
         return None
 
     def ProcessTimeToICSFormat(self, time:str)->dict:
-        processed = self.ProcessTimeTo12HFormat(time_text=time)
+        processed = self.ProcessTime(time_text=time)
         res = []
         for p in processed:
             if p != None:
@@ -276,7 +276,7 @@ def Test_ProcessTimeTo12HFormat():
 
     for t in convert12HTo24H_test_list:
         print("Original: ", t)
-        print(f"After: {text_process_manager.ProcessTimeTo12HFormat(t)}")
+        print(f"After: {text_process_manager.ProcessTime(t)}")
         print("------------------------------------------------")
     print("==========================================================================================")
 

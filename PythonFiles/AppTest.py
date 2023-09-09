@@ -39,7 +39,7 @@ def SingleEventTest():
         
         for t in event_obj["TIME"]:
             i = event_obj["TIME"].index(t)
-            g_time = text_processing.ProcessTimeTo12HFormat(time_text=str(t))
+            g_time = text_processing.ProcessTime(time_text=str(t))
             event_obj["TIME"][i] = g_time
 
     print("------------------------------------------------------------------------------")
