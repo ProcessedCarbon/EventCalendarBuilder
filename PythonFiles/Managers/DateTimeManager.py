@@ -37,10 +37,6 @@ class DateTimeManager:
     
     _years = {str(x) for x in range(2000, dt.date.today().year)}
 
-    def __init__(self):
-        self.location_manager = LocationManager()
-        pass
-
     def isMonth(self, month: str):
         return (str(month).lower() in self._months)
 
@@ -174,7 +170,7 @@ class DateTimeManager:
     
     def ConvertStrToDateTime(self, hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
         # Handle timezone
-        country = self.location_manager.getCurrentCountry()
+        country = LocationManager.getCurrentCountry()
         tz = ZoneInfo(country) if country != None else ZoneInfo("Singapore")
         return datetime(year, month, day, hour, min, sec, tzinfo=tz)
     

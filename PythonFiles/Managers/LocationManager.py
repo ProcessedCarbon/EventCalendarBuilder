@@ -1,12 +1,12 @@
 import requests
 import pycountry
-from Managers.ErrorConfig import ErrorCodes
+from ErrorConfig import ErrorCodes
 
 class LocationManager:
     _default_country = "Singapore"
 
     # Returns current country of user
-    def getCurrentCountry(self):
+    def getCurrentCountry():
         """
         Try and get the country of current computer is in by going online. Requires internet to do so. 
         
@@ -22,7 +22,7 @@ class LocationManager:
             return None
     
     #  Returns country code of user
-    def getCountryCode(self, country_name: str):
+    def getCountryCode(country_name: str):
         """
         Attempt to get the country code given the name of a country
         
@@ -38,12 +38,10 @@ class LocationManager:
 
 # For testing
 def main():
-    location_manager = LocationManager()
-
     # print(location_manager.getCurrentCountry())
 
     test_country_name = "Singapore"
-    print(location_manager.getCountryCode(country_name=test_country_name))
+    print(LocationManager.getCountryCode(country_name=test_country_name))
 
 if __name__ == "__main__":
     main()
