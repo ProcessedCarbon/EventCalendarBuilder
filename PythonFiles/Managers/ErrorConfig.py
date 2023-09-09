@@ -20,13 +20,9 @@ class ErrorCodes:
         }
 
     def PrintError(errorCode:int):
-        # current_frame = inspect.currentframe()
         stack = inspect.stack()
         the_class = stack[1][0].f_locals["self"].__class__.__name__
         the_method = stack[1][0].f_code.co_name
-        # caller_frame = current_frame.f_back
-        # caller_name = caller_frame.f_globals["__name__"]
-        # caller_class = caller_frame.f_locals["self"].__class__.__name__
 
         print(f'[{the_class.upper()}]({the_method}()): {ErrorCodes._error_codes[errorCode]}')
 
