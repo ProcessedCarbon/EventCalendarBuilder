@@ -8,6 +8,7 @@ class GUIInterface:
 
     def CreateFrame(frame_target, b_color='', b_width=0, fg_color='transparent')->CTkFrame:
         frame = CTkFrame(frame_target, fg_color=fg_color, border_color=b_color, border_width=b_width)
+        GUIInterface.SetCurrentFrame(frame)
         return frame
     
     def CreateButton(on_click, text="Click")->CTkButton:
@@ -30,8 +31,12 @@ class GUIInterface:
         text = CTkTextbox(GUIInterface.current_frame, height=h, width=w)
         return text
     
+    def CreateComboBox(values:list[str])->CTkComboBox:
+        combobox = CTkComboBox(GUIInterface.current_frame, values=values, state='readonly')
+        return combobox
+
     # frame_row:int, padx=0, pady=0, gap=10, default_text=""
-    def CreateEntryWithLabel(frame_target, label:str, **kwargs)->CTkEntry:
+    def CreateEntryWithLabel(label:str, **kwargs)->CTkEntry:
         entry_width = kwargs["entry_width"] if "entry_width" in kwargs else 0
         entry_percent = kwargs["entry_percent"] if "entry_percent" in kwargs else 0.5
         default_text = kwargs["default_text"] if "default_text" in kwargs else ""
@@ -40,8 +45,8 @@ class GUIInterface:
         pady = kwargs["pady"] if "pady" in kwargs else 0
         gap = kwargs["gap"] if "gap" in kwargs else 10
         
-        entry_frame = GUIInterface.CreateFrame(frame_target=frame_target)
-        GUIInterface.SetCurrentFrame(entry_frame)
+        tmp_frame = GUIInterface.current_frame
+        entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
 
         entry_frame.columnconfigure(0, weight=1)
         entry_frame.columnconfigure(1, weight=3)
@@ -55,7 +60,8 @@ class GUIInterface:
         entry.grid(row=0, column=1, sticky=E)
 
         entry_frame.grid(row=frame_row, padx=padx, pady=pady, sticky=NSEW, ipadx=gap)
-        GUIInterface.ClearCurrentFrame()
+
+        GUIInterface.SetCurrentFrame(tmp_frame)
 
         return entry
 
@@ -70,13 +76,10 @@ class GUIInterface:
         entry.delete(0, END)
         entry.insert(0, text_var)
         
-    def RetrieveCurrentInputFromText(text:CTkTextbox):
+    def RetrieveCurrentInputFromTextbox(text:CTkTextbox):
         input = text.get("0.0", END)
         return input
-
-    def getSize(self)->tuple:
-        return (self.app_width, self.app_height)          
-
+    
     def ClearCurrentFrame():
         GUIInterface.current_frame = None
 

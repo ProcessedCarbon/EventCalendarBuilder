@@ -26,7 +26,7 @@ class MainPage(Page):
         button.grid(row=2, column=1, stick='s', pady=10)
     
     def CheckText(self,textbox):
-        t = gui.RetrieveCurrentInputFromText(textbox)
+        t = gui.RetrieveCurrentInputFromTextbox(textbox)
 
         if t == "" or t == " ":
             print("Empty text")

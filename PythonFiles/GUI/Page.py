@@ -12,7 +12,6 @@ class Page:
             return
 
         self.page = gui.CreateFrame(MainAppWindow.main_frame)
-        gui.SetCurrentFrame(self.page)
         self.OnStart()
         Page.pages.append(self.page)
         gui.ClearCurrentFrame()

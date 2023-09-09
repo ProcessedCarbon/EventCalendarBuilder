@@ -16,7 +16,7 @@ class CalendarInterface:
         CalendarInterface._cal.add('version', '2.0')
         pass
 
-    def CreateICSEvent(e_name:str, e_description:str, e_date:datetime, e_dtend:datetime, 
+    def CreateICSEvent(e_name:str, e_description:str, s_datetime:datetime, e_datetime:datetime, 
                     e_organizer_addr:str="", e_organizer_name:str="", e_organizer_role:str="",
                     e_location:str="", e_priority:int=5):
         
@@ -24,8 +24,8 @@ class CalendarInterface:
         event = Event()
         event.add('name', e_name)
         event.add('description', e_description)
-        event.add('dtstart', datetime(2022, 1, 25, 8, 0, 0, tzinfo=pytz.utc))
-        event.add('dtend', datetime(2022, 1, 25, 10, 0, 0, tzinfo=pytz.utc))
+        event.add('dtstart', s_datetime)
+        event.add('dtend', e_datetime)
         
         # Add the organizer
         organizer = vCalAddress(e_organizer_addr)
@@ -63,7 +63,7 @@ class CalendarInterface:
         f.write(CalendarInterface._cal.to_ical())
         f.close()
     
-    def ReadICSFile(self):
+    def ReadICSFile():
         e = open(os.path.join(CalendarInterface._calendar_file_dir, 'example.ics'), 'rb')
         ecal = icalendar.Calendar.from_ical(e.read())
         for component in ecal.walk():
@@ -77,7 +77,6 @@ class CalendarInterface:
             e.close()
 
 # def UsageExample():
-#     cal_interface = CalendarInterface()
 #     cal_interface.CreateICSEvent()
 #     cal_interface.WriteToFile()
 #     cal_interface.ReadICSFile()

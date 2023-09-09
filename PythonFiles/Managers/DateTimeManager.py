@@ -169,7 +169,7 @@ class DateTimeManager:
             ErrorCodes.PrintCustomError(e)
             return None
     
-    def ConvertStrToDateTime(hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
+    def getDateTime(hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
         # Handle timezone
         country = LocationManager.getCurrentCountry()
         tz = ZoneInfo(country) if country != None else ZoneInfo("Singapore")

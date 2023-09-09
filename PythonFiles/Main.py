@@ -7,11 +7,6 @@ from GUI.SchedulePage import SchedulePage
 
 gui = GUIInterface()
 
-# Initialzation
-
-events = []
-list_of_globals = globals()
-
 MainAppWindow.Setup()
 main_page = MainPage()
 schedule_page = SchedulePage()

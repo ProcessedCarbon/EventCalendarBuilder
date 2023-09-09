@@ -230,9 +230,8 @@ class TextProcessingManager:
         return len(result) == 1 and result[0] or result
 
     def ProcessDateToICSFormat(date:str)->dict:
-        processed = TextProcessingManager.ProcessDate(date_text=date)        
         if date != None:
-            params = processed.split("-")
+            params = date.split("-")
             return {
                 "year" : int(params[0]),
                 "month" : int(params[1]),
@@ -240,12 +239,11 @@ class TextProcessingManager:
             }
         return None
 
-    def ProcessTimeToICSFormat(time:str)->dict:
-        processed = TextProcessingManager.ProcessTime(time_text=time)
+    def ProcessTimeToICSFormat(time:list[str])->dict:
         res = []
-        for p in processed:
-            if p != None:
-                params = p.split(":")
+        for t in time:
+            if t != None:
+                params = t.split(":")
                 res.append({
                     "hour" : int(params[0]),
                     "min" : int(params[1]),
@@ -253,6 +251,25 @@ class TextProcessingManager:
                 })
         return res if len(res) > 0 else None
 
+    def ProcessICS(date:dict, time:list[dict]):
+        day = int(date["day"])
+        month = int(date["month"])
+        year = int(date["year"])
+
+        s_time = time[0]
+        s_h = int(s_time["hour"])
+        s_m = int(s_time["min"])
+        s_s = int(s_time["second"])
+
+        e_time = time[1]
+        e_h = int(e_time["hour"])
+        e_m = int(e_time["min"])
+        e_s = int(e_time["second"])
+        
+        s_ics_datetime = DateTimeManager.getDateTime(hour=s_h,min=s_m,sec=s_s,day=day,month=month,year=year)
+        e_ics_datetime = DateTimeManager.getDateTime(hour=e_h,min=e_m,sec=e_s,day=day,month=month,year=year)
+        return s_ics_datetime, e_ics_datetime
+    
 # ================================================  TEST ======================================================================== #
 def Test_ProcessTimeTo12HFormat():
     print("==========================================================================================")
