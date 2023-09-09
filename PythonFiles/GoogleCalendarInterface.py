@@ -18,8 +18,6 @@ token_path = GoogleCalendarAPI_path + "token.json"
 credentials_path = GoogleCalendarAPI_path + "credentials.json"
 
 class GoogleCalendarInterface:
-    _dt_manager = DateTimeManager()
-
     def __init__(self, establish_connection=True):
         self.creds = None
 
@@ -125,21 +123,21 @@ class GoogleCalendarInterface:
         date_end = len(date) > 1 and date[1] or None
         time_end = len(time) > 1 and time[1] or None
 
-        curr_date = self._dt_manager.getCurrentDate()
-        curr_time = self._dt_manager.getCurrentTime()
+        curr_date = DateTimeManager.getCurrentDate()
+        curr_time = DateTimeManager.getCurrentTime()
 
         # handle date and time
         start_date_to_use = str(date_start is not None and date_start or curr_date)
         start_time_to_use = str(time_start is not None and time_start or curr_time)
 
         end_date_to_use = str(date_end is not None and date_end or start_date_to_use)
-        end_time_to_use = str(time_end is not None and time_end or self._dt_manager.AddToTime(time=start_time_to_use, hrs=1))
+        end_time_to_use = str(time_end is not None and time_end or DateTimeManager.AddToTime(time=start_time_to_use, hrs=1))
         
         # Handle timezone
         country_gotten = LocationManager.getCurrentCountry()
         country =  country_gotten != None and country_gotten or LocationManager._default_country
         country_code = LocationManager.getCountryCode(country)
-        tz = self._dt_manager.getTimeZone(timezone_abrev_=timezone, country_code_=country_code, country_=country)
+        tz = DateTimeManager.getTimeZone(timezone_abrev_=timezone, country_code_=country_code, country_=country)
 
         return GoogleEvent(event=str(event), 
                            location=str(location), 

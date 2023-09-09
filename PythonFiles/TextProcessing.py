@@ -8,7 +8,6 @@ import wordninja
 class TextProcessingManager:
     _accepted_chars = ["-", "to"]
     _special_chars = string.punctuation
-    _dt_config = DateTimeManager()
 
     # Splits string based on a list of delimiters
     def MultipleDelimSplitString(self, string, delims):
@@ -37,8 +36,8 @@ class TextProcessingManager:
         """
         return  {
                 "day" : sub(r'[^0-9]', '', day),
-                "month" : self._dt_config.isMonth(month) and month or None,
-                "year" : self._dt_config.isYear(year) and year or None
+                "month" : DateTimeManager.isMonth(month) and month or None,
+                "year" : DateTimeManager.isYear(year) and year or None
             }
     
     # Checks each special char in string and removes ones that are not in special_char_to_keep
@@ -98,8 +97,8 @@ class TextProcessingManager:
         # Disregard seconds because timing of an event rarely comes in w/ seconds
 
         H = string_obj[:2]
-        M = (self._dt_config.isAPeriod(string_obj[2:4]) or string_obj[2:4] == "")and "00" or string_obj[2:4]
-        P = self._dt_config.isAPeriod(string_obj[-2:]) and string_obj[-2:].upper() or ""
+        M = (DateTimeManager.isAPeriod(string_obj[2:4]) or string_obj[2:4] == "")and "00" or string_obj[2:4]
+        P = DateTimeManager.isAPeriod(string_obj[-2:]) and string_obj[-2:].upper() or ""
 
         return H + ":" + M + ":00" + " " + P 
 
@@ -128,7 +127,7 @@ class TextProcessingManager:
             
             # Remove anything that is not a month or number
             for var in remove_empty:
-                if var.isdigit() == False and not self._dt_config.isMonth(var):
+                if var.isdigit() == False and not DateTimeManager.isMonth(var):
                     remove_empty.remove(var)
 
             # Len == 1 > Only has day
@@ -145,7 +144,7 @@ class TextProcessingManager:
             list_of_processed.append(date_struct)
         
         # Assign year and month to be used for substrings that do not posses one
-        currentDate = self._dt_config.getCurrentDate()
+        currentDate = DateTimeManager.getCurrentDate()
         year = founded_year != None and founded_year or currentDate.year
         month = founded_month != None and founded_month or currentDate.month
 
@@ -154,7 +153,7 @@ class TextProcessingManager:
             struct['year'] = struct['year'] == None and year or struct['year']
 
             s_date = str(struct['day']) + str(struct['month']) + str(struct['year'])
-            list_of_processed[index] = self._dt_config.FormatToDateTime(date_string=s_date, format='%Y-%m-%d')
+            list_of_processed[index] = DateTimeManager.FormatToDateTime(date_string=s_date, format='%Y-%m-%d')
 
         return len(list_of_processed) == 1 and list_of_processed[0] or list_of_processed
     
@@ -173,7 +172,7 @@ class TextProcessingManager:
             return []
 
         # Form new list of accepted chars which include delims and time periods
-        new_accepted_chars = self._accepted_chars + self._dt_config._period
+        new_accepted_chars = self._accepted_chars + DateTimeManager._period
 
         # Remove uncessary special chars and delim string
         time_to_use = self.RemoveUncessarySpecialChars(string=time_text, special_char_to_keep=new_accepted_chars)
@@ -186,7 +185,7 @@ class TextProcessingManager:
             
             # Remove uncessary chars from list
             for text in time_list:
-                if text.isdigit() == False and not self._dt_config.isAPeriod(text):
+                if text.isdigit() == False and not DateTimeManager.isAPeriod(text):
                     time_list.remove(text)
             
             # Combine remaining char in list to form the time string
@@ -198,7 +197,7 @@ class TextProcessingManager:
         # Check if there are any time format without a period
         period = ""
         for format in list_of_correct_time_format:
-            if self._dt_config.isAPeriod(format[-2:]):
+            if DateTimeManager.isAPeriod(format[-2:]):
                 period = format[-2:].upper()
                 break
         
@@ -206,7 +205,7 @@ class TextProcessingManager:
         if period != "":
             for i in range(len(list_of_correct_time_format)):
                 format = list_of_correct_time_format[i]
-                if self._dt_config.isAPeriod(format[-2:]) == False:
+                if DateTimeManager.isAPeriod(format[-2:]) == False:
                     list_of_correct_time_format[i] += str(period)
         else:
             for i in range(len(list_of_correct_time_format)):
@@ -223,7 +222,7 @@ class TextProcessingManager:
         # Convert all 12H to 24H format and return the result
         result = []
         for time_format in list_of_correct_time_format:
-            time_obj = self._dt_config.convertTime12HTo24H(time_format)
+            time_obj = DateTimeManager.convertTime12HTo24H(time_format)
             if time_obj != None:
                 result.append(time_obj)
 

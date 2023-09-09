@@ -1,6 +1,6 @@
 import requests
 import pycountry
-from ErrorConfig import ErrorCodes
+from Managers.ErrorConfig import ErrorCodes
 
 class LocationManager:
     _default_country = "Singapore"

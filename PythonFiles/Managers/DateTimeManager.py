@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from dateutil.parser import parse
 from zoneinfo import ZoneInfo
 from Managers.LocationManager import LocationManager
+from Managers.ErrorConfig import ErrorCodes
 
 class DateTimeManager:
     _months = [
@@ -37,14 +38,14 @@ class DateTimeManager:
     
     _years = {str(x) for x in range(2000, dt.date.today().year)}
 
-    def isMonth(self, month: str):
-        return (str(month).lower() in self._months)
+    def isMonth(month: str):
+        return (str(month).lower() in DateTimeManager._months)
 
-    def isYear(self, year):
-        return (year in self._years)
+    def isYear(year):
+        return (year in DateTimeManager._years)
     
     # Attempts to format date time to datetime datatype
-    def FormatToDateTime(self, date_string: str, format: str):
+    def FormatToDateTime(date_string: str, format: str):
         """
         Try and convert date string into a datetime obj in the given format. 
         
@@ -58,23 +59,23 @@ class DateTimeManager:
             dt = parse(date_string)
             return dt.strftime(format)
         except Exception as e:
-            print(f'[{str(self.__class__.__name__).upper}](FormatToDateTime()): {e}')
+            ErrorCodes.PrintCustomError(e)
             return None 
     
-    def isDateTime(self, datetime_: str, fuzzy: bool):
+    def isDateTime(datetime_: str, fuzzy: bool):
         try:
             parse(datetime_, fuzzy=fuzzy)
             return True
         except Exception as e:
-            print(f'[{str(self.__class__.__name__).upper()}](isDateTime()): {e}')
+            ErrorCodes.PrintCustomError(e)
             return False
         
-    def isAPeriod(self, period_: str):
+    def isAPeriod(period_: str):
         period_string = str(period_).lower()
-        return period_string.lower() in self._period
+        return period_string.lower() in DateTimeManager._period
     
     # Gets the current timezone of the user using country code and country
-    def getTimeZone(self, timezone_abrev_="", country_code_="", country_=""):
+    def getTimeZone(timezone_abrev_="", country_code_="", country_=""):
         """
         Attempt to get timezone given the abbreviation, country code and country.
         Tries to find the abrev first, if that fails, country code to get a list of potential abrev and try and match
@@ -119,7 +120,7 @@ class DateTimeManager:
         return None
 
     # Converts a given 12H time in HH MM SS pp to 24H format
-    def convertTime12HTo24H(self, time_12h: str):
+    def convertTime12HTo24H(time_12h: str):
         """
         Try and convert a 12 hour format to 24 hours. 
         
@@ -132,13 +133,13 @@ class DateTimeManager:
             time_object = datetime.strptime(time_12h, "%I:%M:%S %p")
             return time_object.strftime("%H:%M:%S")
         except Exception as e:
-            print(f'[{str(self.__class__.__name__).upper()}](convertTime12HTo24H()): {e}')
+            ErrorCodes.PrintCustomError(e)
             return None
     
-    def getCurrentDate(self):
+    def getCurrentDate():
         return dt.date.today()
     
-    def getCurrentTime(self):
+    def getCurrentTime():
         now = datetime.now()
         now_format = now.strftime("%H:%M:%S")
         return now_format
@@ -146,7 +147,7 @@ class DateTimeManager:
         # Converts a given 12H time in HH MM SS pp to 24H format
     
     # Performs addition to a time given
-    def AddToTime(self, time: str, s=0, min=0, hrs=0):
+    def AddToTime(time: str, s=0, min=0, hrs=0):
         try:
             time_obj = parse(time)
             new = time_obj + timedelta(seconds=s, 
@@ -155,20 +156,20 @@ class DateTimeManager:
                                     )
             return format(new, '%H:%M:%S')
         except Exception as e:
-            print(f'[{str(self.__class__.__name__).upper()}](AddToTim())): {e}')
+            ErrorCodes.PrintCustomError(e)
             return None
     
     # Performs addition to a date
-    def AddToDate(self, date: str, d=0, wks=0):
+    def AddToDate(date: str, d=0, wks=0):
         try:
             date_obj = parse(date)
             date_string = str(date_obj + timedelta(days=d, weeks=wks))
-            return self.FormatToDateTime(date_string, format='%Y-%m-%d')
+            return DateTimeManager.FormatToDateTime(date_string, format='%Y-%m-%d')
         except Exception as e:
-            print(f'[{str(self.__class__.__name__).upper()}](AddToDate()): {e}')
+            ErrorCodes.PrintCustomError(e)
             return None
     
-    def ConvertStrToDateTime(self, hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
+    def ConvertStrToDateTime(hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
         # Handle timezone
         country = LocationManager.getCurrentCountry()
         tz = ZoneInfo(country) if country != None else ZoneInfo("Singapore")
