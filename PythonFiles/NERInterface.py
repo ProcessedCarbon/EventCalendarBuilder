@@ -1,12 +1,13 @@
 import spacy
 from Managers.ErrorConfig import ErrorCodes
 
+model_path = r"./model/model-best"
+
 class NERInterface:
-    def __init__(self, model_path = r"./model/model-best" ):
-        self.nlp = spacy.load(model_path) #load model       
+    nlp = spacy.load(model_path) #load model       
  
     # Extracts entities from given text
-    def GetEntitiesFromText(self, text:str):
+    def GetEntitiesFromText(text:str):
         """
         Get the entities from doc and returns them. Current assumes that doc only has 1 of each
 
@@ -17,7 +18,7 @@ class NERInterface:
             ErrorCodes.PrintErrorWithCode(1000)
             return
 
-        doc = self.nlp(text) 
+        doc = NERInterface.nlp(text) 
         entityList = list(doc.ents)
 
         if len(entityList) > 0 :
@@ -57,13 +58,13 @@ class NERInterface:
                 
                 # Append what is left and return list of events
                 if entity == entityList[-1] and entity.label_ != "EVENT":
-                    events.append(self.getEntities(e=event_name, t=tmp_time_list, d=tmp_date_list, l=loc))
+                    events.append(NERInterface.getEntities(e=event_name, t=tmp_time_list, d=tmp_date_list, l=loc))
                     return events
                 
         return events
     
     # Creates NER entity dataype
-    def getEntities(self, e : str, t : list, d : list, l : str):
+    def getEntities(e : str, t : list, d : list, l : str):
         return {
             "EVENT" : e,
             "TIME" : t,
@@ -71,7 +72,7 @@ class NERInterface:
             "LOC" : l,
         }
 
-    def getSingleEntity(self, e:str, t:str, d:str, l:str):
+    def getSingleEntity(e:str, t:str, d:str, l:str):
         return {
             "EVENT" : e,
             "TIME" : t,
@@ -80,7 +81,7 @@ class NERInterface:
         }
     
     # Prints entity per event in list
-    def PrintEvents(self, events : list[dict]):
+    def PrintEvents(events : list[dict]):
         for e in events:
             event = e["EVENT"]
             location = e["LOC"]
@@ -94,7 +95,7 @@ class NERInterface:
             print("time: ", time)
 
     # Returns a list of event with single date time pairing
-    def ProcessEvents(self,event_list:list[dict])->list:
+    def ProcessEvents(event_list:list[dict])->list:
         """
         Per date in each event in event_list, creates a single date time pairing and
         creates  duplicate of that event
@@ -103,9 +104,10 @@ class NERInterface:
         for e in event_list:
             for d in e["DATE"]:
                 for t in e["TIME"]:
-                    new_event = self.getSingleEntity(e=e["EVENT"], t=t,d=d, l=e["LOC"])
+                    new_event = NERInterface.getSingleEntity(e=e["EVENT"], t=t,d=d, l=e["LOC"])
                     processed_events.append(new_event)
         return processed_events
+    
 def main():
     NER = NERInterface()
 

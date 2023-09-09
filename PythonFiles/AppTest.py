@@ -22,10 +22,9 @@ def SingleEventTest():
 
     print("------------------------------------------------------------------------------")
     print("Getting Entities from text.....")
-    ner_Interface = NERInterface()
-    events = ner_Interface.GetEntitiesFromText(text=test_text)
+    events = NERInterface.GetEntitiesFromText(text=test_text)
     
-    ner_Interface.PrintEvents(events)
+    NERInterface.PrintEvents(events)
 
     print("------------------------------------------------------------------------------")
     print("Processing text to google format ...... ")
@@ -43,7 +42,7 @@ def SingleEventTest():
             event_obj["TIME"][i] = g_time
 
     print("------------------------------------------------------------------------------")
-    ner_Interface.PrintEvents(events)
+    NERInterface.PrintEvents(events)
 
     print("------------------------------------------------------------------------------")
     print("Creating calendar event ......")
