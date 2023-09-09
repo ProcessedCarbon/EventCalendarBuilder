@@ -1,5 +1,6 @@
 import requests
 import pycountry
+from Managers.ErrorConfig import ErrorCodes
 
 class LocationManager:
     _default_country = "Singapore"
@@ -17,7 +18,7 @@ class LocationManager:
             response = requests.get('http://ip-api.com/json').json()
             return str(response['country'])
         except Exception as e:
-            print(f'[{str(self.__class__.__name__).upper()}](getCurrentCountry()): {e}')
+            ErrorCodes.PrintCustomError(e)
             return None
     
     #  Returns country code of user
@@ -32,7 +33,7 @@ class LocationManager:
             mapping = {country.name: country.alpha_2 for country in pycountry.countries}
             return str(mapping.get(country_name))
         except Exception as e:
-            print(f'[{str(self.__class__.__name__).upper()}](getCountryCode()): {e}')
+            ErrorCodes.PrintCustomError(e)
             return None
 
 # For testing

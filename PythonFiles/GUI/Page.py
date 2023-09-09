@@ -8,7 +8,7 @@ class Page:
 
     def __init__(self):
         if MainAppWindow.main_frame == None:
-            ErrorCodes.PrintError(1003)
+            ErrorCodes.PrintErrorWithCode(1003)
             return
 
         self.page = gui.CreateFrame(MainAppWindow.main_frame)
@@ -28,11 +28,11 @@ class Page:
 
     def SwitchPages(self, page:int=0):
         if len(Page.pages) < 1:
-            ErrorCodes.PrintError(1002)
+            ErrorCodes.PrintErrorWithCode(1002)
             return
         
         if page > len(Page.pages) - 1:
-            ErrorCodes.PrintError(1003)
+            ErrorCodes.PrintErrorWithCode(1003)
             return
         
         if Page.current_page != None:

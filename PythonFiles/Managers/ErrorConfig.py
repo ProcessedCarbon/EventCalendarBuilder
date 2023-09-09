@@ -19,12 +19,19 @@ class ErrorCodes:
             _code() : "MISSING MAIN APP WINDOW!",                                                            # 1004
         }
 
-    def PrintError(errorCode:int):
+    def PrintErrorWithCode(errorCode:int):
+        className, methodName = ErrorCodes.getCallerClassAndMethod()
+        print(f'[{className.upper()}]({methodName}()): {ErrorCodes._error_codes[errorCode]}')
+    
+    def PrintCustomError(e:str):
+        className, methodName = ErrorCodes.getCallerClassAndMethod()
+        print(f'[{className.upper()}]({methodName}()): {e}')
+    
+    def getCallerClassAndMethod()->list[str,str]:
         stack = inspect.stack()
         the_class = stack[1][0].f_locals["self"].__class__.__name__
         the_method = stack[1][0].f_code.co_name
-
-        print(f'[{the_class.upper()}]({the_method}()): {ErrorCodes._error_codes[errorCode]}')
+        return the_class, the_method
 
 def main():
     error_code = ErrorCodes()

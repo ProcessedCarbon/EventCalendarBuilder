@@ -14,7 +14,7 @@ class NERInterface:
         :return: The entities of event, time, date and loc. They can be null
         """
         if text == None or "":
-            ErrorCodes.PrintError(1000)
+            ErrorCodes.PrintErrorWithCode(1000)
             return
 
         doc = self.nlp(text) 

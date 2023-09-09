@@ -87,7 +87,7 @@ class TextProcessingManager:
         
         # Check return None if time includes seconds, if not check if first digit of hour is single
         if len(string_obj) > 6:
-            ErrorCodes.PrintError(1000)
+            ErrorCodes.PrintErrorWithCode(1000)
             return None
         
         # Pad string with zeros till length is even, do not take into account last 2 char when counting len
@@ -114,7 +114,7 @@ class TextProcessingManager:
         """
 
         if date_text == "None" or "" or len(date_text) <= 0:
-            ErrorCodes.PrintError(1000)
+            ErrorCodes.PrintErrorWithCode(1000)
             return []
 
         date_to_use = self.RemoveUncessarySpecialChars(string=date_text, special_char_to_keep=self._accepted_chars)
@@ -169,7 +169,7 @@ class TextProcessingManager:
         """
 
         if time_text == "None" or "" or len(time_text) <= 0:
-            ErrorCodes.PrintError(1000)
+            ErrorCodes.PrintErrorWithCode(1000)
             return []
 
         # Form new list of accepted chars which include delims and time periods

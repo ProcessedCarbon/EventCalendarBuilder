@@ -61,7 +61,7 @@ class GoogleCalendarInterface:
         """
 
         if self.service == None:
-            ErrorCodes.PrintError(1001)
+            ErrorCodes.PrintErrorWithCode(1001)
             return
 
         now = dt.datetime.now().isoformat() + "Z"
@@ -93,11 +93,11 @@ class GoogleCalendarInterface:
         """
         
         if self.service == None:
-            ErrorCodes.PrintError(1001)
+            ErrorCodes.PrintErrorWithCode(1001)
             return
         
         if type(googleEvent) is not GoogleEvent:
-            ErrorCodes.PrintError(__class__.__name__, "CreateCalendarEvent", 1000)
+            ErrorCodes.PrintErrorWithCode(__class__.__name__, "CreateCalendarEvent", 1000)
             print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             return
 
