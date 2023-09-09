@@ -10,7 +10,7 @@ class TextProcessingManager:
     _special_chars = string.punctuation
 
     # Splits string based on a list of delimiters
-    def MultipleDelimSplitString(self, string, delims):
+    def MultipleDelimSplitString(string, delims):
         """
         Splits a string by a list of delimiters. Does not function well with brackets as delimiters
 
@@ -19,12 +19,12 @@ class TextProcessingManager:
 
         return: list of split strings
         """
-        new_string = self.RemoveEnDashU2013(string)
+        new_string = TextProcessingManager.RemoveEnDashU2013(string)
         pattern = r'|'.join(delims)
         return split(pattern, new_string)
     
     # Creates a date dictionary 
-    def GetDateStruct(self, day, month, year):
+    def GetDateStruct(day, month, year):
         """
         Returns a structure with day, month and year. 
 
@@ -41,7 +41,7 @@ class TextProcessingManager:
             }
     
     # Checks each special char in string and removes ones that are not in special_char_to_keep
-    def RemoveUncessarySpecialChars(self, string, special_char_to_keep):
+    def RemoveUncessarySpecialChars(string, special_char_to_keep):
         """
         Returns the new string where all uneeded characters are removed or the original string 
         if no characters are removed. 
@@ -52,23 +52,23 @@ class TextProcessingManager:
         return: structured date
         """
         for c in string:
-                if c in self._special_chars:
+                if c in TextProcessingManager._special_chars:
                     if c not in special_char_to_keep:
                         string = string.replace(c, '')
 
         return string
 
     # Split word into a list and removes the empty elements
-    def SplitWordAndRemoveEmptySlots(self, text):
+    def SplitWordAndRemoveEmptySlots(text):
         splitted = wordninja.split(text)
         return [x for x in splitted if x != '']
 
     # Removes the special char of dash not from UTF8
-    def RemoveEnDashU2013(self, text):
+    def RemoveEnDashU2013(text:str):
         return text.replace(u'\u2013', "-")
 
     # Converts any time given to a 12H format
-    def ConvertToTimedFormat(self, time_text: str):
+    def ConvertToTimedFormat(time_text: str):
         """
         Converts time_text to a acceptable time format for datetime parsing. Does not handle seconds,
         they are treated as 00 and are placed in there for the purpose of fulfilling format criteria. 
@@ -103,7 +103,7 @@ class TextProcessingManager:
         return H + ":" + M + ":00" + " " + P 
 
     # Formats date to comply with google calendar API (2023-05-17)
-    def ProcessDate(self, date_text: str)->str:
+    def ProcessDate(date_text: str)->str:
         """
         Returns a list of strings formatted in the way that can be used for Google Calendars. 
 
@@ -116,14 +116,14 @@ class TextProcessingManager:
             ErrorCodes.PrintErrorWithCode(1000)
             return []
 
-        date_to_use = self.RemoveUncessarySpecialChars(string=date_text, special_char_to_keep=self._accepted_chars)
-        splitted_date = self.MultipleDelimSplitString(string=date_to_use, delims=self._accepted_chars)
+        date_to_use = TextProcessingManager.RemoveUncessarySpecialChars(string=date_text, special_char_to_keep=TextProcessingManager._accepted_chars)
+        splitted_date = TextProcessingManager.MultipleDelimSplitString(string=date_to_use, delims=TextProcessingManager._accepted_chars)
 
         # Find year
         # At this point max each array slot should have max DD MM YYYY
         list_of_processed = []
         for date in splitted_date:
-            remove_empty = self.SplitWordAndRemoveEmptySlots(text=date)
+            remove_empty = TextProcessingManager.SplitWordAndRemoveEmptySlots(text=date)
             
             # Remove anything that is not a month or number
             for var in remove_empty:
@@ -133,7 +133,7 @@ class TextProcessingManager:
             # Len == 1 > Only has day
             # Len == 2 > Has both day and month
             # Len == 3 > Has all day, month and year
-            date_struct = self.GetDateStruct(day=remove_empty[0], 
+            date_struct = TextProcessingManager.GetDateStruct(day=remove_empty[0], 
                                              month=len(remove_empty) > 1 and remove_empty[1] or 0,
                                              year=len(remove_empty) > 2 and remove_empty[2] or 0
                                             )
@@ -158,7 +158,7 @@ class TextProcessingManager:
         return len(list_of_processed) == 1 and list_of_processed[0] or list_of_processed
     
     # Format date to comply with google calendar (16:30:00)
-    def ProcessTime(self, time_text: str)->str:
+    def ProcessTime(time_text: str)->str:
         """
         Returns a list of time strings formatted in the way that can be used for Google Calendars. 
 
@@ -172,16 +172,16 @@ class TextProcessingManager:
             return []
 
         # Form new list of accepted chars which include delims and time periods
-        new_accepted_chars = self._accepted_chars + DateTimeManager._period
+        new_accepted_chars = TextProcessingManager._accepted_chars + DateTimeManager._period
 
         # Remove uncessary special chars and delim string
-        time_to_use = self.RemoveUncessarySpecialChars(string=time_text, special_char_to_keep=new_accepted_chars)
-        splitted_time = self.MultipleDelimSplitString(string=time_to_use, delims=self._accepted_chars)
+        time_to_use = TextProcessingManager.RemoveUncessarySpecialChars(string=time_text, special_char_to_keep=new_accepted_chars)
+        splitted_time = TextProcessingManager.MultipleDelimSplitString(string=time_to_use, delims=TextProcessingManager._accepted_chars)
 
         list_of_correct_time_format = []
         for time in splitted_time:
             # Remove empty elements in list
-            time_list = self.SplitWordAndRemoveEmptySlots(text=time)
+            time_list = TextProcessingManager.SplitWordAndRemoveEmptySlots(text=time)
             
             # Remove uncessary chars from list
             for text in time_list:
@@ -190,7 +190,7 @@ class TextProcessingManager:
             
             # Combine remaining char in list to form the time string
             time_string = str(time_list)
-            time_format = self.ConvertToTimedFormat(time_string)
+            time_format = TextProcessingManager.ConvertToTimedFormat(time_string)
             if time_format != None:
                 list_of_correct_time_format.append(time_format)
             
@@ -229,8 +229,8 @@ class TextProcessingManager:
         # If result only contains a single value just return that value
         return len(result) == 1 and result[0] or result
 
-    def ProcessDateToICSFormat(self, date:str)->dict:
-        processed = self.ProcessDate(date_text=date)        
+    def ProcessDateToICSFormat(date:str)->dict:
+        processed = TextProcessingManager.ProcessDate(date_text=date)        
         if date != None:
             params = processed.split("-")
             return {
@@ -240,8 +240,8 @@ class TextProcessingManager:
             }
         return None
 
-    def ProcessTimeToICSFormat(self, time:str)->dict:
-        processed = self.ProcessTime(time_text=time)
+    def ProcessTimeToICSFormat(time:str)->dict:
+        processed = TextProcessingManager.ProcessTime(time_text=time)
         res = []
         for p in processed:
             if p != None:

@@ -5,7 +5,6 @@ from TextProcessing import TextProcessingManager
 from GUI.MainAppWindow import MainAppWindow
 
 class MainPage(Page):
-    text_processing = TextProcessingManager()
     events = []
 
     def __init__(self): 
@@ -42,10 +41,10 @@ class MainPage(Page):
         print("Processing text...... ")
         for i in range(len(MainPage.events)):
             date = MainPage.events[i]["DATE"]
-            MainPage.events[i]["DATE"] = MainPage.text_processing.ProcessDate(date_text=str(date))
+            MainPage.events[i]["DATE"] = TextProcessingManager.ProcessDate(date_text=str(date))
 
             time = MainPage.events[i]["TIME"]        
-            MainPage.events[i]["TIME"] = MainPage.text_processing.ProcessTime(time_text=str(time))
+            MainPage.events[i]["TIME"] = TextProcessingManager.ProcessTime(time_text=str(time))
         NERInterface.PrintEvents(MainPage.events)
         print("------------------------------------------------------------------------------")
         globals()['events'] = MainPage.events
