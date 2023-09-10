@@ -25,9 +25,8 @@ class NERInterface:
         if len(entityList) > 0 :
             tmp_date_list = []
             tmp_time_list = []
-            loc = None
-            event_name = None # None is used in the event str(entity) == ""
-
+            loc = ""
+            event_name = ""
 
             for entity in entityList:
                 #print(f"{str(entity)} - {entity.label_}")
@@ -37,14 +36,14 @@ class NERInterface:
                     if event_name != e:
 
                         # To handle if first entity in list is event
-                        if event_name == None:
+                        if event_name == "":
                             event_name = e
                             continue
                         
-                        events.append(self.getEntities(e=event_name, t=tmp_time_list, d=tmp_date_list, l=loc))
+                        events.append(NERInterface.getEntities(e=event_name, t=tmp_time_list, d=tmp_date_list, l=loc))
                         tmp_date_list = []
                         tmp_time_list = []
-                        loc = None
+                        loc = ""
                         event_name = e
 
                 elif entity.label_ == "DATE":

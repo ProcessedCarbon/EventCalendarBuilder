@@ -5,6 +5,7 @@ from GUI.MainAppWindow import MainAppWindow
 from GUI.CustomGUI import CustomGUI as c_gui
 from Calendar.CalendarInterface import CalendarInterface
 from Managers.TextProcessing import TextProcessingManager
+from Managers.DateTimeManager import DateTimeManager
 
 class SchedulePage(Page):
     def __init__(self):
@@ -70,11 +71,17 @@ class SchedulePage(Page):
     def UpdateDetails(self):
         if len(MainPage.events) > 0 and self.filled == False:
             event = MainPage.events[0]
+
+            time_list = event["TIME"]
+            if len(time_list) < 2:
+                new_time = DateTimeManager.AddToTime(time_list[0], hrs=1)
+                time_list.append(new_time)
+
             gui.UpdateEntry(entry=self.details_entries["Event"], text_var=str(event["EVENT"]))
             gui.UpdateEntry(entry=self.details_entries["Location"], text_var=event["LOC"])
             gui.UpdateEntry(entry=self.details_entries["Date"], text_var=event["DATE"])
-            gui.UpdateEntry(entry=self.details_entries["Start_Time"], text_var=event["TIME"][0])
-            gui.UpdateEntry(entry=self.details_entries["End_Time"], text_var=event["TIME"][1])
+            gui.UpdateEntry(entry=self.details_entries["Start_Time"], text_var=time_list[0])
+            gui.UpdateEntry(entry=self.details_entries["End_Time"], text_var=time_list[1])
             self.filled = True
 
         gui.root.after(500, self.UpdateDetails)  

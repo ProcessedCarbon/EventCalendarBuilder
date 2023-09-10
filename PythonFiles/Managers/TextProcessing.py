@@ -148,14 +148,15 @@ class TextProcessingManager:
         year = founded_year != None and founded_year or currentDate.year
         month = founded_month != None and founded_month or currentDate.month
 
-        for index, struct in enumerate(list_of_processed):
+        res = []
+        for struct in list_of_processed:
             struct['month'] = struct['month'] == None and month or struct['month']
             struct['year'] = struct['year'] == None and year or struct['year']
 
             s_date = str(struct['day']) + str(struct['month']) + str(struct['year'])
-            list_of_processed[index] = DateTimeManager.FormatToDateTime(date_string=s_date, format='%Y-%m-%d')
+            res.append(DateTimeManager.FormatToDateTime(date_string=s_date, format='%Y-%m-%d'))
 
-        return len(list_of_processed) == 1 and list_of_processed[0] or list_of_processed
+        return len(res) == 1 and res[0] or res
     
     # Format date to comply with google calendar (16:30:00)
     def ProcessTime(time_text: str)->str:
@@ -227,7 +228,7 @@ class TextProcessingManager:
                 result.append(time_obj)
 
         # If result only contains a single value just return that value
-        return len(result) == 1 and result[0] or result
+        return result
 
     def ProcessDateToICSFormat(date:str)->dict:
         if date != None:
