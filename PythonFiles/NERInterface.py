@@ -20,6 +20,7 @@ class NERInterface:
 
         doc = NERInterface.nlp(text) 
         entityList = list(doc.ents)
+        events = []                
 
         if len(entityList) > 0 :
             tmp_date_list = []
@@ -27,7 +28,6 @@ class NERInterface:
             loc = None
             event_name = None # None is used in the event str(entity) == ""
 
-            events = []                
 
             for entity in entityList:
                 #print(f"{str(entity)} - {entity.label_}")
