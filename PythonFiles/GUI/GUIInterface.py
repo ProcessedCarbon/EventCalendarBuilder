@@ -1,6 +1,5 @@
 from tkinter import *
 from customtkinter import *
-from typing import Tuple    
 
 class GUIInterface:
     current_frame = None    
