@@ -1,9 +1,9 @@
-from GUI.Page import Page
+from Pages.Page import Page
 from GUI.GUIInterface import GUIInterface as gui
-from GUI.MainPage import MainPage
+from Pages.MainPage import MainPage
 from GUI.MainAppWindow import MainAppWindow
 from GUI.CustomGUI import CustomGUI as c_gui
-from Managers.CalendarInterface import CalendarInterface
+from Calendar.CalendarInterface import CalendarInterface
 from TextProcessing import TextProcessingManager
 
 class SchedulePage(Page):

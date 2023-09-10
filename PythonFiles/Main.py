@@ -1,8 +1,8 @@
 from GUI.GUIInterface import GUIInterface
 from GUI.MainAppWindow import MainAppWindow
-from GUI.MainPage import MainPage
-from GUI.SchedulePage import SchedulePage
-from GUI.Page import Page
+from Pages.MainPage import MainPage
+from Pages.SchedulePage import SchedulePage
+from Pages.Page import Page
 
 gui = GUIInterface()
 

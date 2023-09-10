@@ -1,6 +1,6 @@
 
-from GoogleCalendarInterface import GoogleCalendarInterface
-from NERInterface import NERInterface
+from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+from NER.NERInterface import NERInterface
 from TextProcessing import TextProcessingManager
 
 # Extracts text from plain text file 

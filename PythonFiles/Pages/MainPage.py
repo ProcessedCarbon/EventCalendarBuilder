@@ -1,6 +1,6 @@
-from GUI.Page import Page
+from Pages.Page import Page
 from GUI.GUIInterface import GUIInterface as gui
-from NERInterface import NERInterface
+from NER.NERInterface import NERInterface
 from TextProcessing import TextProcessingManager
 from GUI.MainAppWindow import MainAppWindow
 

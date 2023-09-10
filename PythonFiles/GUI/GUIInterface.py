@@ -1,6 +1,6 @@
 from tkinter import *
 from customtkinter import *
-from Managers.ErrorConfig import *
+from Managers.ErrorConfig import getParamValFromKwarg
 
 class GUIInterface:
     current_frame = None    

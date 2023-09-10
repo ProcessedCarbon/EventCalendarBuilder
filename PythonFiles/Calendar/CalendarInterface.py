@@ -3,11 +3,10 @@ from icalendar import Calendar, Event, vCalAddress, vText
 from datetime import datetime
 from pathlib import Path
 import os
-import pytz
 
 class CalendarInterface:
     _cal = Calendar()
-    parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent.absolute()
+    parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).absolute()
     _calendar_file_dir = Path(os.path.join(parent_dir,"CalendarFiles"))
 
     def __init__(self):

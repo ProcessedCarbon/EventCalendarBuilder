@@ -1,6 +1,5 @@
-from tkinter import *
 from customtkinter import *
-from Managers.ErrorConfig import *
+from Managers.ErrorConfig import getParamValFromKwarg
 from GUI.GUIInterface import GUIInterface
 
 class CustomGUI:
@@ -8,13 +7,13 @@ class CustomGUI:
         pass
 
     def CreateEntryWithLabel(label:str, **kwargs)->CTkEntry:
-        entry_width = getParamValFromKwarg('entry_width', kwargs)
-        entry_percent = getParamValFromKwarg('entry_percent', kwargs, default=0.5)
-        default_text = getParamValFromKwarg('default_text', kwargs)
-        frame_row = getParamValFromKwarg('frame_row', kwargs, default=0)
-        padx = getParamValFromKwarg('padx', kwargs, default=0)
-        pady = getParamValFromKwarg('pady', kwargs, default=0)
-        gap = getParamValFromKwarg('gap', kwargs, default=10)
+        entry_width =       getParamValFromKwarg('entry_width', kwargs)
+        entry_percent =     getParamValFromKwarg('entry_percent', kwargs, default=0.5)
+        default_text =      getParamValFromKwarg('default_text', kwargs)
+        frame_row =         getParamValFromKwarg('frame_row', kwargs, default=0)
+        padx =              getParamValFromKwarg('padx', kwargs, default=0)
+        pady =              getParamValFromKwarg('pady', kwargs, default=0)
+        gap =               getParamValFromKwarg('gap', kwargs, default=10)
         
         tmp_frame = GUIInterface.current_frame
         entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
