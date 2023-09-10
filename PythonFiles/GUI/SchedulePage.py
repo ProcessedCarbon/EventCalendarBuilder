@@ -2,6 +2,7 @@ from GUI.Page import Page
 from GUI.GUIInterface import GUIInterface as gui
 from GUI.MainPage import MainPage
 from GUI.MainAppWindow import MainAppWindow
+from GUI.CustomGUI import CustomGUI as c_gui
 from Managers.CalendarInterface import CalendarInterface
 from TextProcessing import TextProcessingManager
 
@@ -37,10 +38,10 @@ class SchedulePage(Page):
         details_frame.grid(row=1, column=1, sticky='nsew', ipady=self.details_pady)
 
         # Details entry
-        e_entry = gui.CreateEntryWithLabel(label="Event:", frame_row=0, entry_width=self.detail_entry_width)
+        e_entry = c_gui.CreateEntryWithLabel(label="Event:", frame_row=0, entry_width=self.detail_entry_width)
         self.details_entries["Event"] = e_entry
 
-        desp_entry = gui.CreateEntryWithLabel(label="Description:", frame_row=1,entry_width=self.detail_entry_width)
+        desp_entry = c_gui.CreateEntryWithLabel(label="Description:", frame_row=1,entry_width=self.detail_entry_width)
         self.details_entries["Description"] = desp_entry
 
         priorities = ["1", "2", "3", "4", "5"]
@@ -48,16 +49,16 @@ class SchedulePage(Page):
         priority_combo.grid(row=2)
         self.details_entries["Priority"] = priority_combo
 
-        l_entry = gui.CreateEntryWithLabel(label="Location:", frame_row=3,entry_width=self.detail_entry_width)
+        l_entry = c_gui.CreateEntryWithLabel(label="Location:", frame_row=3,entry_width=self.detail_entry_width)
         self.details_entries["Location"] = l_entry
 
-        d_entry = gui.CreateEntryWithLabel(label="Date:", frame_row=4,entry_width=self.detail_entry_width)
+        d_entry = c_gui.CreateEntryWithLabel(label="Date:", frame_row=4,entry_width=self.detail_entry_width)
         self.details_entries["Date"] = d_entry
 
-        st_entry = gui.CreateEntryWithLabel(label="Time Start:", frame_row=5,entry_width=self.detail_entry_width)
+        st_entry = c_gui.CreateEntryWithLabel(label="Time Start:", frame_row=5,entry_width=self.detail_entry_width)
         self.details_entries["Start_Time"] = st_entry
 
-        et_entry = gui.CreateEntryWithLabel(label="Time End:", frame_row=6,entry_width=self.detail_entry_width)
+        et_entry = c_gui.CreateEntryWithLabel(label="Time End:", frame_row=6,entry_width=self.detail_entry_width)
         self.details_entries["End_Time"] = et_entry
 
         self.UpdateDetails()

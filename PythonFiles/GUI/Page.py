@@ -1,6 +1,5 @@
 from GUI.GUIInterface import GUIInterface
 from Managers.ErrorConfig import ErrorCodes
-from GUI.MainAppWindow import MainAppWindow
 
 class Page:
     pages = []

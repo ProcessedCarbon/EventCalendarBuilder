@@ -18,7 +18,7 @@ class MainPage(Page):
         title.grid(row=0, column=1, sticky='n', pady=10)
 
         # Text box
-        textbox = gui.CreateText(w=MainAppWindow.app_width * 0.5, h=MainAppWindow.app_height * 0.5)
+        textbox = gui.CreateTextbox(width=MainAppWindow.app_width * 0.5, height=MainAppWindow.app_height * 0.5)
         textbox.grid(row=1, column=1, sticky='nsew')
 
         # Button
@@ -27,7 +27,7 @@ class MainPage(Page):
     
     def Submit(self, textbox):
         success = self.ReadAndProcessText(textbox)
-
+        
         if success:
             self.SwitchPages(1) 
 

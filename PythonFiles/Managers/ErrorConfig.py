@@ -33,6 +33,9 @@ class ErrorCodes:
         the_method = stack[1][0].f_code.co_name
         return the_class, the_method
 
+def getParamValFromKwarg(param_name:str, kwargs:dict, default=None):
+    return kwargs[param_name] if param_name in kwargs else default
+
 def main():
     error_code = ErrorCodes()
     print(error_code._error_codes[1000])
