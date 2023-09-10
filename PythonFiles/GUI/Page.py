@@ -1,4 +1,4 @@
-from GUI.GUIInterface import GUIInterface as gui
+from GUI.GUIInterface import GUIInterface
 from Managers.ErrorConfig import ErrorCodes
 from GUI.MainAppWindow import MainAppWindow
 
@@ -7,14 +7,15 @@ class Page:
     current_page = None
 
     def __init__(self):
-        if MainAppWindow.main_frame == None:
+        if GUIInterface.root == None:
             ErrorCodes.PrintErrorWithCode(1003)
             return
 
-        self.page = gui.CreateFrame(MainAppWindow.main_frame)
-        self.OnStart()
+        self.page = GUIInterface.CreateFrame(GUIInterface.root)
+        self.page.grid(row=0, column=0, sticky="nsew")
         Page.pages.append(self.page)
-        gui.ClearCurrentFrame()
+        self.OnStart()
+        GUIInterface.ClearCurrentFrame()
 
     def OnStart(self):
         pass
@@ -23,7 +24,7 @@ class Page:
         pass
 
     def PageGrid(self, rows=1, cols=1):
-        gui.CreateGrid(self.page, rows=rows, cols=cols)
+        GUIInterface.CreateGrid(self.page, rows=rows, cols=cols)
 
     def SwitchPages(self, page:int=0):
         if len(Page.pages) < 1:
@@ -33,10 +34,7 @@ class Page:
         if page > len(Page.pages) - 1:
             ErrorCodes.PrintErrorWithCode(1003)
             return
-        
-        if Page.current_page != None:
-            Page.current_page.pack_forget()
-        
+                
         self.OnExit()
         Page.current_page = Page.pages[page]
-        Page.current_page.pack(fill='both', expand=True)
+        Page.current_page.tkraise()

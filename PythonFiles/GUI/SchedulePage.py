@@ -60,7 +60,6 @@ class SchedulePage(Page):
         et_entry = gui.CreateEntryWithLabel(label="Time End:", frame_row=6,entry_width=self.detail_entry_width)
         self.details_entries["End_Time"] = et_entry
 
-
         self.UpdateDetails()
 
     def OnExit(self):

@@ -22,15 +22,21 @@ class MainPage(Page):
         textbox.grid(row=1, column=1, sticky='nsew')
 
         # Button
-        button = gui.CreateButton(text="Submit", on_click=lambda:self.CheckText(textbox))
+        button = gui.CreateButton(text="Submit", on_click=lambda:self.Submit(textbox))
         button.grid(row=2, column=1, stick='s', pady=10)
     
-    def CheckText(self,textbox):
+    def Submit(self, textbox):
+        success = self.ReadAndProcessText(textbox)
+
+        if success:
+            self.SwitchPages(1) 
+
+    def ReadAndProcessText(self,textbox)->bool:
         t = gui.RetrieveCurrentInputFromTextbox(textbox)
 
-        if t == "" or t == " ":
-            print("Empty text")
-            return
+        if t == "" or t == " " or t == "\n":
+            print("No text found!")
+            return False
         
         t.strip("\n").strip()
         MainPage.events = NERInterface.GetEntitiesFromText(text=t)
@@ -49,4 +55,5 @@ class MainPage(Page):
         print("------------------------------------------------------------------------------")
         globals()['events'] = MainPage.events
         print("Done!")
-        self.SwitchPages(1)
+
+        return True

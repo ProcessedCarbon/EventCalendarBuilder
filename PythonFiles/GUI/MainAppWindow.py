@@ -33,6 +33,8 @@ class MainAppWindow:
 
     def Setup():
         GUIInterface.root.geometry(f'{MainAppWindow.app_width}x{MainAppWindow.app_height}')
-        MainAppWindow.main_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.root)
-        GUIInterface.SetCurrentFrame(MainAppWindow.main_frame)
-        MainAppWindow.main_frame.pack(fill='both', expand=True)
+        GUIInterface.root.columnconfigure(0, weight=1)
+        GUIInterface.root.rowconfigure(0, weight=1)
+        # MainAppWindow.main_frame = GUIInterface.CreateFrame(GUIInterface.root, b_color='red', b_width=3, fg_color='blue')
+        # GUIInterface.SetCurrentFrame(MainAppWindow.main_frame)
+        # MainAppWindow.main_frame.grid(row=0, column=0, sticky='nsew')

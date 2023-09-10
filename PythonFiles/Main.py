@@ -1,18 +1,15 @@
 from GUI.GUIInterface import GUIInterface
-
 from GUI.MainAppWindow import MainAppWindow
-from GUI.Page import Page
 from GUI.MainPage import MainPage
 from GUI.SchedulePage import SchedulePage
 
 gui = GUIInterface()
 
 MainAppWindow.Setup()
-main_page = MainPage()
-schedule_page = SchedulePage()
 
-Page.current_page = Page.pages[0]
-Page.current_page.pack(fill='both', expand=True)
+# Pages
+schedule_page = SchedulePage()
+main_page = MainPage()
 
 gui.MainLoop()    
 
