@@ -4,7 +4,7 @@ from Pages.MainPage import MainPage
 from GUI.MainAppWindow import MainAppWindow
 from GUI.CustomGUI import CustomGUI as c_gui
 from Calendar.CalendarInterface import CalendarInterface
-from TextProcessing import TextProcessingManager
+from Managers.TextProcessing import TextProcessingManager
 
 class SchedulePage(Page):
     def __init__(self):

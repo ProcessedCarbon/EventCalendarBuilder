@@ -198,6 +198,7 @@ class GUIInterface:
                                command=command,
                                variable=variable,
                                justify=justify)
+        combobox.set(values[0])
         return combobox
 
     def CreateGrid(target:CTkFrame, rows=1, cols=1):
