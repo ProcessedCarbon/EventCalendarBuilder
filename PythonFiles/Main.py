@@ -2,7 +2,7 @@ from GUI.GUIInterface import GUIInterface
 from GUI.MainAppWindow import MainAppWindow
 from Pages.MainPage import MainPage
 from Pages.SchedulePage import SchedulePage
-from Pages.Page import Page
+from Pages.PageManager import PageManager
 
 gui = GUIInterface()
 
@@ -12,8 +12,7 @@ MainAppWindow.Setup()
 main_page = MainPage()
 schedule_page = SchedulePage()
 
-Page.current_page = Page.pages[0]
-main_page.SwitchPages(0)
+PageManager.SwitchPages(0)
 
 gui.MainLoop()    
 

@@ -17,6 +17,7 @@ class ErrorCodes:
             _code() : "NO PAGES FOUND!",                                                                     # 1002
             _code() : "MISSING PAGES, PAGE NOT FOUND!",                                                      # 1003
             _code() : "MISSING MAIN APP WINDOW!",                                                            # 1004
+            _code() : "NONE PROVIDED FOR NON-NONE PARAM!",                                                   # 1005
         }
 
     def PrintErrorWithCode(errorCode:int):
@@ -33,7 +34,7 @@ class ErrorCodes:
         the_method = stack[1][0].f_code.co_name
         return the_class, the_method
 
-def getParamValFromKwarg(param_name:str, kwargs:dict, default=None):
+def getParamValFromKwarg(param_name:str, kwargs:dict, default=None, allowNone=True):
     return kwargs[param_name] if param_name in kwargs else default
 
 def main():

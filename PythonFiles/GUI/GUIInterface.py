@@ -201,12 +201,12 @@ class GUIInterface:
         combobox.set(values[0])
         return combobox
 
-    def CreateGrid(target:CTkFrame, rows=1, cols=1):
-        for i in range(rows):
-            target.rowconfigure(i, weight=1)
+    def CreateGrid(target:CTkFrame, rows=list[int], cols=list[int]):
+        for i in range(len(rows)):
+            target.rowconfigure(i, weight=rows[i])
         
-        for i in range(cols):
-            target.columnconfigure(i, weight=1)
+        for i in range(len(cols)):
+            target.columnconfigure(i, weight=cols[i])
 
     def UpdateEntry(entry:CTkEntry, text_var:str):
         entry.delete(0, END)

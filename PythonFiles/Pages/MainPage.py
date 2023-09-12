@@ -3,6 +3,7 @@ from GUI.GUIInterface import GUIInterface as gui
 from NER.NERInterface import NERInterface
 from Managers.TextProcessing import TextProcessingManager
 from GUI.MainAppWindow import MainAppWindow
+from Pages.PageManager import PageManager
 
 class MainPage(Page):
     events = []
@@ -11,7 +12,9 @@ class MainPage(Page):
         super().__init__()
     
     def OnStart(self):
-        self.PageGrid(rows=3, cols=3)
+        rows = [1, 1, 1]
+        cols = [1, 1, 1]
+        self.PageGrid(rows=rows, cols=cols)
                 
         # Title
         title = gui.CreateLabel(text="Event Calendar Builder", font=("Bold",20))
@@ -29,7 +32,7 @@ class MainPage(Page):
         success = self.ReadAndProcessText(textbox)
         
         if success:
-            self.SwitchPages(1) 
+            PageManager.SwitchPages(1) 
 
     def ReadAndProcessText(self,textbox)->bool:
         t = gui.RetrieveCurrentInputFromTextbox(textbox)
@@ -61,3 +64,6 @@ class MainPage(Page):
             print("Done!")
 
         return True
+    
+    def ClearEvents():
+        MainPage.events = []
