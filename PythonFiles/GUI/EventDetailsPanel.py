@@ -1,5 +1,6 @@
-from GUI.CustomGUI import *
+from GUI.GUIInterface import GUIInterface
 from Managers.ErrorConfig import ErrorCodes
+from Managers.ErrorConfig import getParamValFromKwarg
 
 class EventDetailsPanel:
     num_details = 7
@@ -96,13 +97,13 @@ class EventDetailsPanel:
     # Create GUI
     def CreateEntryDetail(self, width:int, entryname:str):
         key = self.ConvertEntryNameToKey(entryname)
-        e_frame, e_label, e_entry = CustomGUI.CreateEntryWithLabel(label= entryname + ":",entry_width=width)
+        e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",entry_width=width)
         self.details_entries[key] = e_entry
         return e_frame
 
     def CreateDropdownDetail(self, values:list[str], entryname:str):
         key = self.ConvertEntryNameToKey(entryname)
-        dropdown_frame, dropdown_label, dropdown_box = CustomGUI.CreateComboboxWithLabel(label=entryname +":", dropdown=values)
+        dropdown_frame, dropdown_label, dropdown_box = GUIInterface.CreateComboboxWithLabel(label=entryname +":", dropdown=values)
         self.details_entries[key] = dropdown_box
         return dropdown_frame
     
