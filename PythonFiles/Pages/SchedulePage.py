@@ -1,6 +1,6 @@
 from Pages.Page import *
-from Pages.MainPage import MainPage
 from GUI.MainAppWindow import MainAppWindow
+from NER.NERInterface import NERInterface
 from Calendar.CalendarInterface import CalendarInterface
 from Managers.TextProcessing import TextProcessingManager
 from Managers.DateTimeManager import DateTimeManager
@@ -37,14 +37,14 @@ class SchedulePage(Page):
         self.details_panel_frame.grid(row=1, column=1, sticky='nsew', ipadx=10, ipady=10)
 
     def OnExit(self):
-        MainPage.ClearEvents()
+        NERInterface.ClearEvents()
         self.ResetDetails()
 
     def OnEntry(self):
         if len(self.details_panels) > 0:
             self.ResetDetails()
 
-        num_events = len(MainPage.events)
+        num_events = len(NERInterface.events)
         if num_events > 0:
             self.PopulateDetails(num_events)
             self.Update()
@@ -87,12 +87,12 @@ class SchedulePage(Page):
                                 End_Time=end_time)
     
     def Update(self):
-        if len(MainPage.events) > 0:
+        if len(NERInterface.events) > 0:
             for panel in self.details_panels:
-                event = MainPage.events.pop(0)
+                event = NERInterface.events.pop(0)
                 self.UpdatePanel(panel, event)
 
-            MainPage.ClearEvents()
+            NERInterface.ClearEvents()
         #gui.root.after(500, self.Update)  
 
     def CreateICSUsingEntities(self):

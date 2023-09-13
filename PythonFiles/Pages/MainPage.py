@@ -4,8 +4,6 @@ from Managers.TextProcessing import TextProcessingManager
 from GUI.MainAppWindow import MainAppWindow
 
 class MainPage(Page):
-    events = []
-
     def __init__(self): 
         super().__init__()
     
@@ -40,28 +38,24 @@ class MainPage(Page):
             return False
         
         t.strip("\n").strip()
-        MainPage.events = NERInterface.GetEntitiesFromText(text=t)
+        NERInterface.events = NERInterface.GetEntitiesFromText(text=t)
 
         # Process time and date using the same events list
-        if len(MainPage.events) > 0:
+        if len(NERInterface.events) > 0:
             print("------------------------------------------------------------------------------")
             print("Process events.....")
-            MainPage.events = NERInterface.ProcessEvents(MainPage.events)
-            NERInterface.PrintEvents(MainPage.events)
+            NERInterface.events = NERInterface.ProcessEvents(NERInterface.events)
+            NERInterface.PrintEvents(NERInterface.events)
             print("------------------------------------------------------------------------------")
             print("Processing text...... ")
-            for i in range(len(MainPage.events)):
-                date = MainPage.events[i]["DATE"]
-                MainPage.events[i]["DATE"] = TextProcessingManager.ProcessDate(date_text=str(date))
+            for i in range(len(NERInterface.events)):
+                date = NERInterface.events[i]["DATE"]
+                NERInterface.events[i]["DATE"] = TextProcessingManager.ProcessDate(date_text=str(date))
 
-                time = MainPage.events[i]["TIME"]        
-                MainPage.events[i]["TIME"] = TextProcessingManager.ProcessTime(time_text=str(time))
-            NERInterface.PrintEvents(MainPage.events)
+                time = NERInterface.events[i]["TIME"]        
+                NERInterface.events[i]["TIME"] = TextProcessingManager.ProcessTime(time_text=str(time))
+            NERInterface.PrintEvents(NERInterface.events)
             print("------------------------------------------------------------------------------")
-            globals()['events'] = MainPage.events
             print("Done!")
 
         return True
-    
-    def ClearEvents():
-        MainPage.events = []
