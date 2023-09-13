@@ -21,18 +21,16 @@ class ErrorCodes:
         }
 
     def PrintErrorWithCode(errorCode:int):
-        className, methodName = ErrorCodes.getCallerClassAndMethod()
+        stack = inspect.stack()
+        className = stack[1][0].f_locals["self"].__class__.__name__
+        methodName = stack[1][0].f_code.co_name
         print(f'[{className.upper()}]({methodName}()): {ErrorCodes._error_codes[errorCode]}')
     
     def PrintCustomError(e:str):
-        className, methodName = ErrorCodes.getCallerClassAndMethod()
-        print(f'[{className.upper()}]({methodName}()): {e}')
-    
-    def getCallerClassAndMethod()->list[str,str]:
         stack = inspect.stack()
-        the_class = stack[1][0].f_locals["self"].__class__.__name__
-        the_method = stack[1][0].f_code.co_name
-        return the_class, the_method
+        className = stack[1][0].f_locals["self"].__class__.__name__
+        methodName = stack[1][0].f_code.co_name
+        print(f'[{className.upper()}]({methodName}()): {e}')
 
 def getParamValFromKwarg(param_name:str, kwargs:dict, default=None, allowNone=True):
     return kwargs[param_name] if param_name in kwargs else default

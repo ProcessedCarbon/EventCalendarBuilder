@@ -1,12 +1,10 @@
-from Pages.Page import Page
-from GUI.GUIInterface import GUIInterface as gui
+from Pages.Page import *
 from Pages.MainPage import MainPage
 from GUI.MainAppWindow import MainAppWindow
 from Calendar.CalendarInterface import CalendarInterface
 from Managers.TextProcessing import TextProcessingManager
 from Managers.DateTimeManager import DateTimeManager
 from GUI.EventDetailsPanel import EventDetailsPanel
-from Pages.PageManager import PageManager
 from math import ceil
 
 class SchedulePage(Page):
@@ -23,19 +21,19 @@ class SchedulePage(Page):
         self.PageGrid(rows=rows, cols=cols)
 
         # Back Button
-        button = gui.CreateButton(text="<", on_click=lambda:PageManager.SwitchPages(0), width=50)
+        button = GUIInterface.CreateButton(text="<", on_click=lambda:PageManager.SwitchPages(0), width=50)
         button.grid(row=0, column=0, sticky='nw')
 
         # Schedule Button
-        schedue_btn = gui.CreateButton(text="Schedule",on_click=self.CreateICSUsingEntities)
+        schedue_btn = GUIInterface.CreateButton(text="Schedule",on_click=self.CreateICSUsingEntities)
         schedue_btn.grid(row=2, column=1, sticky='s', pady=10)
 
         # Title
-        title = gui.CreateLabel(text="Schedule", font=("Bold",20))
+        title = GUIInterface.CreateLabel(text="Schedule", font=("Bold",20))
         title.grid(row=0, column=1, sticky='n')
 
         # Details
-        self.details_panel_frame = gui.CreateFrame(self.page, fg_color='blue')
+        self.details_panel_frame = GUIInterface.CreateFrame(self.page, fg_color='blue')
         self.details_panel_frame.grid(row=1, column=1, sticky='nsew', ipadx=10, ipady=10)
 
     def OnExit(self):
@@ -49,13 +47,13 @@ class SchedulePage(Page):
         num_events = len(MainPage.events)
         if num_events > 0:
             self.PopulateDetails(num_events)
-            self.UpdateDetails()
+            self.Update()
 
     def PopulateDetails(self, num_events):
         detail_rows = ceil(num_events / self.details_panels_max_column)
         rows = [1] * detail_rows
         cols = [1] * self.details_panels_max_column
-        gui.CreateGrid(self.details_panel_frame, rows=rows, cols=cols)
+        GUIInterface.CreateGrid(self.details_panel_frame, rows=rows, cols=cols)
         row_at = 0
         for i in range(num_events):
             count = i % self.details_panels_max_column
@@ -88,7 +86,7 @@ class SchedulePage(Page):
                                 Start_Time=start_time, 
                                 End_Time=end_time)
     
-    def UpdateDetails(self):
+    def Update(self):
         if len(MainPage.events) > 0:
             for panel in self.details_panels:
                 event = MainPage.events.pop(0)

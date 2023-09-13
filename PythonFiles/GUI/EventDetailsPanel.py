@@ -31,34 +31,27 @@ class EventDetailsPanel:
         self.details_frame.grid(row=row, column=column, sticky=sticky, ipady=self.details_pady)
 
         # GUI
-        e_frame, e_label, e_entry = c_gui.CreateEntryWithLabel(label="Event:",entry_width=self.detail_entry_width)
+        e_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Event")
         e_frame.grid(row=0, sticky='nsew')
-        self.details_entries["Event"] = e_entry
 
-        desp_frame, desp_label, desp_entry = c_gui.CreateEntryWithLabel(label="Description:", entry_width=self.detail_entry_width)
+        desp_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Description")
         desp_frame.grid(row=1, sticky='nsew')
-        self.details_entries["Description"] = desp_entry
 
         priorities = ["1", "2", "3", "4", "5"]
-        prio_frame, prio_label, prio_box = c_gui.CreateComboboxWithLabel(label="Priority:", dropdown=priorities)
+        prio_frame = self.CreateDropdownDetail(values=priorities, entryname="Priority")
         prio_frame.grid(row=2, sticky='nsew')
-        self.details_entries["Priority"] = prio_box
 
-        l_frame, l_label,l_entry = c_gui.CreateEntryWithLabel(label="Location:", entry_width=self.detail_entry_width)
+        l_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Location")
         l_frame.grid(row=3, sticky='nsew')
-        self.details_entries["Location"] = l_entry
 
-        d_frame, d_label, d_entry = c_gui.CreateEntryWithLabel(label="Date:",entry_width=self.detail_entry_width)
+        d_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Date")
         d_frame.grid(row=4,sticky='nsew')
-        self.details_entries["Date"] = d_entry
 
-        st_frame, st_label, st_entry = c_gui.CreateEntryWithLabel(label="Time Start:", entry_width=self.detail_entry_width)
+        st_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time")
         st_frame.grid(row=5,sticky='nsew')
-        self.details_entries["Start_Time"] = st_entry
 
-        et_frame, et_label, et_entry = c_gui.CreateEntryWithLabel(label="Time End:",entry_width=self.detail_entry_width)
+        et_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time")
         et_frame.grid(row=6,sticky='nsew')
-        self.details_entries["End_Time"] = et_entry
 
         gui.SetCurrentFrame(tmp_frame)
 
@@ -102,3 +95,18 @@ class EventDetailsPanel:
     def Destroy(self):
         self.details_frame.destroy()
     
+    # Create GUI
+    def CreateEntryDetail(self, width:int, entryname:str):
+        key = self.ConvertEntryNameToKey(entryname)
+        e_frame, e_label, e_entry = c_gui.CreateEntryWithLabel(label= entryname + ":",entry_width=width)
+        self.details_entries[key] = e_entry
+        return e_frame
+
+    def CreateDropdownDetail(self, values:list[str], entryname:str):
+        key = self.ConvertEntryNameToKey(entryname)
+        dropdown_frame, dropdown_label, dropdown_box = c_gui.CreateComboboxWithLabel(label=entryname +":", dropdown=values)
+        self.details_entries[key] = dropdown_box
+        return dropdown_frame
+    
+    def ConvertEntryNameToKey(self, name:str):
+        return name.replace(" ", "_")
