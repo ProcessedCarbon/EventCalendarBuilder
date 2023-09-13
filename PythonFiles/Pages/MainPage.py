@@ -1,4 +1,4 @@
-from Pages.Page import Page
+from Pages.Page import *
 from GUI.GUIInterface import GUIInterface as gui
 from NER.NERInterface import NERInterface
 from Managers.TextProcessing import TextProcessingManager
