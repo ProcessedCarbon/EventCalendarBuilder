@@ -1,9 +1,7 @@
 from Pages.Page import *
-from GUI.GUIInterface import GUIInterface as gui
 from NER.NERInterface import NERInterface
 from Managers.TextProcessing import TextProcessingManager
 from GUI.MainAppWindow import MainAppWindow
-from Pages.PageManager import PageManager
 
 class MainPage(Page):
     events = []
@@ -17,15 +15,15 @@ class MainPage(Page):
         self.PageGrid(rows=rows, cols=cols)
                 
         # Title
-        title = gui.CreateLabel(text="Event Calendar Builder", font=("Bold",20))
+        title = GUIInterface.CreateLabel(text="Event Calendar Builder", font=("Bold",20))
         title.grid(row=0, column=1, sticky='n', pady=10)
 
         # Text box
-        textbox = gui.CreateTextbox(width=MainAppWindow.app_width * 0.5, height=MainAppWindow.app_height * 0.5)
+        textbox = GUIInterface.CreateTextbox(width=MainAppWindow.app_width * 0.5, height=MainAppWindow.app_height * 0.5)
         textbox.grid(row=1, column=1, sticky='nsew')
 
         # Button
-        button = gui.CreateButton(text="Submit", on_click=lambda:self.Submit(textbox))
+        button = GUIInterface.CreateButton(text="Submit", on_click=lambda:self.Submit(textbox))
         button.grid(row=2, column=1, stick='s', pady=10)
     
     def Submit(self, textbox):
@@ -35,7 +33,7 @@ class MainPage(Page):
             PageManager.SwitchPages(1) 
 
     def ReadAndProcessText(self,textbox)->bool:
-        t = gui.RetrieveCurrentInputFromTextbox(textbox)
+        t = GUIInterface.RetrieveCurrentInputFromTextbox(textbox)
 
         if t == "" or t == " " or t == "\n":
             print("No text found!")
