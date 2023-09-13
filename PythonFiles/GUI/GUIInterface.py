@@ -253,7 +253,7 @@ class GUIInterface:
         entry.delete(0, END)
         entry.insert(0, text_var)
         
-    def RetrieveCurrentInputFromTextbox(text:CTkTextbox):
+    def RetrieveCurrentInputFromTextbox(text:CTkTextbox)->str:
         input = text.get("0.0", END)
         return input
     
