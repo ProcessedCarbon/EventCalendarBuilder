@@ -1,8 +1,6 @@
-from customtkinter import *
-from Managers.ErrorConfig import getParamValFromKwarg
-from GUI.GUIInterface import GUIInterface
+from GUI.GUIInterface import *
 
-class CustomGUI:
+class CustomGUI(GUIInterface):
     def __init__(self) -> None:
         pass
 
