@@ -2,6 +2,7 @@ from GUI.GUIInterface import GUIInterface as gui
 from GUI.CustomGUI import CustomGUI as c_gui
 from Managers.ErrorConfig import ErrorCodes
 from Managers.ErrorConfig import getParamValFromKwarg
+from GUI.MainAppWindow import MainAppWindow
 
 class EventDetailsPanel:
     num_details = 7
@@ -20,7 +21,11 @@ class EventDetailsPanel:
         
     def GUI(self):
         tmp_frame = gui.current_frame
-        self.details_frame = gui.CreateFrame(self.parent, fg_color='gray')
+        self.details_frame = gui.CreateFrame(self.parent, 
+                                             fg_color='gray',
+                                            #  width=MainAppWindow.app_width*0.2,
+                                            #  height=MainAppWindow.app_height*0.2
+                                             )
 
         for i in range(EventDetailsPanel.num_details):
             self.details_frame.rowconfigure(i, weight=1)
@@ -29,6 +34,7 @@ class EventDetailsPanel:
         column = getParamValFromKwarg("column", self.grid_params, default=0)
         sticky = getParamValFromKwarg("sticky", self.grid_params, default='nsew')
         self.details_frame.grid(row=row, column=column, sticky=sticky, ipady=self.details_pady)
+       #self.details_frame.grid_propagate(0)
 
         # GUI
         e_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Event")
