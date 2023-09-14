@@ -7,7 +7,7 @@ class CustomGUI:
         pass
 
     def CreateEntryWithLabel(label:str, **kwargs)->list[CTkFrame, CTkLabel, CTkEntry]:
-        entry_width =       getParamValFromKwarg('entry_width', kwargs)
+        entry_width =       getParamValFromKwarg('entry_width', kwargs, default=140)
         default_text =      getParamValFromKwarg('default_text', kwargs)
 
         tmp_frame = GUIInterface.current_frame
@@ -18,7 +18,7 @@ class CustomGUI:
 
         # Entry label
         label = GUIInterface.CreateLabel(text=label)
-        label.grid(row=0, column=0)
+        label.grid(row=0, column=0, sticky='w')
 
         # Entry
         entry = GUIInterface.CreateEntry(width=entry_width, textvariable=default_text)

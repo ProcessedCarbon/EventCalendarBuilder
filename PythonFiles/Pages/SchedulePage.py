@@ -33,8 +33,8 @@ class SchedulePage(Page):
         title.grid(row=0, column=1, sticky='n')
 
         # Details
-        self.details_panel_frame = GUIInterface.CreateFrame(self.page, fg_color='blue')
-        self.details_panel_frame.grid(row=1, column=1, sticky='nsew', ipadx=10, ipady=10)
+        self.details_panel_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
+        self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
 
     def OnExit(self):
         MainPage.ClearEvents()
@@ -59,7 +59,11 @@ class SchedulePage(Page):
             count = i % self.details_panels_max_column
             if count == 0 and i != 0:
                 row_at += 1
-            detail_panel = EventDetailsPanel(self.details_panel_frame, self.entry_width, 10, row=row_at, column=count, sticky=None)
+            detail_panel = EventDetailsPanel(self.details_panel_frame, 
+                                             self.entry_width, 
+                                             row=row_at, 
+                                             column=count, 
+                                             sticky='nsew')
             self.details_panels.append(detail_panel)
 
     def ResetDetails(self):

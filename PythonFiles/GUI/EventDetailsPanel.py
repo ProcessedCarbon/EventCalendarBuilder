@@ -2,13 +2,12 @@ from GUI.GUIInterface import GUIInterface as gui
 from GUI.CustomGUI import CustomGUI as c_gui
 from Managers.ErrorConfig import ErrorCodes
 from Managers.ErrorConfig import getParamValFromKwarg
-from GUI.MainAppWindow import MainAppWindow
 
 class EventDetailsPanel:
     num_details = 7
-    def __init__(self, parent, entry_widths:int, ipady:int=10, **grid_params):
+    def __init__(self, parent, entry_widths:int, gap:int=10, **grid_params):
         self.detail_entry_width = 180
-        self.details_pady = ipady
+        self.gap = gap
         self.parent = parent
         self.grid_params = grid_params
 
@@ -22,10 +21,7 @@ class EventDetailsPanel:
     def GUI(self):
         tmp_frame = gui.current_frame
         self.details_frame = gui.CreateFrame(self.parent, 
-                                             fg_color='gray',
-                                            #  width=MainAppWindow.app_width*0.2,
-                                            #  height=MainAppWindow.app_height*0.2
-                                             )
+                                             fg_color='gray')
 
         for i in range(EventDetailsPanel.num_details):
             self.details_frame.rowconfigure(i, weight=1)
@@ -33,31 +29,35 @@ class EventDetailsPanel:
         row = getParamValFromKwarg("row", self.grid_params, default=0)
         column = getParamValFromKwarg("column", self.grid_params, default=0)
         sticky = getParamValFromKwarg("sticky", self.grid_params, default='nsew')
-        self.details_frame.grid(row=row, column=column, sticky=sticky, ipady=self.details_pady)
-       #self.details_frame.grid_propagate(0)
+        self.details_frame.grid(row=row, 
+                                column=column, 
+                                sticky=sticky, 
+                                padx=self.gap, 
+                                pady=self.gap,
+                                ipadx=self.gap)
 
         # GUI
         e_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Event")
-        e_frame.grid(row=0, sticky='nsew')
+        e_frame.grid(row=0, sticky='nsew', pady=self.gap)
 
         desp_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Description")
-        desp_frame.grid(row=1, sticky='nsew')
+        desp_frame.grid(row=1, sticky='nsew',pady=self.gap)
 
         priorities = ["1", "2", "3", "4", "5"]
         prio_frame = self.CreateDropdownDetail(values=priorities, entryname="Priority")
-        prio_frame.grid(row=2, sticky='nsew')
+        prio_frame.grid(row=2, sticky='nsew',pady=self.gap)
 
         l_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Location")
-        l_frame.grid(row=3, sticky='nsew')
+        l_frame.grid(row=3, sticky='nsew',pady=self.gap)
 
         d_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Date")
-        d_frame.grid(row=4,sticky='nsew')
+        d_frame.grid(row=4,sticky='nsew',pady=self.gap)
 
         st_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time")
-        st_frame.grid(row=5,sticky='nsew')
+        st_frame.grid(row=5,sticky='nsew',pady=self.gap)
 
         et_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time")
-        et_frame.grid(row=6,sticky='nsew')
+        et_frame.grid(row=6,sticky='nsew',pady=self.gap)
 
         gui.SetCurrentFrame(tmp_frame)
 

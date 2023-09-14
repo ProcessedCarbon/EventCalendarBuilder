@@ -240,10 +240,10 @@ class GUIInterface:
 
     def CreateGrid(target:CTkFrame, rows=list[int], cols=list[int]):
         for i in range(len(rows)):
-            target.rowconfigure(i, weight=rows[i])
+            target.grid_rowconfigure(i, weight=rows[i])
         
         for i in range(len(cols)):
-            target.columnconfigure(i, weight=cols[i])
+            target.grid_columnconfigure(i, weight=cols[i])
 
     def UpdateEntry(entry:CTkEntry, text_var:str):
         entry.delete(0, END)
