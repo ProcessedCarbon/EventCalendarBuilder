@@ -1,8 +1,4 @@
 
-from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
-from NER.NERInterface import NERInterface
-from TextProcessing import TextProcessingManager
-
 # Extracts text from plain text file 
 def getTestingText(file_path):
     with open(file_path, encoding='utf-8') as f:
@@ -12,6 +8,9 @@ def getTestingText(file_path):
 
 # Test case for single event w/ its corresponding details
 def SingleEventTest():
+    from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+    from NER.NERInterface import NERInterface
+    from Managers.TextProcessing import TextProcessingManager
     print("------------------------------------------------------------------------------")
     print("Reading testing text in progress....")
     testing_file_path = "./Testing/testing_text_single.txt"
