@@ -23,6 +23,43 @@ class GUIInterface:
         GUIInterface.SetCurrentFrame(frame)
         return frame
     
+    def CreateScrollableFrame(frame_target, **kwargs)->CTkScrollableFrame:
+        width =         getParamValFromKwarg('width', kwargs, default=200)
+        height =        getParamValFromKwarg('height', kwargs, default=200)
+        corner_radius = getParamValFromKwarg('height', kwargs)
+        border_width =  getParamValFromKwarg('border_width', kwargs)
+        fg_color =      getParamValFromKwarg('fg_color', kwargs)
+        border_color =  getParamValFromKwarg('border_color', kwargs)
+        scrollbar_fg_color = getParamValFromKwarg('scrollbar_fg_color', kwargs)
+        scrollbar_button_color = getParamValFromKwarg('scrollbar_button_color', kwargs)
+        scrollbar_button_hover_color = getParamValFromKwarg('scrollbar_button_hover_color', kwargs)
+        label_fg_color = getParamValFromKwarg('label_fg_color', kwargs)
+        label_text_color = getParamValFromKwarg('label_text_color', kwargs)
+        label_text = getParamValFromKwarg('label_text_color', kwargs)
+        label_font = getParamValFromKwarg('label_font', kwargs)
+        label_anchor = getParamValFromKwarg('label_anchor', kwargs, default='center')
+        orientation = getParamValFromKwarg('orientation', kwargs, default='vertical')
+        bg_color = getParamValFromKwarg('bg_color', kwargs, default='transparent')
+
+        scrollable_frame = CTkScrollableFrame(frame_target,
+                                              width=width,
+                                              height=height,
+                                              corner_radius=corner_radius,
+                                              border_width=border_width,
+                                              fg_color=fg_color,
+                                              border_color=border_color,
+                                              scrollbar_fg_color=scrollbar_fg_color,
+                                              scrollbar_button_color=scrollbar_button_color,
+                                              scrollbar_button_hover_color=scrollbar_button_hover_color,
+                                              label_fg_color=label_fg_color,
+                                              label_text_color=label_text_color,
+                                              label_text=label_text,
+                                              label_font=label_font,
+                                              label_anchor=label_anchor,
+                                              orientation=orientation,
+                                              bg_color=bg_color)
+        return scrollable_frame
+
     def CreateButton(on_click, **kwargs)->CTkButton:
         width =                 getParamValFromKwarg('width', kwargs, default=140)
         height =                getParamValFromKwarg('height', kwargs, default=28)
