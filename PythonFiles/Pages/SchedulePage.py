@@ -93,7 +93,6 @@ class SchedulePage(Page):
                 self.UpdatePanel(panel, event)
 
             NERInterface.ClearEvents()
-        #gui.root.after(500, self.Update)  
 
     def CreateICSUsingEntities(self):
 
