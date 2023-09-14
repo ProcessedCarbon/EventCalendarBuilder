@@ -1,5 +1,4 @@
-from GUI.GUIInterface import GUIInterface as gui
-from GUI.CustomGUI import CustomGUI as c_gui
+from GUI.GUIInterface import GUIInterface
 from Managers.ErrorConfig import ErrorCodes
 from Managers.ErrorConfig import getParamValFromKwarg
 
@@ -19,9 +18,8 @@ class EventDetailsPanel:
         self.GUI()
         
     def GUI(self):
-        tmp_frame = gui.current_frame
-        self.details_frame = gui.CreateFrame(self.parent, 
-                                             fg_color='gray')
+        tmp_frame = GUIInterface.current_frame
+        self.details_frame = GUIInterface.CreateFrame(self.parent, fg_color='gray')
 
         for i in range(EventDetailsPanel.num_details):
             self.details_frame.rowconfigure(i, weight=1)
@@ -59,7 +57,7 @@ class EventDetailsPanel:
         et_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time")
         et_frame.grid(row=6,sticky='nsew',pady=self.gap)
 
-        gui.SetCurrentFrame(tmp_frame)
+        GUIInterface.SetCurrentFrame(tmp_frame)
 
     def UpdateDetails(self, **kwargs):
         if kwargs == self.detail_entries_values == {} or len(kwargs) == len(self.detail_entries_values) == 0:
@@ -73,11 +71,11 @@ class EventDetailsPanel:
 
         self.detail_entries_values.update(kwargs)            
 
-        gui.UpdateEntry(self.details_entries["Event"], self.detail_entries_values["Event"])
-        gui.UpdateEntry(self.details_entries["Location"], self.detail_entries_values["Location"])
-        gui.UpdateEntry(self.details_entries["Date"], self.detail_entries_values["Date"])
-        gui.UpdateEntry(self.details_entries["Start_Time"], self.detail_entries_values["Start_Time"])
-        gui.UpdateEntry(self.details_entries["End_Time"], self.detail_entries_values["End_Time"])
+        GUIInterface.UpdateEntry(self.details_entries["Event"], self.detail_entries_values["Event"])
+        GUIInterface.UpdateEntry(self.details_entries["Location"], self.detail_entries_values["Location"])
+        GUIInterface.UpdateEntry(self.details_entries["Date"], self.detail_entries_values["Date"])
+        GUIInterface.UpdateEntry(self.details_entries["Start_Time"], self.detail_entries_values["Start_Time"])
+        GUIInterface.UpdateEntry(self.details_entries["End_Time"], self.detail_entries_values["End_Time"])
         self.filled = True
 
     def getEmptyDetailCount(self)->int:
@@ -92,11 +90,11 @@ class EventDetailsPanel:
         self.detail_entries_values = {}
         self.filled = False
 
-        gui.UpdateEntry(self.details_entries["Event"], "")
-        gui.UpdateEntry(self.details_entries["Location"], "")
-        gui.UpdateEntry(self.details_entries["Date"], "")
-        gui.UpdateEntry(self.details_entries["Start_Time"], "")
-        gui.UpdateEntry(self.details_entries["End_Time"], "")
+        GUIInterface.UpdateEntry(self.details_entries["Event"], "")
+        GUIInterface.UpdateEntry(self.details_entries["Location"], "")
+        GUIInterface.UpdateEntry(self.details_entries["Date"], "")
+        GUIInterface.UpdateEntry(self.details_entries["Start_Time"], "")
+        GUIInterface.UpdateEntry(self.details_entries["End_Time"], "")
 
     def Destroy(self):
         self.details_frame.destroy()
@@ -104,13 +102,13 @@ class EventDetailsPanel:
     # Create GUI
     def CreateEntryDetail(self, width:int, entryname:str):
         key = self.ConvertEntryNameToKey(entryname)
-        e_frame, e_label, e_entry = c_gui.CreateEntryWithLabel(label= entryname + ":",entry_width=width)
+        e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",entry_width=width)
         self.details_entries[key] = e_entry
         return e_frame
 
     def CreateDropdownDetail(self, values:list[str], entryname:str):
         key = self.ConvertEntryNameToKey(entryname)
-        dropdown_frame, dropdown_label, dropdown_box = c_gui.CreateComboboxWithLabel(label=entryname +":", dropdown=values)
+        dropdown_frame, dropdown_label, dropdown_box = GUIInterface.CreateComboboxWithLabel(label=entryname +":", dropdown=values)
         self.details_entries[key] = dropdown_box
         return dropdown_frame
     

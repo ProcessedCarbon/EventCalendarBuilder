@@ -5,7 +5,7 @@ model_path = r"./model/model-best"
 
 class NERInterface:
     nlp = spacy.load(model_path) #load model       
- 
+    events = []
     # Extracts entities from given text
     def GetEntitiesFromText(text:str):
         """
@@ -107,6 +107,9 @@ class NERInterface:
                     processed_events.append(new_event)
         return processed_events
     
+    def ClearEvents():
+        NERInterface.events = []
+        
 def main():
     NER = NERInterface()
 
