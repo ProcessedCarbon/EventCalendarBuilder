@@ -105,17 +105,19 @@ class SchedulePage(Page):
             if panel.getEmptyDetailCount() == EventDetailsPanel.num_details:
                 print("Empty panel found!")
                 return
-            
+        
+        print(self.details_panels)
         # Create ICS Event per EventDetailPanel
         for panel in self.details_panels:
+            details_entries = panel.getDetailEntries()
             # Retrieve params from input
-            date = panel.details_entries["Date"].get()
-            s_time = panel.details_entries["Start_Time"].get()
-            e_time = panel.details_entries["End_Time"].get()
-            desp = panel.details_entries["Description"].get()
-            priority = int(self.details_entries["Priority"].get())
-            location = panel.details_entries["Location"].get()
-            event = panel.details_entries["Event"].get()
+            date = details_entries["Date"].get()
+            s_time = details_entries["Start_Time"].get()
+            e_time = details_entries["End_Time"].get()
+            desp = details_entries["Description"].get()
+            priority = int(details_entries["Priority"].get())
+            location = details_entries["Location"].get()
+            event = details_entries["Event"].get()
 
             time_slots = []
             time_slots.append(s_time)

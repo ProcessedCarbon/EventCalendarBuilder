@@ -114,3 +114,6 @@ class EventDetailsPanel:
     
     def ConvertEntryNameToKey(self, name:str):
         return name.replace(" ", "_")
+    
+    def getDetailEntries(self):
+        return self.details_entries
