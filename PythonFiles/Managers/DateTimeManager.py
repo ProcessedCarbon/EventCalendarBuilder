@@ -169,12 +169,28 @@ class DateTimeManager:
             ErrorCodes.PrintCustomError(e)
             return None
     
+    # 2023-05-17 14:00:00+08:00
+    # Returns format YYYY-MM-DD HH:MM:SS Z
     def getDateTime(hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
         # Handle timezone
         country = LocationManager.getCurrentCountry()
         tz = ZoneInfo(country) if country != None else ZoneInfo("Singapore")
         return datetime(year, month, day, hour, min, sec, tzinfo=tz)
     
+    # Accepts only format of YYYY-MM-DD HH:MM:SS z for both
+    def hasDateTimeClash(start1:str, end1:str, start2:str, end2:str)->bool:
+        # Format: %Y-%m-%d %H:%M:%S%z
+        try:
+            start_1 = datetime.strptime(start1, '%Y-%m-%d %H:%M:%S%z')
+            end_1 = datetime.strptime(end1, '%Y-%m-%d %H:%M:%S%z')
+
+            start_2 = datetime.strptime(start2, '%Y-%m-%d %H:%M:%S%z')
+            end_2 = datetime.strptime(end2, '%Y-%m-%d %H:%M:%S%z')
+            
+            return start_1 <= end_2 and start_2 <= end_1
+        except Exception as e:
+            ErrorCodes.PrintCustomError(e)
+
 # For testing
 def main():
     dt_config = DateTimeManager()

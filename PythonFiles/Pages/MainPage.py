@@ -2,6 +2,8 @@ from Pages.Page import *
 from NER.NERInterface import NERInterface
 from Managers.TextProcessing import TextProcessingManager
 from GUI.MainAppWindow import MainAppWindow
+from Events.EventsManager import EventsManager
+from Managers.DateTimeManager import DateTimeManager
 
 class MainPage(Page):
     def __init__(self): 
@@ -38,24 +40,39 @@ class MainPage(Page):
             return False
         
         t.strip("\n").strip()
-        NERInterface.events = NERInterface.GetEntitiesFromText(text=t)
+        events = NERInterface.GetEntitiesFromText(text=t)
 
         # Process time and date using the same events list
-        if len(NERInterface.events) > 0:
+        if len(events) > 0:
             print("------------------------------------------------------------------------------")
             print("Process events.....")
-            NERInterface.events = NERInterface.ProcessEvents(NERInterface.events)
-            NERInterface.PrintEvents(NERInterface.events)
+            events = NERInterface.ProcessEvents(events)
             print("------------------------------------------------------------------------------")
             print("Processing text...... ")
-            for i in range(len(NERInterface.events)):
-                date = NERInterface.events[i]["DATE"]
-                NERInterface.events[i]["DATE"] = TextProcessingManager.ProcessDate(date_text=str(date))
+            for i in range(len(events)):
+                date = events[i]["DATE"]
+                events[i]["DATE"] = TextProcessingManager.ProcessDate(date_text=str(date))
 
-                time = NERInterface.events[i]["TIME"]        
-                NERInterface.events[i]["TIME"] = TextProcessingManager.ProcessTime(time_text=str(time))
-            NERInterface.PrintEvents(NERInterface.events)
+                time = events[i]["TIME"]        
+                events[i]["TIME"] = TextProcessingManager.ProcessTime(time_text=str(time))
+
+                if len(events[i]["TIME"]) < 2:
+                    new_time = DateTimeManager.AddToTime(events[i]["TIME"][0], hrs=1)
+                    events[i]["TIME"].append(new_time)
             print("------------------------------------------------------------------------------")
+            print("Add to event manager list")
+            for event in events:
+                n_event = EventsManager.CreateEventObj(name=event['EVENT'],
+                                                       location=event["LOC"],
+                                                       date=event["DATE"],
+                                                       start_time=event['TIME'][0],
+                                                       end_time=event['TIME'][1])
+                EventsManager.events.append(n_event)
+            
+            # testing
+            for event in EventsManager.events:
+                EventsManager.PrintEvents(event)
+            print("------------------------------------------------------------------------------")            
             print("Done!")
 
         return True

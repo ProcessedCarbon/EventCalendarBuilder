@@ -5,6 +5,8 @@ from Calendar.CalendarInterface import CalendarInterface
 from Managers.TextProcessing import TextProcessingManager
 from Managers.DateTimeManager import DateTimeManager
 from GUI.EventDetailsPanel import EventDetailsPanel
+from Events.EventsManager import EventsManager
+from Events.EventsManager import Event
 from math import ceil
 
 class SchedulePage(Page):
@@ -37,14 +39,13 @@ class SchedulePage(Page):
         self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
 
     def OnExit(self):
-        NERInterface.ClearEvents()
         self.ResetDetails()
 
     def OnEntry(self):
         if len(self.details_panels) > 0:
             self.ResetDetails()
 
-        num_events = len(NERInterface.events)
+        num_events = len(EventsManager.events)
         if num_events > 0:
             self.PopulateDetails(num_events)
             self.Update()
@@ -72,32 +73,19 @@ class SchedulePage(Page):
             panel.Destroy()
         self.details_panels=[]
 
-    def UpdatePanel(self, panel:EventDetailsPanel, event_dict:dict):
-            time_list = event_dict["TIME"]
-            if len(time_list) < 2:
-                new_time = DateTimeManager.AddToTime(time_list[0], hrs=1)
-                time_list.append(new_time)
-
-            event = str(event_dict["EVENT"])
-            location = event_dict["LOC"]
-            date = event_dict["DATE"]
-            start_time = time_list[0]
-            end_time = time_list[1]
-            
-            panel.UpdateDetails(Event=event, 
-                                Location=location, 
-                                Date=date, 
-                                Start_Time=start_time, 
-                                End_Time=end_time)
+    def UpdatePanel(self, panel:EventDetailsPanel, event:Event):
+        panel.UpdateDetails(Event=event.name, 
+                            Location=event.location, 
+                            Date=event.date, 
+                            Start_Time=event.start_time, 
+                            End_Time=event.end_time)
     
     def Update(self):
-        if len(NERInterface.events) > 0:
+        if len(EventsManager.events) > 0:
             for panel in self.details_panels:
-                event = NERInterface.events.pop(0)
+                event = EventsManager.events.pop(0)
                 self.UpdatePanel(panel, event)
-
-            NERInterface.ClearEvents()
-
+            
     def CreateICSUsingEntities(self):
 
         # Check if all inputs are empty
@@ -126,21 +114,17 @@ class SchedulePage(Page):
             # Convert date and time to ics format
             ics_date = TextProcessingManager.ProcessDateToICSFormat(date)
             ics_time = TextProcessingManager.ProcessTimeToICSFormat(time_slots)
-            ics_time_s, ics_time_e = TextProcessingManager.ProcessICS(ics_date, ics_time)
+            ics_s, ics_e = TextProcessingManager.ProcessICS(ics_date, ics_time)
 
             # Create ICS File
             CalendarInterface.CreateICSEvent(e_name=event,
                                             e_description=desp,
-                                            s_datetime=ics_time_s,
-                                            e_datetime=ics_time_e,
+                                            s_datetime=ics_s,
+                                            e_datetime=ics_e,
                                             e_location=location,
                                             e_priority=int(priority))
         CalendarInterface.WriteToFile()
         CalendarInterface.ReadICSFile()
-
-
-
-        
         
         
 

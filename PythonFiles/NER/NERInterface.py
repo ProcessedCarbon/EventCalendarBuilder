@@ -5,7 +5,6 @@ model_path = r"./model/model-best"
 
 class NERInterface:
     nlp = spacy.load(model_path) #load model       
-    events = []
     # Extracts entities from given text
     def GetEntitiesFromText(text:str):
         """
@@ -78,20 +77,6 @@ class NERInterface:
             "DATE" : d,
             "LOC" : l,
         }
-    
-    # Prints entity per event in list
-    def PrintEvents(events : list[dict]):
-        for e in events:
-            event = e["EVENT"]
-            location = e["LOC"]
-            date = e["DATE"]
-            time = e["TIME"]
-
-            print("------------------------------------------------------------------------------")
-            print("event: ", event)
-            print("location: ", location)
-            print("date: ", date)
-            print("time: ", time)
 
     # Returns a list of event with single date time pairing
     def ProcessEvents(event_list:list[dict])->list:
@@ -106,9 +91,6 @@ class NERInterface:
                     new_event = NERInterface.getSingleEntity(e=e["EVENT"], t=t,d=d, l=e["LOC"])
                     processed_events.append(new_event)
         return processed_events
-    
-    def ClearEvents():
-        NERInterface.events = []
         
 def main():
     NER = NERInterface()
