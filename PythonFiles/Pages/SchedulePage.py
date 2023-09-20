@@ -85,36 +85,62 @@ class SchedulePage(Page):
             for panel in self.details_panels:
                 event = EventsManager.events.pop(0)
                 self.UpdatePanel(panel, event)
-            
-    def CreateICSUsingEntities(self):
+    
+    def CheckDetailsForDateTimeClash(self, details:list)->bool:
+        n = len(details)
+        for i in range(n):
+            for j in range (i+1, n):
+                if j > n:
+                    break
+                
+                start_1 = str(details[i]["Start_Time_ICS"])
+                end_1 = str(details[i]['End_Time_ICS'])
 
+                start_2 = str(details[j]["Start_Time_ICS"])
+                end_2 = str(details[j]['End_Time_ICS'])
+
+                if DateTimeManager.hasDateTimeClash(start_1, end_1, start_2, end_2):
+                    self.Prompt(f'{details[i]["Event"]} and {details[j]["Event"]} has clash')
+                    return True
+        return False
+
+    def CreateICSUsingEntities(self):
         # Check if all inputs are empty
         for panel in self.details_panels:
             if panel.getEmptyDetailCount() == EventDetailsPanel.num_details:
                 print("Empty panel found!")
                 return
         
-        print(self.details_panels)
         # Create ICS Event per EventDetailPanel
+        to_schedule = []
         for panel in self.details_panels:
-            details_entries = panel.getDetailEntries()
-            # Retrieve params from input
-            date = details_entries["Date"].get()
-            s_time = details_entries["Start_Time"].get()
-            e_time = details_entries["End_Time"].get()
-            desp = details_entries["Description"].get()
-            priority = int(details_entries["Priority"].get())
-            location = details_entries["Location"].get()
-            event = details_entries["Event"].get()
+            details = panel.getDetails()
 
+            # Process datetime to ics calendar format
             time_slots = []
-            time_slots.append(s_time)
-            time_slots.append(e_time)
+            time_slots.append(details['Start_Time'])
+            time_slots.append(details['End_Time'])
 
-            # Convert date and time to ics format
-            ics_date = TextProcessingManager.ProcessDateToICSFormat(date)
+            ics_date = TextProcessingManager.ProcessDateToICSFormat(details['Date'])
             ics_time = TextProcessingManager.ProcessTimeToICSFormat(time_slots)
             ics_s, ics_e = TextProcessingManager.ProcessICS(ics_date, ics_time)
+            
+            details['Start_Time_ICS'] = ics_s
+            details['End_Time_ICS'] = ics_e
+
+            to_schedule.append(details)
+        
+        if self.CheckDetailsForDateTimeClash(to_schedule):
+            return
+        
+        for schedule in to_schedule:
+            #Retrieve params from input
+            desp = schedule["Description"]
+            priority = int(schedule["Priority"])
+            location = schedule["Location"]
+            event = schedule["Event"]
+            ics_s = schedule["Start_Time_ICS"]
+            ics_e = schedule["End_Time_ICS"]
 
             # Create ICS File
             CalendarInterface.CreateICSEvent(e_name=event,
