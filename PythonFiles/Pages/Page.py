@@ -29,6 +29,3 @@ class Page:
     
     def SwitchTo(self):
         self.page.tkraise()
-    
-    def Prompt(self, promt_str:str):
-        print("Prompt: " + promt_str.upper() + "!")

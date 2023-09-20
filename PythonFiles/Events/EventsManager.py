@@ -90,4 +90,4 @@ class EventsManager:
                 EventsManager.events.remove(event)
                 return
             
-        print("EVENT NOT FOUND")
+        ErrorCodes.PrintCustomError("EVENT NOT FOUND")

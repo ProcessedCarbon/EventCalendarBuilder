@@ -7,6 +7,7 @@ from Managers.DateTimeManager import DateTimeManager
 
 class MainPage(Page):
     def __init__(self): 
+        self.main_page_textbox = None
         super().__init__()
     
     def OnStart(self):
@@ -19,13 +20,18 @@ class MainPage(Page):
         title.grid(row=0, column=1, sticky='n', pady=10)
 
         # Text box
-        textbox = GUIInterface.CreateTextbox(width=MainAppWindow.app_width * 0.5, height=MainAppWindow.app_height * 0.5)
-        textbox.grid(row=1, column=1, sticky='nsew')
+        self.main_page_textbox = GUIInterface.CreateTextbox(width=MainAppWindow.app_width * 0.5, height=MainAppWindow.app_height * 0.5)
+        self.main_page_textbox.grid(row=1, column=1, sticky='nsew')
 
         # Button
-        button = GUIInterface.CreateButton(text="Submit", on_click=lambda:self.Submit(textbox))
+        button = GUIInterface.CreateButton(text="Submit", on_click=lambda:self.Submit(self.main_page_textbox))
         button.grid(row=2, column=1, stick='s', pady=10)
     
+    def OnExit(self):
+        if self.main_page_textbox != None:
+            GUIInterface.ClearTextBox(self.main_page_textbox)
+        ErrorCodes.PrintCustomError("MISSING TEXTBOX REFERENCE")
+
     def Submit(self, textbox):
         success = self.ReadAndProcessText(textbox)
         

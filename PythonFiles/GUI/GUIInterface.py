@@ -297,9 +297,12 @@ class GUIInterface:
     def ClearCurrentFrame():
         GUIInterface.current_frame = None
 
+    def ClearTextBox(textbox:CTkTextbox):
+        textbox.delete("0.0", END)
+
     def SetCurrentFrame(frame):
         GUIInterface.current_frame = frame
-
+    
     def MainLoop(self):
         self.root.mainloop()
 

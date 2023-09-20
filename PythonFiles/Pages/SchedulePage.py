@@ -94,7 +94,7 @@ class SchedulePage(Page):
                 end_2 = str(details[j]['End_Time_ICS'])
 
                 if DateTimeManager.hasDateTimeClash(start_1, end_1, start_2, end_2):
-                    self.Prompt(f'{details[i]["Event"]} and {details[j]["Event"]} has clash')
+                    ErrorCodes.PrintCustomError(f'{details[i]["Event"]} AND {details[j]["Event"]} HAS CLASH')
                     return True
         return False
 
