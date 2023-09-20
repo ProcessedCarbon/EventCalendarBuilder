@@ -8,6 +8,41 @@ class Event:
         self.date = date
         self.start_time = start_time
         self.end_time = end_time
+    
+    def getId(self)->int:
+        return self.id
+        
+    def getName(self)->str:
+        return self.name
+        
+    def getLocation(self)->str:
+        return self.location
+        
+    def getDate(self)->str:
+        return self.date
+        
+    def getStart_Time(self)->str:
+        return self.start_time
+        
+    def getEnd_Time(self)->str:
+        return self.end_time
+        
+    def setName(self, name:str):
+        self.name = name
+        
+    def setLocation(self, location:str):
+        self.location = location
+        
+    def setDate(self, date:str):
+        self.date = date
+        
+    def setStart_Time(self, start_time:str):
+        self.start_time = start_time
+        
+    def setEnd_Time(self, end_time:str):
+        self.end_time = end_time
+    
+    
 
 class EventsManager:
     events = []
@@ -48,3 +83,11 @@ class EventsManager:
     
     def ClearEvents():
         EventsManager.events = []
+
+    def RemoveEvent(id:int):
+        for event in EventsManager.events:
+            if event.getId() == id:
+                EventsManager.events.remove(event)
+                return
+            
+        print("EVENT NOT FOUND")

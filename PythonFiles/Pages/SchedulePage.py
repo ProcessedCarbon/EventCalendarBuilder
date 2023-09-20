@@ -1,6 +1,5 @@
 from Pages.Page import *
 from GUI.MainAppWindow import MainAppWindow
-from NER.NERInterface import NERInterface
 from Calendar.CalendarInterface import CalendarInterface
 from Managers.TextProcessing import TextProcessingManager
 from Managers.DateTimeManager import DateTimeManager
@@ -44,24 +43,28 @@ class SchedulePage(Page):
     def OnEntry(self):
         if len(self.details_panels) > 0:
             self.ResetDetails()
-
+        
         num_events = len(EventsManager.events)
         if num_events > 0:
-            self.PopulateDetails(num_events)
+            self.PopulateDetails(EventsManager.events)
             self.Update()
 
-    def PopulateDetails(self, num_events):
-        detail_rows = ceil(num_events / self.details_panels_max_column)
+    def PopulateDetails(self, events:list[Event]):
+        n = len(events)
+        detail_rows = ceil(n / self.details_panels_max_column)
         rows = [1] * detail_rows
         cols = [1] * self.details_panels_max_column
         GUIInterface.CreateGrid(self.details_panel_frame, rows=rows, cols=cols)
         row_at = 0
-        for i in range(num_events):
-            count = i % self.details_panels_max_column
-            if count == 0 and i != 0:
+        for index, event in enumerate(events):
+            count = index % self.details_panels_max_column
+            if count == 0 and index != 0:
                 row_at += 1
-            detail_panel = EventDetailsPanel(self.details_panel_frame, 
-                                             self.entry_width, 
+            detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
+                                             event=event,
+                                             remove_callback=self.DeleteDetailPanel,
+                                             index=index, 
+                                             entry_widths=self.entry_width, 
                                              row=row_at, 
                                              column=count, 
                                              sticky='nsew')
@@ -72,19 +75,10 @@ class SchedulePage(Page):
             panel.Reset()
             panel.Destroy()
         self.details_panels=[]
-
-    def UpdatePanel(self, panel:EventDetailsPanel, event:Event):
-        panel.UpdateDetails(Event=event.name, 
-                            Location=event.location, 
-                            Date=event.date, 
-                            Start_Time=event.start_time, 
-                            End_Time=event.end_time)
     
     def Update(self):
-        if len(EventsManager.events) > 0:
-            for panel in self.details_panels:
-                event = EventsManager.events.pop(0)
-                self.UpdatePanel(panel, event)
+        for panel in self.details_panels:
+            panel.UpdateDetails()
     
     def CheckDetailsForDateTimeClash(self, details:list)->bool:
         n = len(details)
@@ -152,5 +146,5 @@ class SchedulePage(Page):
         CalendarInterface.WriteToFile()
         CalendarInterface.ReadICSFile()
         
-        
-
+    def DeleteDetailPanel(self, index:int):
+        del self.details_panels[index]
