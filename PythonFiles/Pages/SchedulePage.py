@@ -40,8 +40,6 @@ class SchedulePage(Page):
     def OnExit(self):
         self.ResetDetails()
         self.UpdateEventsDB()
-        print(EventsManager.events)
-        print(EventsManager.events_db)
 
     def OnEntry(self):
         if len(self.details_panels) > 0:
