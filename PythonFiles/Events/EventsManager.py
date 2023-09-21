@@ -42,10 +42,9 @@ class Event:
     def setEnd_Time(self, end_time:str):
         self.end_time = end_time
     
-    
-
 class EventsManager:
     events = []
+    events_db = []
     def __init__(self) -> None:
         pass
 
@@ -91,3 +90,7 @@ class EventsManager:
                 return
             
         ErrorCodes.PrintCustomError("EVENT NOT FOUND")
+    
+    def SendEventsToEventsDB(event_list:list[Event]):
+        eventList = [x for x in event_list if x not in EventsManager.events_db]
+        EventsManager.events_db.extend(eventList)

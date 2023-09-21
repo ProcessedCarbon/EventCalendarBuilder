@@ -30,6 +30,7 @@ class MainPage(Page):
     def OnExit(self):
         if self.main_page_textbox != None:
             GUIInterface.ClearTextBox(self.main_page_textbox)
+            return
         ErrorCodes.PrintCustomError("MISSING TEXTBOX REFERENCE")
 
     def Submit(self, textbox):

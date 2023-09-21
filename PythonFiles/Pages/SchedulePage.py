@@ -39,6 +39,9 @@ class SchedulePage(Page):
 
     def OnExit(self):
         self.ResetDetails()
+        self.UpdateEventsDB()
+        print(EventsManager.events)
+        print(EventsManager.events_db)
 
     def OnEntry(self):
         if len(self.details_panels) > 0:
@@ -127,24 +130,40 @@ class SchedulePage(Page):
         if self.CheckDetailsForDateTimeClash(to_schedule):
             return
         
-        for schedule in to_schedule:
-            #Retrieve params from input
-            desp = schedule["Description"]
-            priority = int(schedule["Priority"])
-            location = schedule["Location"]
-            event = schedule["Event"]
-            ics_s = schedule["Start_Time_ICS"]
-            ics_e = schedule["End_Time_ICS"]
+        try:
+            for schedule in to_schedule:
+                #Retrieve params from input
+                desp = schedule["Description"]
+                priority = int(schedule["Priority"])
+                location = schedule["Location"]
+                event = schedule["Event"]
+                ics_s = schedule["Start_Time_ICS"]
+                ics_e = schedule["End_Time_ICS"]
 
-            # Create ICS File
-            CalendarInterface.CreateICSEvent(e_name=event,
-                                            e_description=desp,
-                                            s_datetime=ics_s,
-                                            e_datetime=ics_e,
-                                            e_location=location,
-                                            e_priority=int(priority))
-        CalendarInterface.WriteToFile()
-        CalendarInterface.ReadICSFile()
+                # Create ICS File
+                CalendarInterface.CreateICSEvent(e_name=event,
+                                                e_description=desp,
+                                                s_datetime=ics_s,
+                                                e_datetime=ics_e,
+                                                e_location=location,
+                                                e_priority=int(priority))
+        except Exception as e:
+            ErrorCodes.PrintCustomError(e)
+            return
+
+        try:
+            CalendarInterface.WriteToFile()
+            CalendarInterface.ReadICSFile()
+            self.UpdateEventsDB()
+        except Exception as e:
+            ErrorCodes.PrintCustomError(e)
         
     def DeleteDetailPanel(self, index:int):
         del self.details_panels[index]
+
+    def UpdateEventsDB(self):
+        try:
+            EventsManager.SendEventsToEventsDB(EventsManager.events)
+            EventsManager.ClearEvents()
+        except Exception as e:
+            ErrorCodes.PrintCustomError(e)
