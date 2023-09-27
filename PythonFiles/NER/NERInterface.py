@@ -4,7 +4,8 @@ from Managers.ErrorConfig import ErrorCodes
 model_path = r"./model/model-best"
 
 class NERInterface:
-    nlp = spacy.load(model_path) #load model       
+    nlp = spacy.load(model_path) #load model   
+
     # Extracts entities from given text
     def GetEntitiesFromText(text:str):
         """
@@ -79,17 +80,21 @@ class NERInterface:
         }
 
     # Returns a list of event with single date time pairing
-    def ProcessEvents(event_list:list[dict])->list:
+    def HandleEventDateTimeMapping(event_list:list[dict])->list:
         """
-        Per date in each event in event_list, creates a single date time pairing and
-        creates  duplicate of that event
+        Maps each date in an event to a time. Ignores extras for both date
+        and time.
         """
         processed_events = []
         for e in event_list:
-            for d in e["DATE"]:
-                for t in e["TIME"]:
-                    new_event = NERInterface.getSingleEntity(e=e["EVENT"], t=t,d=d, l=e["LOC"])
-                    processed_events.append(new_event)
+            n_t = len(e["TIME"])
+            for i in range(len(e["DATE"])):
+                t = e["TIME"][i] if (i < n_t) else ""
+                new_event = NERInterface.getSingleEntity(e=e["EVENT"], 
+                                                        t=t,
+                                                        d=e["DATE"][i], 
+                                                        l=e["LOC"])
+                processed_events.append(new_event)
         return processed_events
         
 def main():

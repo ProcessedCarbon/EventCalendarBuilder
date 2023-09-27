@@ -53,7 +53,7 @@ class MainPage(Page):
         if len(events) > 0:
             print("------------------------------------------------------------------------------")
             print("Process events.....")
-            events = NERInterface.ProcessEvents(events)
+            events = NERInterface.HandleEventDateTimeMapping(events)
             print("------------------------------------------------------------------------------")
             print("Processing text...... ")
             for i in range(len(events)):
@@ -63,9 +63,11 @@ class MainPage(Page):
                 time = events[i]["TIME"]        
                 events[i]["TIME"] = TextProcessingManager.ProcessTime(time_text=str(time))
 
-                if len(events[i]["TIME"]) < 2:
-                    new_time = DateTimeManager.AddToTime(events[i]["TIME"][0], hrs=1)
-                    events[i]["TIME"].append(new_time)
+                n = len(events[i]["TIME"])
+                if n < 2:
+                    new_time = [DateTimeManager.AddToTime(events[i]["TIME"][0], hrs=1)] if n > 0 else ["", ""]
+                    events[i]["TIME"].extend(new_time)
+                    print(events[i]["TIME"])
             print("------------------------------------------------------------------------------")
             print("Add to event manager list")
             for event in events:
