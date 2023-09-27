@@ -67,7 +67,6 @@ class MainPage(Page):
                 if n < 2:
                     new_time = [DateTimeManager.AddToTime(events[i]["TIME"][0], hrs=1)] if n > 0 else ["", ""]
                     events[i]["TIME"].extend(new_time)
-                    print(events[i]["TIME"])
             print("------------------------------------------------------------------------------")
             print("Add to event manager list")
             for event in events:
