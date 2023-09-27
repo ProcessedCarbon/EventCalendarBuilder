@@ -21,16 +21,24 @@ class ErrorCodes:
         }
 
     def PrintErrorWithCode(errorCode:int):
+        # Getting the call stack
         stack = inspect.stack()
-        className = stack[1][0].f_locals["self"].__class__.__name__
-        methodName = stack[1][0].f_code.co_name
-        print(f'[{className.upper()}]({methodName}()): {ErrorCodes._error_codes[errorCode]}')
+        # The previous frame in the stack is the caller
+        caller_frame = stack[1]
+        # Extract details from the caller frame
+        caller_function_name = caller_frame.function
+        caller_class_name = caller_frame[0].f_locals.get("self", None).__class__.__name__
+        print(f'[{caller_function_name.upper()}]({caller_class_name}()): {ErrorCodes._error_codes[errorCode]}')
     
     def PrintCustomError(e:str):
+        # Getting the call stack
         stack = inspect.stack()
-        className = stack[1][0].f_locals["self"].__class__.__name__
-        methodName = stack[1][0].f_code.co_name
-        print(f'[{className.upper()}]({methodName}()): {e}')
+        # The previous frame in the stack is the caller
+        caller_frame = stack[1]
+        # Extract details from the caller frame
+        caller_function_name = caller_frame.function
+        caller_class_name = caller_frame[0].f_locals.get("self", None).__class__.__name__
+        print(f'[{caller_function_name.upper()}]({caller_class_name}()): {e}')
 
 def getParamValFromKwarg(param_name:str, kwargs:dict, default=None, allowNone=True):
     return kwargs[param_name] if param_name in kwargs else default
