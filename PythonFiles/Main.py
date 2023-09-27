@@ -1,5 +1,7 @@
-from Managers.DirectoryManager import DirectoryManager
-DirectoryManager()
+import os
+from pathlib import Path
+os.chdir(Path(os.path.dirname(os.path.realpath(__file__))).parent.absolute())
+
 
 from GUI.GUIInterface import GUIInterface
 from GUI.MainAppWindow import MainAppWindow

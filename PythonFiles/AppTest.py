@@ -66,15 +66,8 @@ def SingleEventTest():
     print("------------------------------------------------------------------------------")
     print("Done!")
 
-def DirectoryTest():
-    from Managers.DirectoryManager import DirectoryManager
-    import os
-    DirectoryManager()
-    print(os.getcwd())
-
 def main():    
     #SingleEventTest()
-    #DirectoryTest()
     pass
 
 if __name__ == "__main__":
