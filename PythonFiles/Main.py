@@ -1,3 +1,6 @@
+from Managers.DirectoryManager import DirectoryManager
+DirectoryManager()
+
 from GUI.GUIInterface import GUIInterface
 from GUI.MainAppWindow import MainAppWindow
 from Pages.MainPage import MainPage
