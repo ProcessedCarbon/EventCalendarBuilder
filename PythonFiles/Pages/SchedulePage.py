@@ -6,6 +6,8 @@ from Managers.DateTimeManager import DateTimeManager
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
 from Events.EventsManager import Event
+from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+
 from math import ceil
 
 class SchedulePage(Page):
@@ -14,6 +16,7 @@ class SchedulePage(Page):
         self.details_panels_max_column = 3
         self.entry_width = MainAppWindow.app_width * 0.5
         self.details_panels_frame = None
+        self.google_calendar = GoogleCalendarInterface()
         super().__init__()
 
     def OnStart(self):
@@ -149,12 +152,11 @@ class SchedulePage(Page):
             ErrorCodes.PrintCustomError(e)
             return
 
-        try:
-            CalendarInterface.WriteToFile()
-            CalendarInterface.ReadICSFile()
-            self.UpdateEventsDB()
-        except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+        CalendarInterface.WriteToFile('to_schedule')
+        event = self.google_calendar.Parse_ICS('to_schedule')
+        self.google_calendar.ScheduleCalendarEvent(googleEvent=event)
+        self.UpdateEventsDB()
+
         
     def DeleteDetailPanel(self, index:int):
         del self.details_panels[index]

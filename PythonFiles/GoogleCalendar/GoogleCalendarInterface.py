@@ -5,6 +5,8 @@ from Managers.DateTimeManager import DateTimeManager
 from Managers.LocationManager import LocationManager
 from Managers.ErrorConfig import ErrorCodes
 from GoogleCalendar.GoogleEvent import GoogleEvent
+from Calendar.CalendarInterface import CalendarInterface
+from Managers.TextProcessing import TextProcessingManager
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -82,7 +84,7 @@ class GoogleCalendarInterface:
         return events
 
     # Event creation
-    def CreateCalendarEvent(self, googleEvent: GoogleEvent):
+    def ScheduleCalendarEvent(self, googleEvent: GoogleEvent):
         """
         Creates the google event on the google calendar
 
@@ -94,7 +96,7 @@ class GoogleCalendarInterface:
             return
         
         if type(googleEvent) is not GoogleEvent:
-            ErrorCodes.PrintErrorWithCode(__class__.__name__, "CreateCalendarEvent", 1000)
+            ErrorCodes.PrintErrorWithCode(1000)
             print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             return
 
@@ -103,7 +105,7 @@ class GoogleCalendarInterface:
         print(f"Event created {new_event.get('htmlLink')}")
 
     # Creates event datatype
-    def CreateGoogleEvent(self, event, location, timezone="", time=[], date=[], colorId=1):
+    def CreateGoogleEvent(self, title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, colorId=1):
         """
         Returns the google calendar event format with the given entities in placed to be used to parsed to create a new event on google calendars
         https://developers.google.com/calendar/api/v3/reference/events
@@ -116,39 +118,33 @@ class GoogleCalendarInterface:
         :param str time_end: End timing of the event
         :return: Event format using google calendars
         """
-
-        date_start = len(date) > 0 and date[0] or None
-        time_start = len(time) > 0 and time[0] or None
-
-        date_end = len(date) > 1 and date[1] or None
-        time_end = len(time) > 1 and time[1] or None
-
-        curr_date = DateTimeManager.getCurrentDate()
-        curr_time = DateTimeManager.getCurrentTime()
-
-        # handle date and time
-        start_date_to_use = str(date_start is not None and date_start or curr_date)
-        start_time_to_use = str(time_start is not None and time_start or curr_time)
-
-        end_date_to_use = str(date_end is not None and date_end or start_date_to_use)
-        end_time_to_use = str(time_end is not None and time_end or DateTimeManager.AddToTime(time=start_time_to_use, hrs=1))
-        
-        # Handle timezone
-        country_gotten = LocationManager.getCurrentCountry()
-        country =  country_gotten != None and country_gotten or LocationManager._default_country
-        country_code = LocationManager.getCountryCode(country)
-        tz = DateTimeManager.getTimeZone(timezone_abrev_=timezone, country_code_=country_code, country_=country)
-
-        return GoogleEvent(event=str(event), 
-                           location=str(location), 
-                           time_start=start_time_to_use,
-                           time_end=end_time_to_use,
-                           date_start=start_date_to_use,
-                           date_end=end_date_to_use,
-                           colorId=colorId,
-                           timezone=str(tz)
+        return GoogleEvent(event=title, 
+                            location=str(location), 
+                            start_datetime=dtstart,
+                            end_datetime=dtend,
+                            colorId=colorId,
+                            tzstart=tzstart,
+                            tzend=tzend
                            )
 
+    def Parse_ICS(self, ics:str):
+        ics_file = CalendarInterface.getICSFile(ics)
+        for component in ics_file.walk():
+              if component.name == "VEVENT":
+                    start_datetime = component.get('dtstart').dt.isoformat()
+                    end_datetime = component.get('dtend').dt.isoformat()
+                    tzstart = str(component.get('dtstart').dt.tzinfo)
+                    tzend = str(component.get('dtstart').dt.tzinfo)
+
+                    return self.CreateGoogleEvent(title=component.get('name'),
+                                                    location=component.get("location"),
+                                                    dtstart=start_datetime,
+                                                    dtend=end_datetime,
+                                                    tzstart=tzstart,
+                                                    tzend=tzend
+                                                    )
+                  
+        pass
 # For testing
 def main():
     googleCalendar = GoogleCalendarInterface()

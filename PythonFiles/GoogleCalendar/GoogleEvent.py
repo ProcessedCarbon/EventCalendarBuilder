@@ -1,8 +1,12 @@
 class GoogleEvent:
-    def __init__(self, event: str, location: str, time_start: str, time_end: str, date_start: str, date_end: str, timezone: str, colorId=1):
-        start_datetime = self.CreateGoogleDateTimeFormat(date=date_start, time=time_start)
-        end_datetime = self.CreateGoogleDateTimeFormat(date=date_end, time=time_end)
-
+    def __init__(self, event: str, 
+                 location: str, 
+                 start_datetime: str, 
+                 end_datetime: str, 
+                 tzstart: str, 
+                 tzend:str, 
+                 colorId=1):
+        
         self.event = {
             "summary" : event,
             "location" : location,
@@ -10,11 +14,11 @@ class GoogleEvent:
             "colorId" : colorId,
             "start" : {
                 "dateTime" : start_datetime,
-                "timeZone" : timezone
+                "timeZone" : tzstart
             },
             "end" : {
                 "dateTime" : end_datetime,
-                "timeZone" : timezone
+                "timeZone" : tzend
             },
             # "recurrence" : [
             #     "RRULE:FREQ=DAILY;COUNT=2"
@@ -26,7 +30,3 @@ class GoogleEvent:
 
     def __repr__(self):
         return f"GoogleEvent(event='{self.event}')"
-    
-    def CreateGoogleDateTimeFormat(self, date: str, time: str):
-        return date + "T" + time
-    
