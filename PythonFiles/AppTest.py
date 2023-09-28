@@ -70,8 +70,6 @@ def SingleEventTest():
     print("Done!")
 
 def main():    
-    import sys
-    print(sys.path)
     SingleEventTest()
     pass
 
