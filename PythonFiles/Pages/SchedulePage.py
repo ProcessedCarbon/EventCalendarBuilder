@@ -105,8 +105,16 @@ class SchedulePage(Page):
     def CreateICSUsingEntities(self):
         # Check if all inputs are empty
         for panel in self.details_panels:
+            # If a panel is empty reject 
             if panel.getEmptyDetailCount() == EventDetailsPanel.num_details:
                 print("Empty panel found!")
+                return
+                         
+            details = panel.getDetails()
+
+            # Panel has missing Start or End time reject
+            if details['Start_Time'] == "" or details['End_Time'] == "":
+                print(f'Missing Start or End time for {details["Event"].upper()}[{details["Date"]}]')
                 return
         
         # Create ICS Event per EventDetailPanel
@@ -118,6 +126,8 @@ class SchedulePage(Page):
             time_slots = []
             time_slots.append(details['Start_Time'])
             time_slots.append(details['End_Time'])
+
+            print(time_slots)
 
             ics_date = TextProcessingManager.ProcessDateToICSFormat(details['Date'])
             ics_time = TextProcessingManager.ProcessTimeToICSFormat(time_slots)
