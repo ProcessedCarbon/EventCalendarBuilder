@@ -82,6 +82,9 @@ class CalendarInterface:
     
     def getICSFilePath(file_name:str):
         return os.path.join(CalendarInterface._calendar_file_dir, f'{file_name}.ics')
+    
+    def ClearICSFile(file_name:str):
+        open(CalendarInterface.getICSFilePath(file_name), 'w').close()
 
 # def UsageExample():
 #     cal_interface.CreateICSEvent()

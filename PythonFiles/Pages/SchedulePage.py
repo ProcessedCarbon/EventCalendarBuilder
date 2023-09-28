@@ -27,7 +27,7 @@ class SchedulePage(Page):
         self.PageGrid(rows=rows, cols=cols)
 
         # Back Button
-        button = GUIInterface.CreateButton(text="<", on_click=lambda:PageManager.SwitchPages(0), width=50)
+        button = GUIInterface.CreateButton(text="<", on_click=lambda:self.BackButton(['to_schedule'], 0), width=50)
         button.grid(row=0, column=0, sticky='nw')
 
         # Schedule Button
@@ -163,8 +163,8 @@ class SchedulePage(Page):
             return
 
         CalendarInterface.WriteToFile('to_schedule')
-        #self.ScheduleDefault('to_schedule')
-        self.ScheduleGoogleCalendar('to_schedule')
+        self.ScheduleDefault('to_schedule')
+        #self.ScheduleGoogleCalendar('to_schedule')
         self.UpdateEventsDB()
         
     def DeleteDetailPanel(self, index:int):
@@ -193,3 +193,9 @@ class SchedulePage(Page):
         events = GoogleCalendarInterface.Parse_ICS(ics_file)
         for e in events:
             GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=e)
+
+    def BackButton(self, ics_files_to_clear: list[str], page:int=0):
+        for files in ics_files_to_clear:
+            CalendarInterface.ClearICSFile(files)
+
+        PageManager.SwitchPages(page)
