@@ -178,19 +178,29 @@ class DateTimeManager:
         return datetime(year, month, day, hour, min, sec, tzinfo=tz)
     
     # Accepts only format of YYYY-MM-DD HH:MM:SS z for both
-    def hasDateTimeClash(start1:str, end1:str, start2:str, end2:str)->bool:
+    def hasDateTimeClash(start1:str, end1:str, start2:str, end2:str, fmt='%Y-%m-%d %H:%M:%S%z')->bool:
         # Format: %Y-%m-%d %H:%M:%S%z
         try:
-            start_1 = datetime.strptime(start1, '%Y-%m-%d %H:%M:%S%z')
-            end_1 = datetime.strptime(end1, '%Y-%m-%d %H:%M:%S%z')
+            start_1 = datetime.strptime(start1, fmt)
+            end_1 = datetime.strptime(end1, fmt)
 
-            start_2 = datetime.strptime(start2, '%Y-%m-%d %H:%M:%S%z')
-            end_2 = datetime.strptime(end2, '%Y-%m-%d %H:%M:%S%z')
+            start_2 = datetime.strptime(start2, fmt)
+            end_2 = datetime.strptime(end2, fmt)
             
             return start_1 <= end_2 and start_2 <= end_1
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
 
+    def CompareTimes(time_str1, time_str2, fmt='%H:%M:%S')->bool:
+        """Compare two time strings and print if the first is smaller, equal, or larger than the second."""
+        
+        # Convert strings to datetime objects
+        time1 = datetime.strptime(time_str1, fmt)
+        time2 = datetime.strptime(time_str2, fmt)
+        
+        # Compare times
+        return time1 < time2
+    
 # For testing
 def main():
     dt_config = DateTimeManager()

@@ -58,12 +58,12 @@ class CalendarInterface:
         except:
             pass
 
-        f = open(os.path.join(CalendarInterface._calendar_file_dir, f'{file_name}.ics'), 'wb')
+        f = open(CalendarInterface.getICSFilePath(file_name), 'wb')
         f.write(CalendarInterface._cal.to_ical())
         f.close()
     
     def ReadICSFile(file_name:str):
-        e = open(os.path.join(CalendarInterface._calendar_file_dir, f'{file_name}.ics'), 'rb')
+        e = open(CalendarInterface.getICSFilePath(file_name), 'rb')
         ecal = icalendar.Calendar.from_ical(e.read())
         for component in ecal.walk():
             if component.name == "VEVENT":
@@ -76,9 +76,12 @@ class CalendarInterface:
             e.close()
 
     def getICSFile(file_name:str):
-        e = open(os.path.join(CalendarInterface._calendar_file_dir, f'{file_name}.ics'), 'rb')
+        e = open(CalendarInterface.getICSFilePath(file_name), 'rb')
         ecal = icalendar.Calendar.from_ical(e.read())
         return ecal
+    
+    def getICSFilePath(file_name:str):
+        return os.path.join(CalendarInterface._calendar_file_dir, f'{file_name}.ics')
 
 # def UsageExample():
 #     cal_interface.CreateICSEvent()

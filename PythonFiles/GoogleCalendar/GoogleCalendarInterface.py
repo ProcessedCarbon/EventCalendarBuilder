@@ -128,6 +128,7 @@ class GoogleCalendarInterface:
             ErrorCodes.PrintErrorWithCode(1001)
             return
         
+        events = []
         ics_file = CalendarInterface.getICSFile(ics)
         for component in ics_file.walk():
               if component.name == "VEVENT":
@@ -136,13 +137,14 @@ class GoogleCalendarInterface:
                     tzstart = str(component.get('dtstart').dt.tzinfo)
                     tzend = str(component.get('dtstart').dt.tzinfo)
 
-                    return GoogleCalendarInterface.CreateGoogleEvent(title=component.get('name'),
-                                                                    location=component.get("location"),
-                                                                    dtstart=start_datetime,
-                                                                    dtend=end_datetime,
-                                                                    tzstart=tzstart,
-                                                                    tzend=tzend
-                                                                    )
+                    events.append(GoogleCalendarInterface.CreateGoogleEvent(title=component.get('name'),
+                                                                            location=component.get("location"),
+                                                                            dtstart=start_datetime,
+                                                                            dtend=end_datetime,
+                                                                            tzstart=tzstart,
+                                                                            tzend=tzend
+                                                                        ))
+        return events
                   
 
     

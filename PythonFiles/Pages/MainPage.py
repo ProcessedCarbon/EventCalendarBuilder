@@ -63,10 +63,20 @@ class MainPage(Page):
                 time = events[i]["TIME"]        
                 events[i]["TIME"] = TextProcessingManager.ProcessTime(time_text=str(time))
 
+                # If time only has start time get an end time
                 n = len(events[i]["TIME"])
                 if n < 2:
                     new_time = [DateTimeManager.AddToTime(events[i]["TIME"][0], hrs=1)] if n > 0 else ["", ""]
+                    
+                    # Check if end time is greater than start time after adding
+                    if new_time != ["", ""] and DateTimeManager.CompareTimes(str(new_time[0]), str(events[i]["TIME"][0])):
+                        new_time = [DateTimeManager.AddToTime(events[i]["TIME"][0], hrs=-1)]
+                        tmp = events[i]["TIME"]
+                        events[i]["TIME"] = new_time
+                        new_time = tmp
+
                     events[i]["TIME"].extend(new_time)
+
             print("------------------------------------------------------------------------------")
             print("Add to event manager list")
             for event in events:

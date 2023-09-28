@@ -7,6 +7,9 @@ from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
 from Events.EventsManager import Event
 from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+from sys import platform
+import os
+import subprocess
 
 from math import ceil
 
@@ -126,8 +129,6 @@ class SchedulePage(Page):
             time_slots.append(details['Start_Time'])
             time_slots.append(details['End_Time'])
 
-            print(time_slots)
-
             ics_date = TextProcessingManager.ProcessDateToICSFormat(details['Date'])
             ics_time = TextProcessingManager.ProcessTimeToICSFormat(time_slots)
             ics_s, ics_e = TextProcessingManager.ProcessICS(ics_date, ics_time)
@@ -162,8 +163,8 @@ class SchedulePage(Page):
             return
 
         CalendarInterface.WriteToFile('to_schedule')
-        event = GoogleCalendarInterface.Parse_ICS('to_schedule')
-        GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=event)
+        #self.ScheduleDefault('to_schedule')
+        self.ScheduleGoogleCalendar('to_schedule')
         self.UpdateEventsDB()
         
     def DeleteDetailPanel(self, index:int):
@@ -175,3 +176,20 @@ class SchedulePage(Page):
             EventsManager.ClearEvents()
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
+
+    def ScheduleDefault(self, ics_file:str):
+        if platform == "linux":
+            filename = CalendarInterface.getICSFilePath(ics_file)
+            subprocess.run(['xdg-open', filename])
+            pass
+        elif platform == 'darwin':
+            filename = CalendarInterface.getICSFilePath(ics_file)
+            subprocess.run(['open', filename])
+        else:
+            path = CalendarInterface.getICSFilePath(ics_file)
+            os.startfile(path)
+
+    def ScheduleGoogleCalendar(self, ics_file):
+        events = GoogleCalendarInterface.Parse_ICS(ics_file)
+        for e in events:
+            GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=e)
