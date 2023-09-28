@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+os.chdir(Path(os.path.dirname(os.path.realpath(__file__))).parent.absolute())
 
 # Extracts text from plain text file 
 def getTestingText(file_path):
@@ -67,7 +70,9 @@ def SingleEventTest():
     print("Done!")
 
 def main():    
-    #SingleEventTest()
+    import sys
+    print(sys.path)
+    SingleEventTest()
     pass
 
 if __name__ == "__main__":
