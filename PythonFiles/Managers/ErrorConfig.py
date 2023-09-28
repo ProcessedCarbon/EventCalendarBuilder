@@ -38,7 +38,7 @@ class ErrorCodes:
         # Extract details from the caller frame
         caller_function_name = caller_frame.function
         caller_class_name = caller_frame[0].f_locals.get("self", None).__class__.__name__
-        print(f'[{caller_function_name.upper()}]({caller_class_name}()): {e}')
+        print(f'[{caller_class_name.upper()}]({caller_function_name}()): {e}')
 
 def getParamValFromKwarg(param_name:str, kwargs:dict, default=None, allowNone=True):
     return kwargs[param_name] if param_name in kwargs else default
