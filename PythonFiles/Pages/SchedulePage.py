@@ -16,7 +16,6 @@ class SchedulePage(Page):
         self.details_panels_max_column = 3
         self.entry_width = MainAppWindow.app_width * 0.5
         self.details_panels_frame = None
-        self.google_calendar = GoogleCalendarInterface()
         super().__init__()
 
     def OnStart(self):
@@ -163,10 +162,9 @@ class SchedulePage(Page):
             return
 
         CalendarInterface.WriteToFile('to_schedule')
-        event = self.google_calendar.Parse_ICS('to_schedule')
-        self.google_calendar.ScheduleCalendarEvent(googleEvent=event)
+        event = GoogleCalendarInterface.Parse_ICS('to_schedule')
+        GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=event)
         self.UpdateEventsDB()
-
         
     def DeleteDetailPanel(self, index:int):
         del self.details_panels[index]
