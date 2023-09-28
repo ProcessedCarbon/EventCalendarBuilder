@@ -30,3 +30,21 @@ class GoogleEvent:
 
     def __repr__(self):
         return f"GoogleEvent(event='{self.event}')"
+    
+    def getEvent(self)->str:
+        return self.event['summary']
+    
+    def getLocation(self)->str:
+        return self.event['location']
+    
+    def getStartDate(self)->str:
+        return self.event['start']['dateTime']
+    
+    def getStartTz(self)->str:
+        return self.event['start']['timeZone']
+    
+    def getEndDate(self)->str:
+        return self.event['end']['dateTime']
+    
+    def getEndTz(self)->str:
+        return self.event['end']['timeZone']
