@@ -249,7 +249,6 @@ class GUIInterface:
     def CreateEntryWithLabel(label:str, **kwargs)->list[CTkFrame, CTkLabel, CTkEntry]:
         entry_width =       getParamValFromKwarg('entry_width', kwargs)
         default_text =      getParamValFromKwarg('default_text', kwargs)
-        state =             getParamValFromKwarg('state', kwargs)
 
         tmp_frame = GUIInterface.current_frame
         entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
@@ -262,7 +261,7 @@ class GUIInterface:
         label.grid(row=0, column=0)
 
         # Entry
-        entry = GUIInterface.CreateEntry(width=entry_width, textvariable=default_text, state=state)
+        entry = GUIInterface.CreateEntry(width=entry_width, textvariable=default_text)
         entry.grid(row=0, column=1, sticky='e')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
@@ -327,9 +326,11 @@ class GUIInterface:
 
         return window
 
-    def UpdateEntry(entry:CTkEntry, text_var:str):
+    def UpdateEntry(entry:CTkEntry, text_var:str, uneditable=False):
+        entry.configure(state='normal')
         entry.delete(0, END)
         entry.insert(0, text_var)
+        entry.configure(state='readonly' if uneditable else 'normal')
         
     def RetrieveCurrentInputFromTextbox(text:CTkTextbox)->str:
         input = text.get("0.0", END)

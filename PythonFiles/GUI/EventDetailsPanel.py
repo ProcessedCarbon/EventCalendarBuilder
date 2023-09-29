@@ -54,14 +54,14 @@ class EventDetailsPanel:
         l_frame, l_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Location")
         l_frame.grid(row=4, sticky='nsew',pady=self.gap)
 
-        d_frame, d_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Date", state='normal')
+        d_frame, d_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Date")
         d_frame.grid(row=5,sticky='nsew',pady=self.gap)
         d_entry.bind('<1>', lambda event, entry=d_entry: self.PickDate(entry))
 
-        st_frame, st_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time", state='normal')
+        st_frame, st_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time")
         st_frame.grid(row=6,sticky='nsew',pady=self.gap)
 
-        et_frame, et_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time",state='normal')
+        et_frame, et_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time")
         et_frame.grid(row=7,sticky='nsew',pady=self.gap)
 
         GUIInterface.SetCurrentFrame(tmp_frame)
@@ -77,9 +77,9 @@ class EventDetailsPanel:
     def UpdateDetails(self):
         GUIInterface.UpdateEntry(self.details_entries["Event"], self.event.getName())
         GUIInterface.UpdateEntry(self.details_entries["Location"], self.event.getLocation())
-        GUIInterface.UpdateEntry(self.details_entries["Date"], self.event.getDate())
-        GUIInterface.UpdateEntry(self.details_entries["Start_Time"], self.event.getStart_Time())
-        GUIInterface.UpdateEntry(self.details_entries["End_Time"], self.event.getEnd_Time())
+        GUIInterface.UpdateEntry(self.details_entries["Date"], self.event.getDate(), uneditable=True)
+        GUIInterface.UpdateEntry(self.details_entries["Start_Time"], self.event.getStart_Time(), uneditable=True)
+        GUIInterface.UpdateEntry(self.details_entries["End_Time"], self.event.getEnd_Time(), uneditable=True)
         self.filled = True
 
     def getEmptyDetailCount(self)->int:
@@ -103,9 +103,9 @@ class EventDetailsPanel:
         self.details_frame.destroy()
     
     # Create GUI
-    def CreateEntryDetail(self, width:int, entryname:str, state='normal'):
+    def CreateEntryDetail(self, width:int, entryname:str):
         key = self.ConvertEntryNameToKey(entryname)
-        e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",entry_width=width, state=state)
+        e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",entry_width=width)
         self.details_entries[key] = e_entry
         return e_frame, e_entry
 
@@ -137,5 +137,5 @@ class EventDetailsPanel:
         submit_btn.configure(command=lambda:self.GrabDate(entry, cal.get_date(), date_window))
 
     def GrabDate(self, entry, date:str, window):
-        GUIInterface.UpdateEntry(entry, date)
+        GUIInterface.UpdateEntry(entry, date, uneditable=True)
         window.destroy()
