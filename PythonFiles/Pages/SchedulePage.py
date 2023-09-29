@@ -7,6 +7,7 @@ from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
 from Events.EventsManager import Event
 from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+
 from sys import platform
 import os
 import subprocess
@@ -31,7 +32,7 @@ class SchedulePage(Page):
         button.grid(row=0, column=0, sticky='nw')
 
         # Schedule Button
-        schedue_btn = GUIInterface.CreateButton(text="Schedule",on_click=self.CreateICSUsingEntities)
+        schedue_btn = GUIInterface.CreateButton(text="Schedule",on_click=self.ScheduleEvents)
         schedue_btn.grid(row=2, column=1, sticky='s', pady=10)
 
         # Title
@@ -104,7 +105,7 @@ class SchedulePage(Page):
                     return True
         return False
 
-    def CreateICSUsingEntities(self):
+    def ScheduleEvents(self):
         # Check if all inputs are empty
         for panel in self.details_panels:
             # If a panel is empty reject 
@@ -141,8 +142,13 @@ class SchedulePage(Page):
         if self.CheckDetailsForDateTimeClash(to_schedule):
             return
         
-        try:
-            for schedule in to_schedule:
+        self.ScheduleDefault(to_schedule)
+        #self.ScheduleGoogleCalendar(to_schedule)
+        self.UpdateEventsDB()
+    
+    # Creates ICS files to be parsed
+    def CreateICSFile(self, to_schedule:list[dict], split_ics=False):
+        for schedule in to_schedule:
                 #Retrieve params from input
                 desp = schedule["Description"]
                 priority = int(schedule["Priority"])
@@ -158,14 +164,14 @@ class SchedulePage(Page):
                                                 e_datetime=ics_e,
                                                 e_location=location,
                                                 e_priority=int(priority))
-        except Exception as e:
-            ErrorCodes.PrintCustomError(e)
-            return
+                
+                # Immediately write to a file 
+                CalendarInterface.WriteToFile(f'{event}_({ics_s})', 
+                                              CalendarInterface._split_dir) if split_ics else None
 
-        CalendarInterface.WriteToFile('to_schedule')
-        self.ScheduleDefault('to_schedule')
-        #self.ScheduleGoogleCalendar('to_schedule')
-        self.UpdateEventsDB()
+        CalendarInterface.WriteToFile(CalendarInterface._default_ics_file, 
+                                      CalendarInterface._main_dir) if split_ics == False else None
+
         
     def DeleteDetailPanel(self, index:int):
         del self.details_panels[index]
@@ -177,25 +183,32 @@ class SchedulePage(Page):
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
 
-    def ScheduleDefault(self, ics_file:str):
+    def ScheduleDefault(self, to_schedule:list[dict]):
         if platform == "linux":
-            filename = CalendarInterface.getICSFilePath(ics_file)
+            self.CreateICSFile(to_schedule)
+            filename = CalendarInterface.getICSFilePath(CalendarInterface._default_ics_file, 
+                                                        CalendarInterface._main_dir)
             subprocess.run(['xdg-open', filename])
             pass
         elif platform == 'darwin':
-            filename = CalendarInterface.getICSFilePath(ics_file)
+            self.CreateICSFile(to_schedule)
+            filename = CalendarInterface.getICSFilePath(CalendarInterface._default_ics_file,
+                                                        CalendarInterface._main_dir)
             subprocess.run(['open', filename])
         else:
-            path = CalendarInterface.getICSFilePath(ics_file)
+            self.CreateICSFile(to_schedule)
+            path = CalendarInterface.getICSFilePath(CalendarInterface._default_ics_file, 
+                                                    CalendarInterface._main_dir)
             os.startfile(path)
 
-    def ScheduleGoogleCalendar(self, ics_file):
-        events = GoogleCalendarInterface.Parse_ICS(ics_file)
+    def ScheduleGoogleCalendar(self, to_schedule:list[dict]):
+        self.CreateICSFile(to_schedule)
+        events = GoogleCalendarInterface.Parse_ICS(CalendarInterface._default_ics_file)
         for e in events:
             GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=e)
 
-    def BackButton(self, ics_files_to_clear: list[str], page:int=0):
-        for files in ics_files_to_clear:
-            CalendarInterface.ClearICSFile(files)
+    def BackButton(self, page:int=0):
+        CalendarInterface.ClearICSFilesInDir(CalendarInterface._main_dir)
+        CalendarInterface.ClearICSFilesInDir(CalendarInterface._split_dir)
 
         PageManager.SwitchPages(page)

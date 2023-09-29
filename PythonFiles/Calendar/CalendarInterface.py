@@ -3,11 +3,16 @@ from icalendar import Calendar, Event, vCalAddress, vText
 from datetime import datetime
 from pathlib import Path
 import os
+import glob
 
 class CalendarInterface:
     _cal = Calendar()
+    
+    # Directories
     parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).absolute()
-    _calendar_file_dir = Path(os.path.join(parent_dir,"CalendarFiles"))
+    _main_dir = Path(os.path.join(parent_dir, 'CalendarFiles'))
+    _split_dir = Path(os.path.join(_main_dir, 'Splitted'))
+    _default_ics_file = 'to_schedule'
 
     def __init__(self):
         # Some properties are required to be compliant
@@ -52,18 +57,21 @@ class CalendarInterface:
         # Add the event to the calendar
         CalendarInterface._cal.add_component(event)
 
-    def WriteToFile(file_name:str):
+    def WriteToFile(file_name:str, dir_name:Path)->bool:
         try:
-            CalendarInterface._calendar_file_dir.mkdir(parents=True, exist_ok=False)
+            # Check if directory exists, if it does not, create it.
+            new = CalendarInterface.CreateNewDir(dir_name)
+            f = open(Path(os.path.join(new, f'{file_name}.ics')), 'wb')
+            f.write(CalendarInterface._cal.to_ical())
+            f.close()
+            print(f'SUCCESSFULLY WRITTEN {file_name}.ics TO {new}')
+            return True
         except:
-            pass
-
-        f = open(CalendarInterface.getICSFilePath(file_name), 'wb')
-        f.write(CalendarInterface._cal.to_ical())
-        f.close()
+            print(f'FAILED TO WRITE {file_name}.ics TO {new}')
+            return False
     
-    def ReadICSFile(file_name:str):
-        e = open(CalendarInterface.getICSFilePath(file_name), 'rb')
+    def ReadICSFile(file_name:str, dir:Path):
+        e = open(Path(os.path.join(dir, f'{file_name}.ics')), 'rb')
         ecal = icalendar.Calendar.from_ical(e.read())
         for component in ecal.walk():
             if component.name == "VEVENT":
@@ -75,18 +83,34 @@ class CalendarInterface:
                 print(component.decoded("dtend"))
             e.close()
 
-    def getICSFile(file_name:str):
-        e = open(CalendarInterface.getICSFilePath(file_name), 'rb')
+    def getICSFile(file_name:str, dir:Path):
+        e = open(Path(os.path.join(dir, f'{file_name}.ics'), 'rb'))
         ecal = icalendar.Calendar.from_ical(e.read())
         return ecal
     
-    def getICSFilePath(file_name:str):
-        return os.path.join(CalendarInterface._calendar_file_dir, f'{file_name}.ics')
-    
-    def ClearICSFile(file_name:str):
-        open(CalendarInterface.getICSFilePath(file_name), 'w').close()
+    def getICSFilePath(file_name:str, dir:Path)->Path:
+        return Path(os.path.join(dir, f'{file_name}.ics'))
 
-# def UsageExample():
-#     cal_interface.CreateICSEvent()
-#     cal_interface.WriteToFile()
-#     cal_interface.ReadICSFile()
+    def getAllICSFilePathsFromDir(dir:Path)->list[Path]:
+        paths = glob.glob(f'{dir}/*.ics')
+        return paths
+    
+    def ClearICSFilesInDir(dir:Path)->bool:
+        try:
+            files = glob.glob(f"{dir}/*.ics")
+            for f in files:
+                os.unlink(f)
+            print(f'CLEARED ALL FILES IN {dir} SUCCESSFULLY!')
+            return True
+        except:
+            print(f'FAILED TO CLEAR FILES IN {dir}')
+            return False
+
+    def CreateNewDir(dir_name:str)->Path:
+        try:
+            new_dir = Path(os.path.join(CalendarInterface.parent_dir, dir_name))
+            new_dir.mkdir(parents=True, exist_ok=False)
+            return new_dir
+        except:
+            print("CALENDAR DIR ALREADY EXISTS")
+            return new_dir

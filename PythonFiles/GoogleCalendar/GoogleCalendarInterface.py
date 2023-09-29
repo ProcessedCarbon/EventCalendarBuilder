@@ -132,7 +132,7 @@ class GoogleCalendarInterface:
             return
         
         events = []
-        ics_file = CalendarInterface.getICSFile(ics)
+        ics_file = CalendarInterface.getICSFile(ics, CalendarInterface._main_dir)
         for component in ics_file.walk():
               if component.name == "VEVENT":
                     start_datetime = component.get('dtstart').dt.isoformat()
