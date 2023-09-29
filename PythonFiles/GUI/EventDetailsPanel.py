@@ -22,7 +22,7 @@ class EventDetailsPanel:
         
     def GUI(self):
         tmp_frame = GUIInterface.current_frame
-        self.details_frame = GUIInterface.CreateFrame(self.parent, fg_color='gray')
+        self.details_frame = GUIInterface.CreateFrame(self.parent, fg_color='green')
 
         remove_btn = GUIInterface.CreateButton(on_click=self.OnRemove)
         remove_btn.grid(row=0, sticky='ne')
@@ -41,26 +41,27 @@ class EventDetailsPanel:
                                 ipadx=self.gap)
 
         # GUI
-        e_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Event")
+        e_frame, e_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Event")
         e_frame.grid(row=1, sticky='nsew', pady=self.gap)
 
-        desp_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Description")
+        desp_frame, desp_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Description")
         desp_frame.grid(row=2, sticky='nsew',pady=self.gap)
 
         priorities = ["1", "2", "3", "4", "5"]
         prio_frame = self.CreateDropdownDetail(values=priorities, entryname="Priority")
         prio_frame.grid(row=3, sticky='nsew',pady=self.gap)
 
-        l_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Location")
+        l_frame, l_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Location")
         l_frame.grid(row=4, sticky='nsew',pady=self.gap)
 
-        d_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Date", state='disabled')
+        d_frame, d_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Date", state='readonly')
         d_frame.grid(row=5,sticky='nsew',pady=self.gap)
+        d_entry.bind('<1>', lambda event, entry=d_entry: self.pick_date(entry))
 
-        st_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time", state='disabled')
+        st_frame, st_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time", state='readonly')
         st_frame.grid(row=6,sticky='nsew',pady=self.gap)
 
-        et_frame = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time",state='disabled')
+        et_frame, et_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time",state='readonly')
         et_frame.grid(row=7,sticky='nsew',pady=self.gap)
 
         GUIInterface.SetCurrentFrame(tmp_frame)
@@ -106,7 +107,7 @@ class EventDetailsPanel:
         key = self.ConvertEntryNameToKey(entryname)
         e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",entry_width=width, state=state)
         self.details_entries[key] = e_entry
-        return e_frame
+        return e_frame, e_entry
 
     def CreateDropdownDetail(self, values:list[str], entryname:str):
         key = self.ConvertEntryNameToKey(entryname)
@@ -130,3 +131,11 @@ class EventDetailsPanel:
         EventsManager.RemoveEvent(id=self.event.getId())
         self.remove_callback(self.index)
         self.Destroy()
+    
+    def PickDate(self, entry):
+        date_window, cal, submit_btn = GUIInterface.CreateDateWindow()
+        submit_btn.configure(command=lambda:self.grab_date(entry, cal.get_date(), date_window))
+
+    def GrabDate(self, entry, date:str, window):
+        GUIInterface.UpdateEntry(entry, date)
+        window.destroy()

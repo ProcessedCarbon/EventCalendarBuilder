@@ -1,6 +1,7 @@
 from tkinter import *
 from customtkinter import *
 from Managers.ErrorConfig import getParamValFromKwarg
+from tkcalendar import *
 
 class GUIInterface:
     current_frame = None    
@@ -248,6 +249,7 @@ class GUIInterface:
     def CreateEntryWithLabel(label:str, **kwargs)->list[CTkFrame, CTkLabel, CTkEntry]:
         entry_width =       getParamValFromKwarg('entry_width', kwargs)
         default_text =      getParamValFromKwarg('default_text', kwargs)
+        state =             getParamValFromKwarg('state', kwargs)
 
         tmp_frame = GUIInterface.current_frame
         entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
@@ -260,7 +262,7 @@ class GUIInterface:
         label.grid(row=0, column=0)
 
         # Entry
-        entry = GUIInterface.CreateEntry(width=entry_width, textvariable=default_text)
+        entry = GUIInterface.CreateEntry(width=entry_width, textvariable=default_text, state=state)
         entry.grid(row=0, column=1, sticky='e')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
@@ -285,6 +287,45 @@ class GUIInterface:
         GUIInterface.SetCurrentFrame(tmp_frame)
 
         return combo_frame, label, combobox 
+    
+    def CreateDateWindow(size='250x250'):
+        tmp = GUIInterface.current_frame
+
+        window = GUIInterface.CreateNewWindow(window_name='Choose Date')
+
+        window_frame = GUIInterface.CreateFrame(window)
+        window_frame.grid(row=0, column=0, sticky='nsew')
+        window_frame.columnconfigure(0, weight=1)
+        window_frame.rowconfigure(0, weight=5)
+        window_frame.rowconfigure(1, weight=1)
+
+        cal = Calendar(window_frame, selectmode='day', date_pattern='y-mm-dd')
+        cal.grid(row=0, column=0, sticky='nsew')
+
+        submit_btn = GUIInterface.CreateButton(on_click=None, text='Submit')
+        submit_btn.grid(row=1, column=0)
+
+        window.grab_set()
+
+        GUIInterface.SetCurrentFrame(tmp)
+
+        return window, cal, submit_btn
+
+    def CreateNewWindow(window_name:str, size='250x250'):
+        window = Toplevel(GUIInterface.root)
+        window.grab_set()
+        window.columnconfigure(0, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.title(window_name)
+        window.geometry(size)
+
+        def onCloseCallBack():
+            window.destroy()
+        
+        window.protocol("WM_DELETE_WINDOW", onCloseCallBack)
+        window.bind("<FocusOut>", onCloseCallBack)
+
+        return window
 
     def UpdateEntry(entry:CTkEntry, text_var:str):
         entry.delete(0, END)
@@ -305,7 +346,4 @@ class GUIInterface:
     
     def MainLoop(self):
         self.root.mainloop()
-
-
-
-
+        
