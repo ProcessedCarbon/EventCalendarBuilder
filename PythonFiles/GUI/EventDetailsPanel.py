@@ -54,14 +54,14 @@ class EventDetailsPanel:
         l_frame, l_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Location")
         l_frame.grid(row=4, sticky='nsew',pady=self.gap)
 
-        d_frame, d_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Date", state='readonly')
+        d_frame, d_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Date", state='normal')
         d_frame.grid(row=5,sticky='nsew',pady=self.gap)
-        d_entry.bind('<1>', lambda event, entry=d_entry: self.pick_date(entry))
+        d_entry.bind('<1>', lambda event, entry=d_entry: self.PickDate(entry))
 
-        st_frame, st_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time", state='readonly')
+        st_frame, st_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time", state='normal')
         st_frame.grid(row=6,sticky='nsew',pady=self.gap)
 
-        et_frame, et_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time",state='readonly')
+        et_frame, et_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time",state='normal')
         et_frame.grid(row=7,sticky='nsew',pady=self.gap)
 
         GUIInterface.SetCurrentFrame(tmp_frame)
@@ -134,7 +134,7 @@ class EventDetailsPanel:
     
     def PickDate(self, entry):
         date_window, cal, submit_btn = GUIInterface.CreateDateWindow()
-        submit_btn.configure(command=lambda:self.grab_date(entry, cal.get_date(), date_window))
+        submit_btn.configure(command=lambda:self.GrabDate(entry, cal.get_date(), date_window))
 
     def GrabDate(self, entry, date:str, window):
         GUIInterface.UpdateEntry(entry, date)
