@@ -71,7 +71,7 @@ class EventDetailsPanel:
         l_frame, l_entry = self.CreateEntryField(self.detail_entry_width, entryname="Location")
         l_frame.grid(row=4, column=1, sticky='nsew',pady=self.gap)
 
-        d_frame, d_entry = self.CreateEntryField(self.detail_entry_width, entryname="Date")
+        d_frame, d_entry = self.CreateEntryField(self.detail_entry_width, entryname="Date", entry_state='disabled')
         d_frame.grid(row=5, column=1,sticky='nsew',pady=self.gap)
         d_entry.bind('<1>', lambda event, entry=d_entry: self.PickDate(entry))
 
@@ -101,9 +101,9 @@ class EventDetailsPanel:
     def UpdateInputFields(self):
         GUIInterface.UpdateEntry(self.details_entries["Event"], self.event.getName())
         GUIInterface.UpdateEntry(self.details_entries["Location"], self.event.getLocation())
-        GUIInterface.UpdateEntry(self.details_entries["Date"], self.event.getDate(), uneditable=True)
-        GUIInterface.UpdateEntry(self.details_entries["Start_Time"], self.event.getStart_Time(), uneditable=True)
-        GUIInterface.UpdateEntry(self.details_entries["End_Time"], self.event.getEnd_Time(), uneditable=True)
+        GUIInterface.UpdateEntry(self.details_entries["Date"], self.event.getDate())
+        GUIInterface.UpdateEntry(self.details_entries["Start_Time"], self.event.getStart_Time())
+        GUIInterface.UpdateEntry(self.details_entries["End_Time"], self.event.getEnd_Time())
         self.filled = True
 
     def getEmptyInputFieldsCount(self)->int:
@@ -128,9 +128,9 @@ class EventDetailsPanel:
         self.details_frame.destroy()
     
     # Create GUI
-    def CreateEntryField(self, width:int, entryname:str):
+    def CreateEntryField(self, width:int, entryname:str, entry_state='normal'):
         key = self.ConvertEntryNameToKey(entryname)
-        e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",entry_width=width)
+        e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",entry_width=width, entry_state=entry_state)
         self.details_entries[key] = e_entry
         return e_frame, e_entry
 
@@ -162,7 +162,7 @@ class EventDetailsPanel:
         submit_btn.configure(command=lambda:self.GrabDate(entry, cal.get_date(), date_window))
 
     def GrabDate(self, entry, date:str, window):
-        GUIInterface.UpdateEntry(entry, date, uneditable=True)
+        GUIInterface.UpdateEntry(entry, date)
         window.destroy()
 
     def ScheduleEvent(self):
@@ -175,11 +175,20 @@ class EventDetailsPanel:
         
         input = self.getCurrentInputFieldsInfo()
 
-        # Missing Start or End time input field
-        if input['Start_Time'] == "" or input['End_Time'] == "":
-            print(f'Missing Start or End time for {input["Event"].upper()}[{input["Date"]}]')
+        # Handle missing or incorrect input for time fields
+        if input['Start_Time'] == "":
+            print(f'Missing Start Time field for {input["Event"].upper()}[{input["Date"]}]')
             return
-
+        elif input['End_Time'] == "":
+            print(f'Missing End Time field for {input["Event"].upper()}[{input["Date"]}]')
+            return
+        elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
+            print(f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Date"]}]')
+            return
+        elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
+            print(f'Incorrect End Time provided for {input["Event"].upper()}[{input["Date"]}]')
+            return
+        
         # If no isses then create ics file
         # Process datetime to ics calendar format
         time_slots = []
@@ -192,7 +201,7 @@ class EventDetailsPanel:
 
         input['Start_Time_ICS'] = ics_s
         input['End_Time_ICS'] = ics_e
-        
+
         # Scheduling
         calendar = input['Calendar']
         if calendar == 'Default':

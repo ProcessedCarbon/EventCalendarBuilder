@@ -1,4 +1,5 @@
 import string
+import re
 from re import sub
 from re import split
 from Managers.DateTimeManager import DateTimeManager
@@ -271,6 +272,9 @@ class TextProcessingManager:
         e_ics_datetime = DateTimeManager.getDateTime(hour=e_h,min=e_m,sec=e_s,day=day,month=month,year=year)
         return s_ics_datetime, e_ics_datetime
     
+    # Tries and match a string to the regex, returns None if no match is found
+    def CheckStringFormat(text, regex='[0-9]{2}:[0-9]{2}:[0-9]{2}'):
+        return re.match(regex, text)
 # ================================================  TEST ======================================================================== #
 def Test_ProcessTimeTo12HFormat():
     print("==========================================================================================")

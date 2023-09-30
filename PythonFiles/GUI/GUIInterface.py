@@ -249,6 +249,7 @@ class GUIInterface:
     def CreateEntryWithLabel(label:str, **kwargs)->list[CTkFrame, CTkLabel, CTkEntry]:
         entry_width =       getParamValFromKwarg('entry_width', kwargs)
         default_text =      getParamValFromKwarg('default_text', kwargs)
+        entry_state =       getParamValFromKwarg('entry_state', kwargs)
 
         tmp_frame = GUIInterface.current_frame
         entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
@@ -261,7 +262,7 @@ class GUIInterface:
         label.grid(row=0, column=0)
 
         # Entry
-        entry = GUIInterface.CreateEntry(width=entry_width, textvariable=default_text)
+        entry = GUIInterface.CreateEntry(width=entry_width, textvariable=default_text, state=entry_state)
         entry.grid(row=0, column=1, sticky='e')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
@@ -301,7 +302,7 @@ class GUIInterface:
         cal = Calendar(window_frame, selectmode='day', date_pattern='y-mm-dd')
         cal.grid(row=0, column=0, sticky='nsew')
 
-        submit_btn = GUIInterface.CreateButton(on_click=None, text='Submit')
+        submit_btn = GUIInterface.CreateButton(on_click=None, text='select')
         submit_btn.grid(row=1, column=0)
 
         window.grab_set()
@@ -326,11 +327,12 @@ class GUIInterface:
 
         return window
 
-    def UpdateEntry(entry:CTkEntry, text_var:str, uneditable=False):
+    def UpdateEntry(entry:CTkEntry, text_var:str):
+        og_state = entry.cget("state")
         entry.configure(state='normal')
         entry.delete(0, END)
         entry.insert(0, text_var)
-        entry.configure(state='readonly' if uneditable else 'normal')
+        entry.configure(state=og_state)
         
     def RetrieveCurrentInputFromTextbox(text:CTkTextbox)->str:
         input = text.get("0.0", END)
