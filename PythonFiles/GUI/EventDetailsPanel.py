@@ -5,7 +5,7 @@ from Events.EventsManager import EventsManager
 
 class EventDetailsPanel:
     num_details = 7
-    def __init__(self, parent, event:Event, remove_callback,index:int,entry_widths:int, gap:int=10, **grid_params):
+    def __init__(self, parent, event:Event, remove_callback,index:int, gap:int=10, **grid_params):
         self.detail_entry_width = 180
         self.gap = gap
         self.parent = parent
@@ -24,12 +24,7 @@ class EventDetailsPanel:
         tmp_frame = GUIInterface.current_frame
         self.details_frame = GUIInterface.CreateFrame(self.parent, fg_color='green')
 
-        remove_btn = GUIInterface.CreateButton(on_click=self.OnRemove)
-        remove_btn.grid(row=0, sticky='ne')
-
-        for i in range(EventDetailsPanel.num_details):
-            self.details_frame.rowconfigure(i, weight=1)
-
+        # Find grid in parent to place this event panel
         row = getParamValFromKwarg("row", self.grid_params, default=0)
         column = getParamValFromKwarg("column", self.grid_params, default=0)
         sticky = getParamValFromKwarg("sticky", self.grid_params, default='nsew')
@@ -39,30 +34,42 @@ class EventDetailsPanel:
                                 padx=self.gap, 
                                 pady=self.gap,
                                 ipadx=self.gap)
+        
+        # Rows
+        for i in range(EventDetailsPanel.num_details):
+            self.details_frame.rowconfigure(i, weight=1)
+        
+        # Columns
+        self.details_frame.columnconfigure(0, weight=1)
+        self.details_frame.columnconfigure(1, weight=10)
+        self.details_frame.columnconfigure(2, weight=1)
 
         # GUI
+        remove_btn = GUIInterface.CreateButton(on_click=self.OnRemove, text='X', width=50)
+        remove_btn.grid(row=0, column=2, pady=10)
+
         e_frame, e_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Event")
-        e_frame.grid(row=1, sticky='nsew', pady=self.gap)
+        e_frame.grid(row=1, column=1,sticky='nsew', pady=self.gap)
 
         desp_frame, desp_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Description")
-        desp_frame.grid(row=2, sticky='nsew',pady=self.gap)
+        desp_frame.grid(row=2, column=1, sticky='nsew',pady=self.gap)
 
         priorities = ["1", "2", "3", "4", "5"]
         prio_frame = self.CreateDropdownDetail(values=priorities, entryname="Priority")
-        prio_frame.grid(row=3, sticky='nsew',pady=self.gap)
+        prio_frame.grid(row=3, column=1, sticky='nsew',pady=self.gap)
 
         l_frame, l_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Location")
-        l_frame.grid(row=4, sticky='nsew',pady=self.gap)
+        l_frame.grid(row=4, column=1, sticky='nsew',pady=self.gap)
 
         d_frame, d_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Date")
-        d_frame.grid(row=5,sticky='nsew',pady=self.gap)
+        d_frame.grid(row=5, column=1,sticky='nsew',pady=self.gap)
         d_entry.bind('<1>', lambda event, entry=d_entry: self.PickDate(entry))
 
         st_frame, st_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="Start Time")
-        st_frame.grid(row=6,sticky='nsew',pady=self.gap)
+        st_frame.grid(row=6, column=1,sticky='nsew',pady=self.gap)
 
         et_frame, et_entry = self.CreateEntryDetail(self.detail_entry_width, entryname="End Time")
-        et_frame.grid(row=7,sticky='nsew',pady=self.gap)
+        et_frame.grid(row=7, column=1,sticky='nsew',pady=self.gap)
 
         GUIInterface.SetCurrentFrame(tmp_frame)
 

@@ -9,7 +9,7 @@ from Pages.SchedulePage import SchedulePage
 from Pages.PageManager import PageManager
 from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 
-GoogleCalendarInterface.ConnectToGoogleCalendar()
+#GoogleCalendarInterface.ConnectToGoogleCalendar()
 gui = GUIInterface()
 
 MainAppWindow.Setup()

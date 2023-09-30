@@ -277,11 +277,11 @@ class GUIInterface:
 
         # Entry label
         label = GUIInterface.CreateLabel(text=label)
-        label.grid(row=0, column=0, sticky='w')
+        label.grid(row=0, column=0)
 
         # Entry
         combobox = GUIInterface.CreateComboBox(values=dropdown)
-        combobox.grid(row=0, column=1)
+        combobox.grid(row=0, column=1, sticky='e')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
 

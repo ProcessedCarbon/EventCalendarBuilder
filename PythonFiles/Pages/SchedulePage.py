@@ -18,7 +18,6 @@ class SchedulePage(Page):
     def __init__(self):
         self.details_panels = []
         self.details_panels_max_column = 3
-        self.entry_width = MainAppWindow.app_width * 0.5
         self.details_panels_frame = None
         super().__init__()
 
@@ -71,7 +70,6 @@ class SchedulePage(Page):
                                              event=event,
                                              remove_callback=self.DeleteDetailPanel,
                                              index=index, 
-                                             entry_widths=self.entry_width, 
                                              row=row_at, 
                                              column=count, 
                                              sticky='nsew')
