@@ -1,6 +1,5 @@
 import icalendar
 from icalendar import Calendar, Event, vCalAddress, vText
-from datetime import datetime
 from pathlib import Path
 import os
 import glob
@@ -97,7 +96,7 @@ class CalendarInterface:
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name
         dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
 
-        e = open(Path(os.path.join(dir_to_open, f'{file_name}.ics'), 'rb'))
+        e = open(Path(os.path.join(dir_to_open, f'{file_name}.ics')), 'rb')
         ecal = icalendar.Calendar.from_ical(e.read())
         return ecal
     

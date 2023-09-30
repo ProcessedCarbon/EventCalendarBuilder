@@ -94,3 +94,10 @@ class EventsManager:
     def SendEventsToEventsDB(event_list:list[Event]):
         eventList = [x for x in event_list if x not in EventsManager.events_db]
         EventsManager.events_db.extend(eventList)
+
+    def UpdateEventsDB():
+        try:
+            EventsManager.SendEventsToEventsDB(EventsManager.events)
+            EventsManager.ClearEvents()
+        except Exception as e:
+            ErrorCodes.PrintCustomError(e)

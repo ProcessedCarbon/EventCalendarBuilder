@@ -78,7 +78,7 @@ class GoogleCalendarInterface:
         return events
 
     # Event creation
-    def ScheduleCalendarEvent(googleEvent: GoogleEvent):
+    def ScheduleCalendarEvent(googleEvent: GoogleEvent)->bool:
         """
         Creates the google event on the google calendar
 
@@ -87,21 +87,22 @@ class GoogleCalendarInterface:
         
         if GoogleCalendarInterface.service == None:
             ErrorCodes.PrintErrorWithCode(1001)
-            return
+            return False
         
         if type(googleEvent) is not GoogleEvent:
             ErrorCodes.PrintErrorWithCode(1000)
             print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
-            return
+            return False
 
         existing_events = GoogleCalendarInterface.getEvents(time_min=googleEvent.getStartDate(), 
                                                             time_max=googleEvent.getEndDate())
 
         if GoogleCalendarInterface.EventOverlaps(googleEvent, existing_events):
-            return    
+            return False
                 
         new_event = GoogleCalendarInterface.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
         print(f"Event created {new_event.get('htmlLink')}")
+        return True
 
     # Creates event datatype
     def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, colorId=1):
