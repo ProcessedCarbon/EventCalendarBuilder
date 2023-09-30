@@ -166,11 +166,9 @@ class SchedulePage(Page):
                                                 e_priority=int(priority))
                 
                 # Immediately write to a file 
-                CalendarInterface.WriteToFile(f'{event}_({ics_s})', 
-                                              CalendarInterface._split_dir) if split_ics else None
+                CalendarInterface.WriteToFile(f'{event}_({ics_s})') if split_ics else None
 
-        CalendarInterface.WriteToFile(CalendarInterface._default_ics_file, 
-                                      CalendarInterface._main_dir) if split_ics == False else None
+        CalendarInterface.WriteToFile() if split_ics == False else None
 
         
     def DeleteDetailPanel(self, index:int):
@@ -183,22 +181,20 @@ class SchedulePage(Page):
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
 
+    # Right now can only handle 1 event only 
     def ScheduleDefault(self, to_schedule:list[dict]):
         if platform == "linux":
             self.CreateICSFile(to_schedule)
-            filename = CalendarInterface.getICSFilePath(CalendarInterface._default_ics_file, 
-                                                        CalendarInterface._main_dir)
+            filename = CalendarInterface.getICSFilePath()
             subprocess.run(['xdg-open', filename])
             pass
         elif platform == 'darwin':
             self.CreateICSFile(to_schedule)
-            filename = CalendarInterface.getICSFilePath(CalendarInterface._default_ics_file,
-                                                        CalendarInterface._main_dir)
+            filename = CalendarInterface.getICSFilePath()
             subprocess.run(['open', filename])
         else:
             self.CreateICSFile(to_schedule)
-            path = CalendarInterface.getICSFilePath(CalendarInterface._default_ics_file, 
-                                                    CalendarInterface._main_dir)
+            path = CalendarInterface.getICSFilePath()
             os.startfile(path)
 
     def ScheduleGoogleCalendar(self, to_schedule:list[dict]):
