@@ -250,6 +250,7 @@ class GUIInterface:
         entry_width =       getParamValFromKwarg('entry_width', kwargs)
         default_text =      getParamValFromKwarg('default_text', kwargs)
         entry_state =       getParamValFromKwarg('entry_state', kwargs)
+        placeholder_text =  getParamValFromKwarg('placeholder_text', kwargs)
 
         tmp_frame = GUIInterface.current_frame
         entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
@@ -262,7 +263,11 @@ class GUIInterface:
         label.grid(row=0, column=0)
 
         # Entry
-        entry = GUIInterface.CreateEntry(width=entry_width, textvariable=default_text, state=entry_state)
+        entry = GUIInterface.CreateEntry(width=entry_width, 
+                                         textvariable=default_text, 
+                                         state=entry_state,
+                                         placeholder_text=placeholder_text)
+        
         entry.grid(row=0, column=1, sticky='e')
 
         GUIInterface.SetCurrentFrame(tmp_frame)

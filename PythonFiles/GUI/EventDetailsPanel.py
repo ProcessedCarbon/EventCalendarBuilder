@@ -58,27 +58,40 @@ class EventDetailsPanel:
         remove_btn = GUIInterface.CreateButton(on_click=self.OnRemove, text='X', width=50)
         remove_btn.grid(row=0, column=2, pady=10)
 
-        e_frame, e_entry = self.CreateEntryField(self.detail_entry_width, entryname="Event")
+        e_frame, e_entry = self.CreateEntryField(self.detail_entry_width, 
+                                                 entryname="Event", 
+                                                 placeholder_text='Title')
         e_frame.grid(row=1, column=1,sticky='nsew', pady=self.gap)
 
-        desp_frame, desp_entry = self.CreateEntryField(self.detail_entry_width, entryname="Description")
+        desp_frame, desp_entry = self.CreateEntryField(self.detail_entry_width, 
+                                                       entryname="Description", 
+                                                       placeholder_text='Description')
         desp_frame.grid(row=2, column=1, sticky='nsew',pady=self.gap)
 
         priorities = ["1", "2", "3", "4", "5"]
         prio_frame = self.CreateDropdownField(values=priorities, entryname="Priority")
         prio_frame.grid(row=3, column=1, sticky='nsew',pady=self.gap)
 
-        l_frame, l_entry = self.CreateEntryField(self.detail_entry_width, entryname="Location")
+        l_frame, l_entry = self.CreateEntryField(self.detail_entry_width, 
+                                                 entryname="Location", 
+                                                 placeholder_text='Location')
         l_frame.grid(row=4, column=1, sticky='nsew',pady=self.gap)
 
-        d_frame, d_entry = self.CreateEntryField(self.detail_entry_width, entryname="Date", entry_state='disabled')
+        d_frame, d_entry = self.CreateEntryField(self.detail_entry_width, 
+                                                 entryname="Date", 
+                                                 entry_state='disabled', 
+                                                 placeholder_text='YYYY-MM-DD')
         d_frame.grid(row=5, column=1,sticky='nsew',pady=self.gap)
         d_entry.bind('<1>', lambda event, entry=d_entry: self.PickDate(entry))
 
-        st_frame, st_entry = self.CreateEntryField(self.detail_entry_width, entryname="Start Time")
+        st_frame, st_entry = self.CreateEntryField(self.detail_entry_width, 
+                                                   entryname="Start Time", 
+                                                   placeholder_text="HH:MM:SS")
         st_frame.grid(row=6, column=1,sticky='nsew',pady=self.gap)
 
-        et_frame, et_entry = self.CreateEntryField(self.detail_entry_width, entryname="End Time")
+        et_frame, et_entry = self.CreateEntryField(self.detail_entry_width,
+                                                   entryname="End Time", 
+                                                   placeholder_text="HH:MM:SS")
         et_frame.grid(row=7, column=1,sticky='nsew',pady=self.gap)
 
         calendars = ["Default", "Google"]
@@ -128,9 +141,12 @@ class EventDetailsPanel:
         self.details_frame.destroy()
     
     # Create GUI
-    def CreateEntryField(self, width:int, entryname:str, entry_state='normal'):
+    def CreateEntryField(self, width:int, entryname:str, entry_state='normal', placeholder_text=None):
         key = self.ConvertEntryNameToKey(entryname)
-        e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",entry_width=width, entry_state=entry_state)
+        e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",
+                                                                      entry_width=width, 
+                                                                      entry_state=entry_state,
+                                                                      placeholder_text=placeholder_text)
         self.details_entries[key] = e_entry
         return e_frame, e_entry
 
