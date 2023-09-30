@@ -25,9 +25,8 @@ class CalendarInterface:
         CalendarInterface._cal.add('prodid', '-//My calendar product//example.com//')
         CalendarInterface._cal.add('version', '2.0')
         pass
-
-    @classmethod
-    def CreateICSEvent(cls,e_name, e_description, s_datetime, e_datetime, 
+        
+    def CreateICSEvent(e_name, e_description, s_datetime, e_datetime, 
                     e_organizer_addr="", e_organizer_name="", e_organizer_role="",
                     e_location="", e_priority=5):
         
@@ -64,8 +63,7 @@ class CalendarInterface:
         # Add the event to the calendar
         CalendarInterface._cal.add_component(event)
 
-    @classmethod
-    def WriteToFile(cls, file_name=None, main=True)->bool:
+    def WriteToFile(file_name=None, main=True)->bool:
         try:
             file_name = CalendarInterface._default_ics_file if file_name == None else file_name
             dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
@@ -79,8 +77,7 @@ class CalendarInterface:
             print(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open}')
             return False
     
-    @classmethod
-    def ReadICSFile(cls, file_name=None, main=True):
+    def ReadICSFile(file_name=None, main=True):
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name
         dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
         
@@ -96,8 +93,7 @@ class CalendarInterface:
                 print(component.decoded("dtend"))
             e.close()
 
-    @classmethod
-    def getICSFile(cls, file_name=None, main=True):
+    def getICSFile(file_name=None, main=True):
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name
         dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
 
@@ -105,20 +101,17 @@ class CalendarInterface:
         ecal = icalendar.Calendar.from_ical(e.read())
         return ecal
     
-    @classmethod
-    def getICSFilePath(cls, file_name=None, main=True)->Path:
+    def getICSFilePath(file_name=None, main=True)->Path:
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name
         dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
 
         return Path(os.path.join(dir_to_open, f'{file_name}.ics'))
 
-    @classmethod
-    def getAllICSFilePathsFromDir(cls, dir:Path)->list[Path]:
+    def getAllICSFilePathsFromDir(dir:Path)->list[Path]:
         paths = glob.glob(f'{dir}/*.ics')
         return paths
     
-    @classmethod
-    def ClearICSFilesInDir(cls, dir:Path)->bool:
+    def ClearICSFilesInDir(dir:Path)->bool:
         try:
             files = glob.glob(f"{dir}/*.ics")
             for f in files:
@@ -129,8 +122,7 @@ class CalendarInterface:
             print(f'FAILED TO CLEAR FILES IN {dir}')
             return False
 
-    #@classmethod
-    # def CreateNewDir(cls, dir_name:str, parent_dir:Path)->Path:
+    # def CreateNewDir(dir_name:str, parent_dir:Path)->Path:
     #     try:
     #         new_dir = Path(os.path.join(parent_dir, dir_name))
     #         new_dir.mkdir(parents=True, exist_ok=False)
