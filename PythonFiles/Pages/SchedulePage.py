@@ -19,7 +19,7 @@ class SchedulePage(Page):
         self.PageGrid(rows=rows, cols=cols)
 
         # Back Button
-        button = GUIInterface.CreateButton(text="<", on_click=lambda:self.BackButton(['to_schedule'], 0), width=50)
+        button = GUIInterface.CreateButton(text="<", on_click=lambda:self.BackButton(0), width=50)
         button.grid(row=0, column=0, sticky='nw')
 
         # Title
