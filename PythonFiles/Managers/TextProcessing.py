@@ -4,7 +4,7 @@ from re import sub
 from re import split
 from Managers.DateTimeManager import DateTimeManager
 from Managers.ErrorConfig import ErrorCodes
-import wordninja
+import EdittedPackages.wordninja as wordninja
 
 class TextProcessingManager:
     _accepted_chars = ["-", "to"]
