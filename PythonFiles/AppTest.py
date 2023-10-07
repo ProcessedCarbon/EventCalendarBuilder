@@ -9,7 +9,23 @@ def getTestingText(file_path):
     
     return lines
 
+def TestInstall():
+    import os
+    os.system('pip freeze > requirements.txt')
+
+def MacCalendarTest():
+    import Calendar.CalendarMacInterface as mac_calendar
+    mac_calendar.getMacCalendarEvents()
+
+def TextProcessingManagerTest():
+    from Managers.TextProcessing import TextProcessingManager
+    test_date = "23rd to 25th Aug"
+    print(TextProcessingManager.ProcessDate(test_date))
+
 def main():    
+    TestInstall()
+    #MacCalendarTest()
+    #TextProcessingManagerTest()
     pass
 
 if __name__ == "__main__":
