@@ -7,7 +7,7 @@ from Managers.ErrorConfig import ErrorCodes
 import EdittedPackages.wordninja as wordninja
 
 class TextProcessingManager:
-    _accepted_chars = ["-", "to"]
+    _accepted_chars = ["-", " to "]
     _special_chars = string.punctuation
 
     # Splits string based on a list of delimiters
@@ -125,7 +125,7 @@ class TextProcessingManager:
         list_of_processed = []
         for date in splitted_date:
             remove_empty = TextProcessingManager.SplitWordAndRemoveEmptySlots(text=date)
-            
+
             # Remove anything that is not a month or number
             for var in remove_empty:
                 if var.isdigit() == False and not DateTimeManager.isMonth(var):
@@ -299,20 +299,6 @@ def Test_ProcessTimeTo12HFormat():
         print(f"After: {text_process_manager.ProcessTime(t)}")
         print("------------------------------------------------")
     print("==========================================================================================")
-
-# For testing
-def main():
-    t = TextProcessingManager()
-
-    # Testing for date
-    # test_date = "23rd to 25th Aug"
-    # formatted = t.ProcessDateForGoogleCalendar(test_date)
-    # for f in formatted:
-    #     print(f)
-
-    Test_ProcessTimeTo12HFormat()
-if __name__ == "__main__":
-    main()
 
     
     
