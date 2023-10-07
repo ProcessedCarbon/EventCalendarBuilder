@@ -9,7 +9,7 @@ from Managers.ErrorConfig import ErrorCodes
 class DateTimeManager:
     _months = [
             "january",
-            "feburary",
+            "february",
             "march",
             "april",
             "may",
