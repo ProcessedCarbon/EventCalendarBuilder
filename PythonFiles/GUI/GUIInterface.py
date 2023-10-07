@@ -297,7 +297,7 @@ class GUIInterface:
         tmp = GUIInterface.current_frame
 
         window = GUIInterface.CreateNewWindow(window_name='Choose Date')
-
+        
         window_frame = GUIInterface.CreateFrame(window)
         window_frame.grid(row=0, column=0, sticky='nsew')
         window_frame.columnconfigure(0, weight=1)
@@ -310,15 +310,16 @@ class GUIInterface:
         submit_btn = GUIInterface.CreateButton(on_click=None, text='select')
         submit_btn.grid(row=1, column=0)
 
+        # Prevent clicking and focus of main window
         window.grab_set()
+        window.focus_force()
+        #GUIInterface.root.wait_window(window)
 
         GUIInterface.SetCurrentFrame(tmp)
-
         return window, cal, submit_btn
 
-    def CreateNewWindow(window_name:str, size='250x250'):
+    def CreateNewWindow(window_name:str, size='250x250', destroyOnRootClick=True):
         window = Toplevel(GUIInterface.root)
-        window.grab_set()
         window.columnconfigure(0, weight=1)
         window.rowconfigure(0, weight=1)
         window.title(window_name)
@@ -326,9 +327,10 @@ class GUIInterface:
 
         def onCloseCallBack():
             window.destroy()
+            window.grab_release()
         
         window.protocol("WM_DELETE_WINDOW", onCloseCallBack)
-        window.bind("<FocusOut>", onCloseCallBack)
+        window.bind("<FocusOut>", lambda event : onCloseCallBack)
 
         return window
 
