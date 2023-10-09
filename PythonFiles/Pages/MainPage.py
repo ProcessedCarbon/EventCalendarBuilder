@@ -14,10 +14,6 @@ class MainPage(Page):
         rows = [1, 1, 1]
         cols = [1, 1, 1]
         self.PageGrid(rows=rows, cols=cols)
-                
-        # Title
-        title = GUIInterface.CreateLabel(text="Event Calendar Builder", font=("Bold",20))
-        title.grid(row=0, column=1, sticky='n', pady=10)
 
         # Text box
         self.main_page_textbox = GUIInterface.CreateTextbox(width=MainAppWindow.app_width * 0.5, height=MainAppWindow.app_height * 0.5)

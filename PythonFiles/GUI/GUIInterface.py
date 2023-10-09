@@ -61,7 +61,7 @@ class GUIInterface:
                                               bg_color=bg_color)
         return scrollable_frame
 
-    def CreateButton(on_click, **kwargs)->CTkButton:
+    def CreateButton(on_click=None, **kwargs)->CTkButton:
         width =                 getParamValFromKwarg('width', kwargs, default=140)
         height =                getParamValFromKwarg('height', kwargs, default=28)
         border_width =          getParamValFromKwarg('border_width', kwargs)
@@ -318,7 +318,7 @@ class GUIInterface:
         GUIInterface.SetCurrentFrame(tmp)
         return window, cal, submit_btn
 
-    def CreateNewWindow(window_name:str, size='250x250', destroyOnRootClick=True):
+    def CreateNewWindow(window_name:str, size='250x250'):
         window = Toplevel(GUIInterface.root)
         window.columnconfigure(0, weight=1)
         window.rowconfigure(0, weight=1)
@@ -333,6 +333,70 @@ class GUIInterface:
         window.bind("<FocusOut>", lambda event : onCloseCallBack)
 
         return window
+    
+    def CreateOptionMenu(**kwargs):
+        width =                         getParamValFromKwarg('width', kwargs, default=140)
+        height =                        getParamValFromKwarg('height', kwargs, default=28)
+        corner_radius =                        getParamValFromKwarg('corner_radius', kwargs)
+        bg_color =                        getParamValFromKwarg('bg_color', kwargs, default='transparent')
+        fg_color =                        getParamValFromKwarg('fg_color', kwargs)
+        button_color =                        getParamValFromKwarg('button_color', kwargs)
+        button_hover_color =                        getParamValFromKwarg('button_hover_color', kwargs)
+        text_color =                        getParamValFromKwarg('text_color', kwargs)
+        text_color_disabled =                        getParamValFromKwarg('text_color_disabled', kwargs)
+        dropdown_fg_color =                        getParamValFromKwarg('dropdown_fg_color', kwargs)
+        dropdown_hover_color =                        getParamValFromKwarg('dropdown_hover_color', kwargs)
+        dropdown_text_color =                        getParamValFromKwarg('dropdown_text_color', kwargs)
+        font =                        getParamValFromKwarg('font', kwargs)
+        dropdown_font =                        getParamValFromKwarg('dropdown_font', kwargs)
+        values =                        getParamValFromKwarg('values', kwargs)
+        variable =                        getParamValFromKwarg('variable', kwargs)
+        state =                        getParamValFromKwarg('state', kwargs, default=NORMAL)
+        hover =                        getParamValFromKwarg('hover', kwargs, default=True)
+        command =                        getParamValFromKwarg('command', kwargs)
+        dynamic_resizing =                        getParamValFromKwarg('dynamic_resizing', kwargs, default=True)
+        anchor =                        getParamValFromKwarg('anchor', kwargs, default='w')
+
+        option_menu = CTkOptionMenu(master=GUIInterface.current_frame,
+                                    width=width,
+                                    height=height,
+                                    corner_radius=corner_radius,
+                                    bg_color=bg_color,
+                                    fg_color=fg_color,
+                                    button_color=button_color,
+                                    button_hover_color=button_hover_color,
+                                    text_color=text_color,
+                                    text_color_disabled=text_color_disabled,
+                                    dropdown_fg_color=dropdown_fg_color,
+                                    dropdown_hover_color=dropdown_hover_color,
+                                    dropdown_text_color=dropdown_text_color,
+                                    font=font,
+                                    dropdown_font=dropdown_font,
+                                    values=values,
+                                    variable=variable,
+                                    state=state,
+                                    hover=hover,
+                                    command=command,
+                                    dynamic_resizing=dynamic_resizing,
+                                    anchor=anchor)
+        return option_menu
+
+    def getCTKFont(**kwargs):
+        family = getParamValFromKwarg('family', kwargs)
+        size = getParamValFromKwarg('size', kwargs)
+        weight = getParamValFromKwarg('weight', kwargs)
+        slant = getParamValFromKwarg('slant', kwargs, 'roman')
+        underline = getParamValFromKwarg('slant', kwargs, False)
+        overstrike = getParamValFromKwarg('slant', kwargs, False)
+
+
+        return CTkFont(family=family,
+                       size=size,
+                       weight=weight,
+                       slant=slant,
+                       underline=underline,
+                       overstrike=overstrike
+                       )
 
     def UpdateEntry(entry:CTkEntry, text_var:str):
         og_state = entry.cget("state")
@@ -354,6 +418,9 @@ class GUIInterface:
     def SetCurrentFrame(frame):
         GUIInterface.current_frame = frame
     
+    def SetAppearanceMode(new_appearance_mode:str):
+        set_appearance_mode(new_appearance_mode)
+
     def MainLoop(self):
         self.root.mainloop()
         

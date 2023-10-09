@@ -33,5 +33,7 @@ class MainAppWindow:
 
     def Setup():
         GUIInterface.root.geometry(f'{MainAppWindow.app_width}x{MainAppWindow.app_height}')
+
         GUIInterface.root.columnconfigure(0, weight=1)
+        GUIInterface.root.columnconfigure(1, weight=5)
         GUIInterface.root.rowconfigure(0, weight=1)

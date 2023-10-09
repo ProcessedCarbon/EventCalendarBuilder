@@ -9,7 +9,7 @@ class Page:
             return
 
         self.page = GUIInterface.CreateFrame(GUIInterface.root)
-        self.page.grid(row=0, column=0, sticky="nsew")
+        self.page.grid(row=0, column=1, sticky="nsew")
         PageManager.AddPage(self)
     
         self.OnStart()
