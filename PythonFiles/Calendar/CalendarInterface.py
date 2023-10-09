@@ -110,15 +110,15 @@ class CalendarInterface:
         paths = glob.glob(f'{dir}/*.ics')
         return paths
     
-    def ClearICSFilesInDir(dir:Path)->bool:
+    def DeleteICSFilesInDir(dir:Path)->bool:
         try:
             files = glob.glob(f"{dir}/*.ics")
             for f in files:
                 os.unlink(f)
-            print(f'CLEARED ALL FILES IN {dir} SUCCESSFULLY!')
+            print(f'DELETE ALL FILES IN {dir} SUCCESSFULLY!')
             return True
         except:
-            print(f'FAILED TO CLEAR FILES IN {dir}')
+            print(f'FAILED TO DELETE FILES IN {dir}')
             return False
 
     # def CreateNewDir(dir_name:str, parent_dir:Path)->Path:

@@ -232,22 +232,22 @@ class EventDetailsPanel:
     # Right now can only handle 1 event only 
     def ScheduleDefault(self, event):
         if platform == "linux":
-            self.CreateICSFileFromInput(event)
-            filename = CalendarInterface.getICSFilePath()
-            subprocess.run(['xdg-open', filename])
+            filename = self.CreateICSFileFromInput(event)
+            file = CalendarInterface.getICSFilePath(filename)
+            subprocess.run(['xdg-open', file])
             pass
         elif platform == 'darwin':
-            self.CreateICSFileFromInput(event)
-            filename = CalendarInterface.getICSFilePath()
-            subprocess.run(['open', filename])
+            filename = self.CreateICSFileFromInput(event)
+            file = CalendarInterface.getICSFilePath(filename)
+            subprocess.run(['open', file])
         else:
-            self.CreateICSFileFromInput(event)
-            path = CalendarInterface.getICSFilePath()
-            os.startfile(path)
+            filename = self.CreateICSFileFromInput(event)
+            file = CalendarInterface.getICSFilePath(filename)
+            os.startfile(file)
 
     def ScheduleGoogleCalendar(self, event)->bool:
-        self.CreateICSFileFromInput(event)
-        events = GoogleCalendarInterface.Parse_ICS(CalendarInterface._default_ics_file)
+        filename = self.CreateICSFileFromInput(event)
+        events = GoogleCalendarInterface.Parse_ICS(filename)
         for e in events:
             scheduled = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=e)
             if scheduled == False:
@@ -256,7 +256,8 @@ class EventDetailsPanel:
 
     # Creates ICS files to be parsed 
     # 1 ICS = should have 1 VEVENT
-    def CreateICSFileFromInput(self, event):
+    # returns names of file created
+    def CreateICSFileFromInput(self, event)->str:
         desp = event["Description"]
         priority = int(event["Priority"])
         location = event["Location"]
@@ -272,4 +273,6 @@ class EventDetailsPanel:
                                         e_location=location,
                                         e_priority=int(priority))
         
-        CalendarInterface.WriteToFile(f'{event}_({ics_s})')
+        file_name = f'{title}_{ics_s}'
+        CalendarInterface.WriteToFile(file_name)
+        return file_name
