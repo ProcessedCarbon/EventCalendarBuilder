@@ -94,8 +94,7 @@ class EventDetailsPanel:
                                                    placeholder_text="HH:MM:SS")
         et_frame.grid(row=7, column=1,sticky='nsew',pady=self.gap)
 
-        calendars = ["Default", "Google"]
-        calendars_frame = self.CreateDropdownField(values=calendars, entryname="Calendar")
+        calendars_frame = self.CreateDropdownField(values=["Default", "Google"], entryname="Calendar")
         calendars_frame.grid(row=8, column=1, sticky='nsew',pady=self.gap)
 
         schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule')
@@ -152,7 +151,7 @@ class EventDetailsPanel:
 
     def CreateDropdownField(self, values:list[str], entryname:str):
         key = self.ConvertEntryNameToKey(entryname)
-        dropdown_frame, dropdown_label, dropdown_box = GUIInterface.CreateComboboxWithLabel(label=entryname +":", dropdown=values)
+        dropdown_frame, dropdown_label, dropdown_box = GUIInterface.CreateOptionMenuWithLabel(label=entryname +":", dropdown=values)
         self.details_entries[key] = dropdown_box
         return dropdown_frame
     
