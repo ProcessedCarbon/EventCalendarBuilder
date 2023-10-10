@@ -1,9 +1,6 @@
 from Pages.Page import Page
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
-import os
-import json
-from Managers.ErrorConfig import ErrorCodes
 import Managers.DirectoryManager as directory_manager
 
 class ManageEventPage(Page):

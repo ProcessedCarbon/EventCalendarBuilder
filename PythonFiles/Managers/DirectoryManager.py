@@ -46,7 +46,7 @@ def DeleteICSFilesInDir(dir_path:Path, file_type='ics')->bool:
 
 def WriteJSON(dir_path:Path, file_name:str, content)->bool:
     try:
-        with open(Path(os.path.join(dir_path, file_name))) as file:
+        with open(Path(os.path.join(dir_path, file_name)), 'w') as file:
             json.dump(content, file)
         return True
     except Exception as e:

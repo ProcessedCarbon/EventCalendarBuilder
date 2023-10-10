@@ -1,8 +1,7 @@
 from Managers.ErrorConfig import ErrorCodes
 from pathlib import Path
 import os
-import glob
-import json
+import Managers.DirectoryManager as directory_manager
 
 class Event:
     def __init__(self, id:int, name:str, location:str, date:str, start_time:str, end_time:str) -> None:
@@ -119,19 +118,17 @@ class EventsManager:
         try:
             eventList = [x for x in EventsManager.app_scheduled_events if x not in EventsManager.events_db]
             EventsManager.events_db.extend(eventList)
-    
-            with open(Path(os.path.join(EventsManager.local_events_dir, EventsManager.event_json)), 'w') as file:
-                db_copy = EventsManager.events_db.copy()
-                
-                # convert to json dumpable
-                for e in db_copy:
+
+            db_copy = EventsManager.events_db.copy()
+
+            # convert to json dumpable
+            for e in db_copy:
                     for key in e:
                         if type(e[key]) != str:
                             e[key] = str(e[key])
 
-                # Json Dump
-                json.dump(db_copy, file)
-            file.close()
+            # Create JSON file with events
+            directory_manager.WriteJSON(EventsManager.local_events_dir, EventsManager.event_json, db_copy)
 
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
