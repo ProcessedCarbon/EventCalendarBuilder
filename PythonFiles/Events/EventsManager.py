@@ -1,4 +1,8 @@
 from Managers.ErrorConfig import ErrorCodes
+from pathlib import Path
+import os
+import glob
+import json
 
 class Event:
     def __init__(self, id:int, name:str, location:str, date:str, start_time:str, end_time:str) -> None:
@@ -26,6 +30,16 @@ class Event:
         
     def getEnd_Time(self)->str:
         return self.end_time
+    
+    def getEventDict(self):
+        return {
+            "id" : self.id,
+            "name" : self.name,
+            "location" : self.location,
+            "date" : self.date,
+            "start_time" : self.start_time,
+            "end_time" : self.end_time,
+        }
         
     def setName(self, name:str):
         self.name = name
@@ -41,10 +55,22 @@ class Event:
         
     def setEnd_Time(self, end_time:str):
         self.end_time = end_time
+        
     
 class EventsManager:
+    # Directories
+    parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).absolute()
+    local_events_dir = Path(os.path.join(parent_dir, 'Local_Events'))
+    event_json = 'events'
+    
     events = []
     events_db = []
+
+    try:
+        local_events_dir.mkdir(parents=True, exist_ok=False)
+    except:
+        print("EVENTS DIR ALREADY EXISTS")
+
     def __init__(self) -> None:
         pass
 
@@ -72,13 +98,15 @@ class EventsManager:
         return n - 1 if n != 0 else 0
     
         # Prints entity per event in list
-    def PrintEvents(events : Event):
+    
+    def PrintEvents(events : dict):
+        event = events['object']
         print("------------------------------------------------------------------------------")
-        print("event: ", events.name)
-        print("location: ", events.location)
-        print("date: ", events.date)
-        print("start_time: ", events.start_time)
-        print("end_time: ", events.end_time)
+        print("event: ", event.name)
+        print("location: ", event.location)
+        print("date: ", event.date)
+        print("start_time: ", event.start_time)
+        print("end_time: ", event.end_time)
     
     def ClearEvents():
         EventsManager.events = []
@@ -92,8 +120,16 @@ class EventsManager:
         ErrorCodes.PrintCustomError("EVENT NOT FOUND")
     
     def SendEventsToEventsDB(event_list:list[Event]):
-        eventList = [x for x in event_list if x not in EventsManager.events_db]
-        EventsManager.events_db.extend(eventList)
+        try:
+            eventList = [x for x in event_list if x not in EventsManager.events_db]
+            EventsManager.events_db.extend(eventList)
+
+            with open(Path(os.path.join(EventsManager.local_events_dir, f'{EventsManager.event_json}.json')), 'w') as file:
+                for e in EventsManager.events_db:
+                    json.dump(e, file)
+
+        except Exception as e:
+            ErrorCodes.PrintCustomError(e)
 
     def UpdateEventsDB():
         try:
@@ -101,3 +137,8 @@ class EventsManager:
             EventsManager.ClearEvents()
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
+
+    def AddEvent(event:Event):
+        event_dict = event.getEventDict()
+        event_dict['object'] = event
+        EventsManager.events.append(event_dict)

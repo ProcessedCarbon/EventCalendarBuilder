@@ -43,7 +43,7 @@ class SchedulePage(Page):
             self.PopulateDetails(EventsManager.events)
             self.Update()
 
-    def PopulateDetails(self, events:list[Event]):
+    def PopulateDetails(self, events:list[dict]):
         n = len(events)
         detail_rows = ceil(n / self.details_panels_max_column)
         rows = [1] * detail_rows
@@ -55,7 +55,7 @@ class SchedulePage(Page):
             if count == 0 and index != 0:
                 row_at += 1
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
-                                             event=event,
+                                             event=event['object'],
                                              remove_callback=self.DeleteDetailPanel,
                                              index=index, 
                                              row=row_at, 
