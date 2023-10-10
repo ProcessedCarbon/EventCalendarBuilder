@@ -274,7 +274,7 @@ class GUIInterface:
 
         return entry_frame, label ,entry
     
-    def CreateComboboxWithLabel(label:str, dropdown:list[str])->list[CTkFrame,CTkLabel,CTkComboBox]:    
+    def CreateOptionMenuWithLabel(label:str, dropdown:list[str])->list[CTkFrame,CTkLabel,CTkComboBox]:    
         tmp_frame = GUIInterface.current_frame
         combo_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
 
@@ -286,7 +286,7 @@ class GUIInterface:
         label.grid(row=0, column=0)
 
         # Entry
-        combobox = GUIInterface.CreateComboBox(values=dropdown)
+        combobox = GUIInterface.CreateOptionMenu(values=dropdown)
         combobox.grid(row=0, column=1, sticky='e')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
@@ -420,6 +420,10 @@ class GUIInterface:
     
     def SetAppearanceMode(new_appearance_mode:str):
         set_appearance_mode(new_appearance_mode)
+
+    def ChangeGUIScaling(new_scaling: str):
+        new_scaling_float = int(new_scaling.replace("%", "")) / 100
+        set_widget_scaling(new_scaling_float)
 
     def MainLoop(self):
         self.root.mainloop()
