@@ -1,8 +1,13 @@
 from Pages.Page import Page
 from GUI.GUIInterface import GUIInterface
+from Events.EventsManager import EventsManager
+import os
+import json
+from Managers.ErrorConfig import ErrorCodes
+import Managers.DirectoryManager as directory_manager
 
 class ManageEventPage(Page):
-    def __init__(self):
+    def __init__(self):        
         super().__init__()
 
     def OnStart(self):
@@ -15,3 +20,19 @@ class ManageEventPage(Page):
 
         content_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
         content_frame.grid(row=1, column=1, sticky='nsew')
+
+        #scheduled_data = self.GetScheduledData()
+        scheduled_data = directory_manager.ReadJSON(EventsManager.local_events_dir, EventsManager.event_json)
+        
+        if scheduled_data != None:
+            pass
+    
+    # Given the data, create the UI for the events
+    def CreateScheduledEventGUI(self, scheduled_data):
+        if scheduled_data == None:
+            return
+        for data in scheduled_data:
+            # Pass details into GUI Events Card
+
+            # Create Card under the scrollable content frame
+            pass

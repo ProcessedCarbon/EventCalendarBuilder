@@ -61,10 +61,13 @@ class EventsManager:
     # Directories
     parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).absolute()
     local_events_dir = Path(os.path.join(parent_dir, 'Local_Events'))
-    event_json = 'events'
+    event_json = 'events.json'
     
+    # Temporary event list
     events = []
     app_scheduled_events = []
+
+    # Only contains events that are scheduled by app
     events_db = []
 
     try:
@@ -100,6 +103,7 @@ class EventsManager:
     
     def ClearEvents():
         EventsManager.events = []
+        EventsManager.app_scheduled_events = []
 
     def RemoveEvent(id:int):
         for event in EventsManager.events:
@@ -116,15 +120,18 @@ class EventsManager:
             eventList = [x for x in EventsManager.app_scheduled_events if x not in EventsManager.events_db]
             EventsManager.events_db.extend(eventList)
     
-            with open(Path(os.path.join(EventsManager.local_events_dir, f'{EventsManager.event_json}.json')), 'w') as file:
-                for e in EventsManager.events_db:
-                    # convert to json dumpable
+            with open(Path(os.path.join(EventsManager.local_events_dir, EventsManager.event_json)), 'w') as file:
+                db_copy = EventsManager.events_db.copy()
+                
+                # convert to json dumpable
+                for e in db_copy:
                     for key in e:
                         if type(e[key]) != str:
                             e[key] = str(e[key])
 
-                    # Json Dump
-                    json.dump(e, file)
+                # Json Dump
+                json.dump(db_copy, file)
+            file.close()
 
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
