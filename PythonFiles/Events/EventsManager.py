@@ -64,6 +64,7 @@ class EventsManager:
     event_json = 'events'
     
     events = []
+    app_scheduled_events = []
     events_db = []
 
     try:
@@ -73,17 +74,6 @@ class EventsManager:
 
     def __init__(self) -> None:
         pass
-
-    def UpdateEventDict(id:int, update:Event)->bool:
-        try:
-            if len(EventsManager.events) > 0:
-                EventsManager.events = [update if i["id"] == id else i for i in EventsManager.events]
-            else:
-                EventsManager.events.append(update)
-            return True
-        except Exception as e:
-            ErrorCodes.PrintCustomError(e)
-            return False
     
     def CreateEventObj(name:str, location:str, date:str, start_time:str, end_time:str):
         return Event(id=EventsManager.getCurrentId(),
@@ -113,19 +103,27 @@ class EventsManager:
 
     def RemoveEvent(id:int):
         for event in EventsManager.events:
-            if event.getId() == id:
+            e = event['object']
+            if e.getId() == id:
                 EventsManager.events.remove(event)
                 return
             
         ErrorCodes.PrintCustomError("EVENT NOT FOUND")
     
-    def SendEventsToEventsDB(event_list:list[Event]):
+    # Send only those that are schedule
+    def SendEventsToEventsDB():
         try:
-            eventList = [x for x in event_list if x not in EventsManager.events_db]
+            eventList = [x for x in EventsManager.app_scheduled_events if x not in EventsManager.events_db]
             EventsManager.events_db.extend(eventList)
-
+    
             with open(Path(os.path.join(EventsManager.local_events_dir, f'{EventsManager.event_json}.json')), 'w') as file:
                 for e in EventsManager.events_db:
+                    # convert to json dumpable
+                    for key in e:
+                        if type(e[key]) != str:
+                            e[key] = str(e[key])
+
+                    # Json Dump
                     json.dump(e, file)
 
         except Exception as e:
@@ -133,12 +131,14 @@ class EventsManager:
 
     def UpdateEventsDB():
         try:
-            EventsManager.SendEventsToEventsDB(EventsManager.events)
+            EventsManager.SendEventsToEventsDB()
             EventsManager.ClearEvents()
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
 
-    def AddEvent(event:Event):
+    def AddEvent(event:Event, target=None):
+        target = EventsManager.events if target == None else target
+
         event_dict = event.getEventDict()
         event_dict['object'] = event
-        EventsManager.events.append(event_dict)
+        target.append(event_dict)

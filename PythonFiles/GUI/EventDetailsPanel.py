@@ -222,10 +222,12 @@ class EventDetailsPanel:
         if calendar == 'Default':
             self.ScheduleDefault(input)
             # No clash checking done for default yet
+            EventsManager.AddEvent(self.event, EventsManager.app_scheduled_events)
             self.Destroy()
         elif calendar == 'Google':
             success = self.ScheduleGoogleCalendar(input)
             if success:
+                EventsManager.AddEvent(self.event, EventsManager.app_scheduled_events)
                 self.Destroy()
 
     # Right now can only handle 1 event only 
