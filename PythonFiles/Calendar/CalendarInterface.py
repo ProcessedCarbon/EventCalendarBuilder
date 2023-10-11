@@ -3,6 +3,7 @@ from icalendar import Calendar, Event, vCalAddress, vText
 from pathlib import Path
 import os
 import glob
+import Managers.DirectoryManager as directory_manager
 
 class CalendarInterface:
     _cal = Calendar()
@@ -66,11 +67,8 @@ class CalendarInterface:
         try:
             file_name = CalendarInterface._default_ics_file if file_name == None else file_name
             dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
-
-            f = open(Path(os.path.join(dir_to_open, f'{file_name}.ics')), 'wb')
-            f.write(CalendarInterface._cal.to_ical())
-            f.close()
-            print(f'SUCCESSFULLY WRITTEN {file_name}.ics TO {dir_to_open}')
+            
+            directory_manager.WriteFile(dir_to_open, f'{file_name}.ics', CalendarInterface._cal.to_ical(), 'wb')
             return True
         except:
             print(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open}')
@@ -79,9 +77,9 @@ class CalendarInterface:
     def ReadICSFile(file_name=None, main=True):
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name
         dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
-        
-        e = open(Path(os.path.join(dir_to_open, f'{file_name}.ics')), 'rb')
-        ecal = icalendar.Calendar.from_ical(e.read())
+
+        e = directory_manager.ReadFile(dir_to_open, f'{file_name}.ics', 'rb')
+        ecal = icalendar.Calendar.from_ical(e)
         for component in ecal.walk():
             if component.name == "VEVENT":
                 print(component.get("name"))
@@ -90,15 +88,15 @@ class CalendarInterface:
                 print(component.get("location"))
                 print(component.decoded("dtstart"))
                 print(component.decoded("dtend"))
-            e.close()
-
-    def getICSFile(file_name=None, main=True):
-        file_name = CalendarInterface._default_ics_file if file_name == None else file_name
-        dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
-
-        e = open(Path(os.path.join(dir_to_open, f'{file_name}.ics')), 'rb')
-        ecal = icalendar.Calendar.from_ical(e.read())
         return ecal
+
+    # def getICSFile(file_name=None, main=True):
+    #     file_name = CalendarInterface._default_ics_file if file_name == None else file_name
+    #     dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
+
+    #     e = open(Path(os.path.join(dir_to_open, f'{file_name}.ics')), 'rb')
+    #     ecal = icalendar.Calendar.from_ical(e.read())
+    #     return ecal
     
     def getICSFilePath(file_name=None, main=True)->Path:
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name

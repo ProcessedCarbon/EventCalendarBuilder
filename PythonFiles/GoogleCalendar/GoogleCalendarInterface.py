@@ -133,7 +133,7 @@ class GoogleCalendarInterface:
             return
         
         events = []
-        ics_file = CalendarInterface.getICSFile(ics)
+        ics_file = CalendarInterface.ReadICSFile(ics)
         for component in ics_file.walk():
               if component.name == "VEVENT":
                     start_datetime = component.get('dtstart').dt.isoformat()
@@ -155,7 +155,7 @@ class GoogleCalendarInterface:
         existing = GoogleCalendarInterface.service.events().list(calendarId=calendar_id, timeMin=time_min, timeMax=time_max).execute().get('items', [])
         existing_google_events = [GoogleCalendarInterface.CreateGoogleEvent(
                                                                             title=x['summary'],
-                                                                            location=x['location'],
+                                                                            location=x['location'] if "location" in x else "", # Done this way as might be empty
                                                                             dtstart=x['start']['dateTime'],
                                                                             tzstart=x['start']['timeZone'],
                                                                             dtend=x['end']['dateTime'],
