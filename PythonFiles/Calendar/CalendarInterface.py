@@ -2,24 +2,30 @@ import icalendar
 from icalendar import Calendar, Event, vCalAddress, vText
 from pathlib import Path
 import os
-import glob
 import Managers.DirectoryManager as directory_manager
 
 class CalendarInterface:
     _cal = Calendar()
     
     # Directories
-    parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).absolute()
-    _main_dir = Path(os.path.join(parent_dir, 'CalendarFiles'))
-    _split_dir = Path(os.path.join(_main_dir, 'Splitted'))
+    # parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).absolute()
+    # _main_dir = Path(os.path.join(parent_dir, 'CalendarFiles'))
+    # _split_dir = Path(os.path.join(_main_dir, 'Splitted'))
     _default_ics_file = 'to_schedule'
 
-    try:
-        _main_dir.mkdir(parents=True, exist_ok=False)
-        _split_dir.mkdir(parents=True, exist_ok=False)
-    except:
-        print("CALENDAR DIR ALREADY EXISTS")
-    
+    # try:
+    #     _main_dir.mkdir(parents=True, exist_ok=False)
+    #     _split_dir.mkdir(parents=True, exist_ok=False)
+    # except:
+    #     print("CALENDAR DIR ALREADY EXISTS")
+
+    parent_dir = directory_manager.getCurrentFileDirectory(__file__)
+    _main_dir = directory_manager.getFilePath(parent_dir, 'CalendarFiles')
+    _split_dir = directory_manager.getFilePath(_main_dir, 'Splitted')
+
+    directory_manager.MakeDirectory(_main_dir)
+    directory_manager.MakeDirectory(_split_dir)
+
     def __init__(self):
         # Some properties are required to be compliant
         CalendarInterface._cal.add('prodid', '-//My calendar product//example.com//')
@@ -89,41 +95,13 @@ class CalendarInterface:
                 print(component.decoded("dtstart"))
                 print(component.decoded("dtend"))
         return ecal
-
-    # def getICSFile(file_name=None, main=True):
-    #     file_name = CalendarInterface._default_ics_file if file_name == None else file_name
-    #     dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
-
-    #     e = open(Path(os.path.join(dir_to_open, f'{file_name}.ics')), 'rb')
-    #     ecal = icalendar.Calendar.from_ical(e.read())
-    #     return ecal
     
     def getICSFilePath(file_name=None, main=True)->Path:
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name
         dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
 
-        return Path(os.path.join(dir_to_open, f'{file_name}.ics'))
-
-    def getAllICSFilePathsFromDir(dir:Path)->list[Path]:
-        paths = glob.glob(f'{dir}/*.ics')
-        return paths
+        return directory_manager.getFilePath(dir_to_open, f'{file_name}.ics')
     
     def DeleteICSFilesInDir(dir:Path)->bool:
-        try:
-            files = glob.glob(f"{dir}/*.ics")
-            for f in files:
-                os.unlink(f)
-            print(f'DELETE ALL FILES IN {dir} SUCCESSFULLY!')
-            return True
-        except:
-            print(f'FAILED TO DELETE FILES IN {dir}')
-            return False
-
-    # def CreateNewDir(dir_name:str, parent_dir:Path)->Path:
-    #     try:
-    #         new_dir = Path(os.path.join(parent_dir, dir_name))
-    #         new_dir.mkdir(parents=True, exist_ok=False)
-    #         return new_dir
-    #     except:
-    #         print("CALENDAR DIR ALREADY EXISTS")
-    #         return new_dir
+        opt = directory_manager.DeleteFilesInDir(dir, 'ics')
+        return opt

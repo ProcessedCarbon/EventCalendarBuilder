@@ -4,10 +4,12 @@ import glob
 from Managers.ErrorConfig import ErrorCodes
 import json
 
-def MakeDirectory(dir_path:Path, dir_name:str):
+# No need to close file after 'with open()' is used
+# Auto closes after with code is exceuted
+
+def MakeDirectory(dir_path:Path):
     try:
-        _dir = Path(os.path.join(dir_path, dir_name))
-        _dir.mkdir(parents=True, exist_ok=False)
+        dir_path.mkdir(parents=True, exist_ok=False)
     except Exception as e:
         ErrorCodes.PrintCustomError(e)
 
@@ -15,7 +17,6 @@ def WriteFile(dir_path:Path, file_name:str, content, write_type:['w', 'wb']='w')
     try:
         with open(Path(os.path.join(dir_path, file_name)), write_type) as file:
             file.write(content)
-        file.close()
         return True
     except Exception as e:
         ErrorCodes.PrintCustomError(e)
@@ -26,14 +27,13 @@ def ReadFile(dir_path:Path, file_name:str, read_type:['r', 'rb']='r'):
     try:
         with open(Path(os.path.join(dir_path, file_name)), read_type) as file:
             content = file.read()
-        file.close()
         return content
     except Exception as e:
         ErrorCodes.PrintCustomError(e)
         print(f'FAILED TO READ {file_name} TO {dir_path}')
         return False
     
-def DeleteICSFilesInDir(dir_path:Path, file_type='ics')->bool:
+def DeleteFilesInDir(dir_path:Path, file_type='ics')->bool:
     try:
         files = glob.glob(f"{dir_path}/*.{file_type}")
         for f in files:
@@ -83,8 +83,6 @@ def ReadJSON(dir_path:Path, file_name:str):
             # No need to set scheduled_data = None here as any changes made by try block wont persist if it fails
             ErrorCodes.PrintCustomError("INVALID JSON :" + str(e))
             return None
-        
-    file.close()
     return data
 
 
@@ -92,6 +90,8 @@ def getFilePath(dir_path:Path, file_name:str)->Path:
     return Path(os.path.join(dir_path, file_name))
 
 def getAllFilePathsInDirectory(dir_path:Path, file_type='ics'):
-        paths = glob.glob(f'{dir_path}/*.{file_type}')
-        return paths
+    paths = glob.glob(f'{dir_path}/*.{file_type}')
+    return paths
 
+def getCurrentFileDirectory(file):
+    return Path(os.path.dirname(os.path.realpath(file))).absolute()
