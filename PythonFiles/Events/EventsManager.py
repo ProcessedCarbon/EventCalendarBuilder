@@ -4,13 +4,22 @@ import os
 import Managers.DirectoryManager as directory_manager
 
 class Event:
-    def __init__(self, id:int, name:str, location:str, date:str, start_time:str, end_time:str) -> None:
+    def __init__(self, 
+                 id:int, 
+                 name:str, 
+                 location:str, 
+                 date:str, 
+                 start_time:str, 
+                 end_time:str,
+                 platform='Default') -> None:
+        
         self.id = id
         self.name = name
         self.location = location
         self.date = date
         self.start_time = start_time
         self.end_time = end_time
+        self.platform = platform
     
     def getId(self)->int:
         return self.id
@@ -30,6 +39,9 @@ class Event:
     def getEnd_Time(self)->str:
         return self.end_time
     
+    def getPlatform(self)->str:
+        return self.platform
+
     def getEventDict(self):
         return {
             "id" : self.id,
@@ -38,6 +50,7 @@ class Event:
             "date" : self.date,
             "start_time" : self.start_time,
             "end_time" : self.end_time,
+            "platform" : self.platform
         }
         
     def setName(self, name:str):
@@ -54,7 +67,9 @@ class Event:
         
     def setEnd_Time(self, end_time:str):
         self.end_time = end_time
-        
+    
+    def setPlatform(self, platform:str):
+        self.platform = platform
     
 class EventsManager:
     # Directories

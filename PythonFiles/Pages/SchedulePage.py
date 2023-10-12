@@ -2,7 +2,6 @@ from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
-from Events.EventsManager import Event
 
 from math import ceil
 
@@ -72,24 +71,6 @@ class SchedulePage(Page):
     def Update(self):
         for panel in self.details_panels:
             panel.UpdateInputFields()
-    
-    # def CheckDetailsForDateTimeClash(self, details:list)->bool:
-    #     n = len(details)
-    #     for i in range(n):
-    #         for j in range (i+1, n):
-    #             if j > n:
-    #                 break
-                
-    #             start_1 = str(details[i]["Start_Time_ICS"])
-    #             end_1 = str(details[i]['End_Time_ICS'])
-
-    #             start_2 = str(details[j]["Start_Time_ICS"])
-    #             end_2 = str(details[j]['End_Time_ICS'])
-
-    #             if DateTimeManager.hasDateTimeClash(start_1, end_1, start_2, end_2):
-    #                 ErrorCodes.PrintCustomError(f'{details[i]["Event"]} AND {details[j]["Event"]} HAS CLASH')
-    #                 return True
-    #     return False
         
     def DeleteDetailPanel(self, index:int):
         del self.details_panels[index]

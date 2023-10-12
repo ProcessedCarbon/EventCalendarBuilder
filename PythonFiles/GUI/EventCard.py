@@ -49,4 +49,12 @@ class EventCard:
         GUIInterface.UpdateEntry(et_entry, str(event_details['end_time']))
         et_frame.grid(row=4, column=1, sticky='nsew')
 
+        # platform
+        p_frame, p_label, p_entry = GUIInterface.CreateEntryWithLabel(label= "End" + ":",
+                                                                        entry_width=100, 
+                                                                        entry_state='disabled')
+        
+        GUIInterface.UpdateEntry(p_entry, str(event_details['platform']))
+        p_frame.grid(row=5, column=1, sticky='nsew')
+
         GUIInterface.SetCurrentFrame(tmp_frame)

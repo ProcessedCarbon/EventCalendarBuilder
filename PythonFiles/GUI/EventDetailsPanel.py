@@ -3,7 +3,6 @@ from Managers.ErrorConfig import getParamValFromKwarg
 from Events.EventsManager import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
-from Managers.ErrorConfig import ErrorCodes
 
 # Calendar Intefaces
 from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
@@ -221,12 +220,15 @@ class EventDetailsPanel:
         calendar = input['Calendar']
         if calendar == 'Default':
             self.ScheduleDefault(input)
+
             # No clash checking done for default yet
+            # No need to add platform to event object as its default
             EventsManager.AddEvent(self.event, EventsManager.app_scheduled_events)
             self.Destroy()
         elif calendar == 'Google':
             success = self.ScheduleGoogleCalendar(input)
             if success:
+                self.event.setPlatform('Google')
                 EventsManager.AddEvent(self.event, EventsManager.app_scheduled_events)
                 self.Destroy()
 
