@@ -95,3 +95,6 @@ def getAllFilePathsInDirectory(dir_path:Path, file_type='ics'):
 
 def getCurrentFileDirectory(file):
     return Path(os.path.dirname(os.path.realpath(file))).absolute()
+
+def checkPathExists(path:Path)->bool:
+    return os.path.exists(path)
