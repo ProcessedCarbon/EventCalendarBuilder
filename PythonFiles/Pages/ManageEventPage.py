@@ -27,22 +27,15 @@ class ManageEventPage(Page):
         
         # Create GUI only if there is data
         if scheduled_data != None:
-            if scheduled_data == None:
-                return
-        
             row_count = 0
-            col_count = 0
             for data in scheduled_data:
                 # Pass details into GUI Events Card
                 # Create Card under the scrollable content frame
                 EventCard(content_frame, 
                           row=row_count, 
-                          col=col_count, 
+                          col=0, 
                           event_details=data, 
                           gap=self.card_gap)
                 
-                col_count += 1
-                if col_count == self.max_col:
-                    row_count += 1
-                    col_count = 0
+                row_count += 1
         
