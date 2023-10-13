@@ -12,13 +12,12 @@ class EventCard:
                                 sticky='nsew', 
                                 padx=gap, 
                                 pady=gap,)
-        
+        GUIInterface.CreateGrid(self.details_frame, rows=[1] * len(event_details), cols=[1])
         self.details_frame.update()
+
         # Details Attributes
         attribute_width= self.details_frame.winfo_width() * 0.6
         detail_gap = 5
-
-        GUIInterface.CreateGrid(self.details_frame, rows=[1] * len(event_details), cols=[1])
 
         # Details
         # title
