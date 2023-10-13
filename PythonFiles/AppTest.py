@@ -22,10 +22,15 @@ def TextProcessingManagerTest():
     test_date = "23rd to 25th Aug"
     print(TextProcessingManager.ProcessDate(test_date))
 
+def OutlookGetAccessTokenTest():
+    import Calendar.Outlook.GetAccessToken as get_access_token
+    get_access_token.GenerateAccessToken()
+
 def main():    
-    TestInstall()
+    #TestInstall()
     #MacCalendarTest()
     #TextProcessingManagerTest()
+    OutlookGetAccessTokenTest()
     pass
 
 if __name__ == "__main__":
