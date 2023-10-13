@@ -14,7 +14,6 @@ import subprocess
 
 class EventDetailsPanel:
     def __init__(self, parent, event:Event, remove_callback,index:int, gap:int=10, **grid_params):
-        self.detail_entry_width = 180
         self.gap = gap
         self.parent = parent
         self.grid_params = grid_params
@@ -53,16 +52,21 @@ class EventDetailsPanel:
         self.details_frame.columnconfigure(1, weight=10)
         self.details_frame.columnconfigure(2, weight=1)
 
+        self.details_frame.update() # update values from resized UI
+
+        # GUI Attributes
+        detail_entry_width = self.details_frame.winfo_width() * 0.7
+
         # GUI
         remove_btn = GUIInterface.CreateButton(on_click=self.OnRemove, text='X', width=50)
         remove_btn.grid(row=0, column=2, pady=10)
 
-        e_frame, e_entry = self.CreateEntryField(self.detail_entry_width, 
+        e_frame, e_entry = self.CreateEntryField(detail_entry_width, 
                                                  entryname="Event", 
                                                  placeholder_text='Title')
         e_frame.grid(row=1, column=1,sticky='nsew', pady=self.gap)
 
-        desp_frame, desp_entry = self.CreateEntryField(self.detail_entry_width, 
+        desp_frame, desp_entry = self.CreateEntryField(detail_entry_width, 
                                                        entryname="Description", 
                                                        placeholder_text='Description')
         desp_frame.grid(row=2, column=1, sticky='nsew',pady=self.gap)
@@ -71,24 +75,24 @@ class EventDetailsPanel:
         prio_frame = self.CreateDropdownField(values=priorities, entryname="Priority")
         prio_frame.grid(row=3, column=1, sticky='nsew',pady=self.gap)
 
-        l_frame, l_entry = self.CreateEntryField(self.detail_entry_width, 
+        l_frame, l_entry = self.CreateEntryField(detail_entry_width, 
                                                  entryname="Location", 
                                                  placeholder_text='Location')
         l_frame.grid(row=4, column=1, sticky='nsew',pady=self.gap)
 
-        d_frame, d_entry = self.CreateEntryField(self.detail_entry_width, 
+        d_frame, d_entry = self.CreateEntryField(detail_entry_width, 
                                                  entryname="Date", 
                                                  entry_state='disabled', 
                                                  placeholder_text='YYYY-MM-DD')
         d_frame.grid(row=5, column=1,sticky='nsew',pady=self.gap)
         d_entry.bind('<1>', lambda event, entry=d_entry: self.PickDate(entry))
 
-        st_frame, st_entry = self.CreateEntryField(self.detail_entry_width, 
+        st_frame, st_entry = self.CreateEntryField(detail_entry_width, 
                                                    entryname="Start Time", 
                                                    placeholder_text="HH:MM:SS")
         st_frame.grid(row=6, column=1,sticky='nsew',pady=self.gap)
 
-        et_frame, et_entry = self.CreateEntryField(self.detail_entry_width,
+        et_frame, et_entry = self.CreateEntryField(detail_entry_width,
                                                    entryname="End Time", 
                                                    placeholder_text="HH:MM:SS")
         et_frame.grid(row=7, column=1,sticky='nsew',pady=self.gap)
