@@ -16,7 +16,7 @@ class EventCard:
         self.details_frame.update()
 
         # Details Attributes
-        attribute_width= self.details_frame.winfo_width() * 0.6
+        attribute_width= self.details_frame.winfo_width() * 0.7
         detail_gap = 5
 
         # Details
