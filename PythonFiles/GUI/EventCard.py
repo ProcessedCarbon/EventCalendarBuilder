@@ -69,3 +69,12 @@ class EventCard:
         p_frame.grid(row=5, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         GUIInterface.SetCurrentFrame(tmp_frame)
+
+    def RemoveEvent(self):
+        pass
+
+    def UpdateCalendar(self):
+        pass
+
+    def UpdateEventDB(self):
+        pass
