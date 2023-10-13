@@ -45,20 +45,14 @@ class SchedulePage(Page):
     def PopulateDetails(self, events:list[dict]):
         n = len(events)
         detail_rows = ceil(n / self.details_panels_max_column)
-        rows = [1] * detail_rows
-        cols = [1] * self.details_panels_max_column
-        GUIInterface.CreateGrid(self.details_panel_frame, rows=rows, cols=cols)
-        row_at = 0
+        GUIInterface.CreateGrid(self.details_panel_frame, rows=([1] * detail_rows), cols=[1])
         for index, event in enumerate(events):
-            count = index % self.details_panels_max_column
-            if count == 0 and index != 0:
-                row_at += 1
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                              event=event['object'],
                                              remove_callback=self.DeleteDetailPanel,
                                              index=index, 
-                                             row=row_at, 
-                                             column=count, 
+                                             row=index, 
+                                             column=0, 
                                              sticky='nsew')
             self.details_panels.append(detail_panel)
 
