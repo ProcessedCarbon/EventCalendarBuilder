@@ -140,7 +140,7 @@ class DateTimeManager:
         return dt.date.today()
     
     def getCurrentTime():
-        now = datetime.now()
+        now = DateTimeManager.getDateTimeNow()
         now_format = now.strftime("%H:%M:%S")
         return now_format
     
@@ -200,6 +200,12 @@ class DateTimeManager:
         
         # Compare times
         return time1 < time2
+    
+    def getTimeStamps(timestamps:int):
+        return datetime.fromtimestamp(timestamps)
+    
+    def getDateTimeNow():
+        return datetime.now()
     
 # For testing
 def main():
