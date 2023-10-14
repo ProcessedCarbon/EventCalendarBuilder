@@ -1,6 +1,20 @@
 import msal
 import webbrowser
 import Managers.DirectoryManager as dm
+from Managers.ErrorConfig import ErrorCodes
+
+'''
+Creates access token for Graph API if there is none.
+    How it works:
+        1. Run method GenerateAccessToken()
+            1.1 If there is available it will just take that access token
+        2. If not, a code will be generated in the terminal to be used to authenticate account
+        3. Paste code and sign into the account allow access to calendars
+'''
+# 
+# 
+### 
+###
 
 APP_ID='99b8766f-5d52-490c-8237-187338d09615'
 
@@ -31,10 +45,9 @@ def GenerateAccessToken():
         flow = client.initiate_device_flow(scopes=SCOPES)
 
         if 'user_code' not in flow:
-            print(f"Failed to initiate device flow: {flow.get('error')}")
+            ErrorCodes.PrintCustomError(f"FAILED TO INITIATE DEVICE FLOW: {flow.get('error')}")
             exit()
-
-        print(flow)
+        
         print(flow['user_code'])
         webbrowser.open(flow['verification_uri'])
 
