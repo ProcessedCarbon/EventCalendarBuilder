@@ -1,10 +1,12 @@
 from GUI.GUIInterface import GUIInterface
+from Events.EventsManager import EventsManager
 
 class EventCard:
-    def __init__(self, parent, row, col, event_details:dict, gap:int) -> None:
+    def __init__(self, parent, row, col, event_details:dict, gap:int, remove_cb) -> None:
 
         # Variables
         tmp_frame = GUIInterface.current_frame
+        self.id = event_details['id']
 
         self.card_frame = GUIInterface.CreateFrame(parent, fg_color='green')
         self.card_frame.grid(row=row, 
@@ -69,16 +71,17 @@ class EventCard:
         p_frame.grid(row=5, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # Remove event button
-        remove_btn = GUIInterface.CreateButton(on_click=None, text='Remove')
+        remove_btn = GUIInterface.CreateButton(on_click=remove_cb, 
+                                               text='Remove')
         remove_btn.grid(row=6, column=0, sticky='nsew')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
 
     def Destroy(self):
-        self.card_frame.destroy()
-
-    def RemoveEvent(self):
-        pass
+        success = EventsManager.RemoveFromEventDB(self.id, EventsManager.events_db)
+        if success:
+            EventsManager.WriteEventDBToJSON()
+            self.card_frame.destroy()
 
     def UpdateCalendar(self):
         pass

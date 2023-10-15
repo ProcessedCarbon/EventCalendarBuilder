@@ -187,5 +187,20 @@ class EventsManager:
         event_dict['object'] = event
         target.append(event_dict)
     
+    def RemoveFromEventDB(id:str, target=None)->bool:
+        if target == None:
+            ErrorCodes.PrintCustomError("MISSING DB TARGET")
+            return False
+        
+        print(f'target_id: {id}')
+        for e in target:
+            if e['id'] == id:
+                print(f'found: {e["id"]}')
+                target.remove(e)
+                return True
+            
+        print("TARGET NOT FOUND!")
+        return False
+    
     def ClearEventsJSON():
         directory_manager.WriteJSON(EventsManager.local_events_dir, EventsManager.event_json, content=None)

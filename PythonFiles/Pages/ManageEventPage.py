@@ -22,23 +22,24 @@ class ManageEventPage(Page):
         label.grid(row=0, column=1)
 
         # Frame to hold all EventCards
-        content_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
-        content_frame.grid(row=1, column=1, sticky='nsew')
+        self.content_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
+        self.content_frame.grid(row=1, column=1, sticky='nsew')
 
         # Create GUI only if there is data
         if len(EventsManager.events_db) > 0:
-            
+
             # Create a grid in the content_frame for each scheduled event
-            GUIInterface.CreateGrid(content_frame, rows=([1] * len(EventsManager.events_db)), cols=[1])
+            GUIInterface.CreateGrid(self.content_frame, rows=([1] * len(EventsManager.events_db)), cols=[1])
 
             for index, data in enumerate(EventsManager.events_db):
                 # Pass details into GUI Events Card
                 # Create Card under the scrollable content frame
-                card = EventCard(content_frame, 
+                card = EventCard(self.content_frame, 
                                 row=index, 
                                 col=0, 
                                 event_details=data, 
-                                gap=self.card_gap)
+                                gap=self.card_gap,
+                                remove_cb=lambda:self.RemoveCard(r_index=index))
                 self.cards.append(card)
 
         # Clears the content and local events json of content_frame
@@ -48,6 +49,17 @@ class ManageEventPage(Page):
                                                           width=self.page.winfo_width() * 0.1)     
         clear_events_json_btn.grid(row=2, column=2, sticky='nsew')   
     
+    def RemoveCard(self, r_index):
+        for index, card in enumerate(self.cards):
+            if index == r_index:
+                card.Destroy()
+                self.cards.remove(card)
+                self.content_frame.update()
+                print("SUCCESSFUL REMOVAL OF CARD")
+                return
+            
+        print("FAILED REMOVAL OF CARD")
+     
     def Clear(self):
         EventsManager.ClearEventsJSON() # clear events json
         for c in self.cards: c.Destroy() # remove card GUIs
