@@ -1,5 +1,8 @@
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
+import Calendar.CalendarMacInterface as cal_mac
+from sys import platform
+import subprocess
 
 class EventCard:
     def __init__(self, parent, row, col, event_details:dict, gap:int, remove_cb) -> None:
@@ -7,6 +10,8 @@ class EventCard:
         # Variables
         tmp_frame = GUIInterface.current_frame
         self.id = event_details['id']
+        self.platform = event_details['platform']
+        self.name = event_details['name']
 
         self.card_frame = GUIInterface.CreateFrame(parent, fg_color='green')
         self.card_frame.grid(row=row, 
@@ -18,7 +23,7 @@ class EventCard:
         self.card_frame.update()
 
         # Details Attributes
-        attribute_width= self.card_frame.winfo_width() * 0.7
+        attribute_width= self.card_frame.winfo_width() * 0.6
         detail_gap = 5
 
         # Details
@@ -78,11 +83,32 @@ class EventCard:
         GUIInterface.SetCurrentFrame(tmp_frame)
 
     def Destroy(self):
-        success = EventsManager.RemoveFromEventDB(self.id, EventsManager.events_db)
-        if success:
-            EventsManager.WriteEventDBToJSON()
-            self.card_frame.destroy()
+        removed_from_cal = self.RemoveFromCalender()
 
+        if removed_from_cal:
+            success = EventsManager.RemoveFromEventDB(self.id, EventsManager.events_db)
+            if success:
+                EventsManager.WriteEventDBToJSON()
+                self.card_frame.destroy()
+
+    def RemoveFromCalender(self)->bool:
+        if self.platform == 'Default':
+            self.RemoveDefault()
+            return True
+        
+        return False
+           
+    
+    def RemoveDefault(self):
+        if platform == "linux":
+            #subprocess.run(['xdg-open', file])
+            pass
+        elif platform == 'darwin':
+            cal_mac.RemoveMacCalendarEvents(self.name)
+        else:
+            #os.startfile(file)
+            pass
+    
     def UpdateCalendar(self):
         pass
 

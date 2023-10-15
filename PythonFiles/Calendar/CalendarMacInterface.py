@@ -43,3 +43,29 @@ def getMacCalendarEvents():
             })
 
         return mac_events    
+
+def RemoveMacCalendarEvents(event_summary)->bool:
+        applescript = f"""
+            tell application "Calendar"
+                set theCalendars to calendars
+                repeat with aCalendar in theCalendars
+                    tell aCalendar
+                        set theEvents to every event whose summary is "{event_summary}"
+                        repeat with anEvent in theEvents
+                            delete anEvent
+                        end repeat
+                    end tell
+                end repeat
+            end tell
+            """
+        
+        process = subprocess.Popen(['osascript', '-'], 
+                                   stdin=subprocess.PIPE, 
+                                   stdout=subprocess.PIPE, 
+                                   stderr=subprocess.PIPE, 
+                                   text=True)
+        
+        stdout, stderr = process.communicate(applescript)
+
+        if stderr: print(f"Error: {stderr}")
+        else: print(f"Result: {stdout}")

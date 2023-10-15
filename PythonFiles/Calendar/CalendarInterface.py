@@ -39,6 +39,7 @@ class CalendarInterface:
         # Add subcomponents
         event = Event()
         event.add('name', e_name)
+        event.add('summary', e_name) # serves as name for some calendars (Mac)
         event.add('description', e_description)
         event.add('dtstart', s_datetime)
         event.add('dtend', e_datetime)
