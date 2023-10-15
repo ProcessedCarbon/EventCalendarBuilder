@@ -108,9 +108,3 @@ class EventCard:
         else:
             #os.startfile(file)
             pass
-    
-    def UpdateCalendar(self):
-        pass
-
-    def UpdateEventDB(self):
-        pass
