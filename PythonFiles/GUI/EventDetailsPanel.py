@@ -239,12 +239,7 @@ class EventDetailsPanel:
 
     # Right now can only handle 1 event only 
     def ScheduleDefault(self, event):
-        if platform == "linux":
-            filename = self.CreateICSFileFromInput(event)
-            file = CalendarInterface.getICSFilePath(filename)
-            subprocess.run(['xdg-open', file])
-            pass
-        elif platform == 'darwin':
+        if platform == 'darwin':
             filename = self.CreateICSFileFromInput(event)
             file = CalendarInterface.getICSFilePath(filename)
             subprocess.run(['open', file])
