@@ -227,13 +227,13 @@ class EventDetailsPanel:
 
             # No clash checking done for default yet
             # No need to add platform to event object as its default
-            EventsManager.AddEvent(self.event, EventsManager.app_scheduled_events)
+            EventsManager.AddEvent(self.event, EventsManager.events_db)
             self.Destroy()
         elif calendar == 'Google':
             success = self.ScheduleGoogleCalendar(input)
             if success:
                 self.event.setPlatform('Google')
-                EventsManager.AddEvent(self.event, EventsManager.app_scheduled_events)
+                EventsManager.AddEvent(self.event, EventsManager.events_db)
                 self.Destroy()
 
     # Right now can only handle 1 event only 

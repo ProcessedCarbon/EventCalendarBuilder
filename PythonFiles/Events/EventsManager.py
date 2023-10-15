@@ -2,10 +2,11 @@ from Managers.ErrorConfig import ErrorCodes
 from pathlib import Path
 import os
 import Managers.DirectoryManager as directory_manager
+import uuid
 
 class Event:
     def __init__(self, 
-                 id:int, 
+                 id:str, 
                  name:str, 
                  location:str, 
                  date:str, 
@@ -21,7 +22,7 @@ class Event:
         self.end_time = end_time
         self.platform = platform
     
-    def getId(self)->int:
+    def getId(self)->str:
         return self.id
         
     def getName(self)->str:
@@ -79,7 +80,6 @@ class EventsManager:
     
     # Temporary event list
     events = []
-    app_scheduled_events = []
 
     # Only contains events that are scheduled by app
     events_db = []
@@ -92,23 +92,18 @@ class EventsManager:
     def __init__(self) -> None:
         pass
     
-    def CreateEventObj(name:str, location:str, date:str, start_time:str, end_time:str):
-        return Event(id=EventsManager.getCurrentId(),
+    def CreateEventObj(id:int, name:str, location:str, date:str, start_time:str, end_time:str):
+        return Event(id=f'{id}_{uuid.uuid4()}', # Done this way to reduce chances of UUID clashes
                      name=name,
                      location=location,
                      date=date,
                      start_time=start_time,
                      end_time=end_time)
-
-    def getCurrentId():
-        n = len(EventsManager.events)
-        return n - 1 if n != 0 else 0
-    
-        # Prints entity per event in list
-    
+        
     def PrintEvents(events : dict):
         event = events['object']
         print("------------------------------------------------------------------------------")
+        print('id:', event.id)
         print("event: ", event.name)
         print("location: ", event.location)
         print("date: ", event.date)
@@ -117,13 +112,16 @@ class EventsManager:
     
     def ClearEvents():
         EventsManager.events = []
-        EventsManager.app_scheduled_events = []
 
-    def RemoveEvent(id:int):
-        for event in EventsManager.events:
+    def RemoveEvent(id:str, target=None):
+        if target == None:
+            ErrorCodes.PrintCustomError("MISSING DB TARGET")
+            return
+        
+        for event in target:
             e = event['object']
             if e.getId() == id:
-                EventsManager.events.remove(event)
+                target.remove(event)
                 return
             
         ErrorCodes.PrintCustomError("EVENT NOT FOUND")
@@ -131,8 +129,8 @@ class EventsManager:
     # Send only those that are schedule
     def SendEventsToEventsDB():
         try:
-            eventList = [x for x in EventsManager.app_scheduled_events if x not in EventsManager.events_db]
-            EventsManager.events_db.extend(eventList)
+            # eventList = [x for x in EventsManager.local_events if x not in EventsManager.events_db]
+            # EventsManager.events_db.extend(eventList)
 
             db_copy = EventsManager.events_db.copy()
 
@@ -156,7 +154,9 @@ class EventsManager:
             ErrorCodes.PrintCustomError(e)
 
     def AddEvent(event:Event, target=None):
-        target = EventsManager.events if target == None else target
+        if target == None:
+            ErrorCodes.PrintCustomError("MISSING DB TARGET")
+            return
 
         event_dict = event.getEventDict()
         event_dict['object'] = event

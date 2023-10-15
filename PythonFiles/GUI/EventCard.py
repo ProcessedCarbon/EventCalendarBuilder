@@ -68,6 +68,10 @@ class EventCard:
         GUIInterface.UpdateEntry(p_entry, str(event_details['platform']))
         p_frame.grid(row=5, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
+        # Remove event button
+        remove_btn = GUIInterface.CreateButton(on_click=None, text='Remove')
+        remove_btn.grid(row=6, column=0, sticky='nsew')
+
         GUIInterface.SetCurrentFrame(tmp_frame)
 
     def RemoveEvent(self):

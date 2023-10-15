@@ -75,13 +75,14 @@ class MainPage(Page):
 
             print("------------------------------------------------------------------------------")
             print("Add to event manager list")
-            for event in events:
-                n_event = EventsManager.CreateEventObj(name=event['EVENT'],
+            for index, event in enumerate(events):
+                n_event = EventsManager.CreateEventObj(id=index,
+                                                       name=event['EVENT'],
                                                        location=event["LOC"],
                                                        date=event["DATE"],
                                                        start_time=event['TIME'][0],
                                                        end_time=event['TIME'][1])
-                EventsManager.AddEvent(n_event)
+                EventsManager.AddEvent(n_event, EventsManager.events)
             
             # testing
             for event in EventsManager.events:
