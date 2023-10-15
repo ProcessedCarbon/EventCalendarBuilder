@@ -82,7 +82,7 @@ class MainPage(Page):
                                                        date=event["DATE"],
                                                        start_time=event['TIME'][0],
                                                        end_time=event['TIME'][1])
-                EventsManager.AddEvent(n_event, EventsManager.events)
+                EventsManager.AddEventToEventDB(n_event, EventsManager.events)
             
             # testing
             for event in EventsManager.events:

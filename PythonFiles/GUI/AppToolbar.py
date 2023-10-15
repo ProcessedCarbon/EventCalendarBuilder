@@ -2,7 +2,7 @@ from GUI.GUIInterface import GUIInterface
 from Managers.ErrorConfig import ErrorCodes
 from Pages.PageManager import PageManager
 
-class EventsToolbar:
+class AppToolbar:
     def __init__(self) -> None:
         self.events_toolbar_frame = GUIInterface.CreateScrollableFrame(GUIInterface.root, 
                                                                        corner_radius=0,)

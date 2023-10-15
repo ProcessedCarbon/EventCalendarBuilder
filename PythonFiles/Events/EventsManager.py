@@ -89,16 +89,21 @@ class EventsManager:
     except:
         print("EVENTS DIR ALREADY EXISTS")
 
-    def __init__(self) -> None:
-        pass
-    
-    def CreateEventObj(id:int, name:str, location:str, date:str, start_time:str, end_time:str):
+    def CreateEventObj(id:int, 
+                       name:str, 
+                       location:str, 
+                       date:str, 
+                       start_time:str, 
+                       end_time:str,
+                       platform='Default'):
+        
         return Event(id=f'{id}_{uuid.uuid4()}', # Done this way to reduce chances of UUID clashes
                      name=name,
                      location=location,
                      date=date,
                      start_time=start_time,
-                     end_time=end_time)
+                     end_time=end_time,
+                     platform=platform)
         
     def PrintEvents(events : dict):
         event = events['object']
@@ -126,15 +131,38 @@ class EventsManager:
             
         ErrorCodes.PrintCustomError("EVENT NOT FOUND")
     
+    def UpdateEventsDB():
+        '''
+        Updates the local event db list by reading from the local events.json
+        '''
+        # Get event data from JSON
+        data = directory_manager.ReadJSON(EventsManager.local_events_dir, EventsManager.event_json)
+        if data == None:
+            print("NO LOCALLLY SCHEDULED EVENTS")
+            return
+        
+        for d in data:
+            event = EventsManager.CreateEventObj(id=d['id'],
+                                                name=d['name'],
+                                                location=d['location'],
+                                                date=d['date'],
+                                                start_time=d['start_time'],
+                                                end_time=d['end_time'],
+                                                platform=d['platform'])
+            EventsManager.AddEventToEventDB(event=event, target=EventsManager.events_db)
+
     # Send only those that are schedule
-    def SendEventsToEventsDB():
+    def WriteEventDBToJSON():
+        '''
+        Writes events db to a local events.json file to store locally
+        '''
         try:
             # eventList = [x for x in EventsManager.local_events if x not in EventsManager.events_db]
             # EventsManager.events_db.extend(eventList)
 
             db_copy = EventsManager.events_db.copy()
 
-            # convert to json dumpable
+            # convert to json dumpable format
             for e in db_copy:
                     for key in e:
                         if type(e[key]) != str:
@@ -146,14 +174,11 @@ class EventsManager:
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
 
-    def UpdateEventsDB():
-        try:
-            EventsManager.SendEventsToEventsDB()
-            EventsManager.ClearEvents()
-        except Exception as e:
-            ErrorCodes.PrintCustomError(e)
-
-    def AddEvent(event:Event, target=None):
+    def AddEventToEventDB(event:Event, target=None):
+        '''
+        Takes in an event object and adds it to the target list in this class
+        Works with the assumption that event db is updated
+        '''
         if target == None:
             ErrorCodes.PrintCustomError("MISSING DB TARGET")
             return
@@ -161,3 +186,6 @@ class EventsManager:
         event_dict = event.getEventDict()
         event_dict['object'] = event
         target.append(event_dict)
+    
+    def ClearEventsJSON():
+        directory_manager.WriteJSON(EventsManager.local_events_dir, EventsManager.event_json, content=None)

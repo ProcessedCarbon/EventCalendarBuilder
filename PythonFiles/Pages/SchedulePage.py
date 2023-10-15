@@ -40,6 +40,7 @@ class SchedulePage(Page):
         if num_events > 0:
             self.PopulateDetails(EventsManager.events)
             self.Update()
+            EventsManager.ClearEvents()
 
     def PopulateDetails(self, events:list[dict]):
         n = len(events)

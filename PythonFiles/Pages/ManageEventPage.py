@@ -8,7 +8,8 @@ from GUI.EventCard import EventCard
 class ManageEventPage(Page):
     def __init__(self, max_col=3, card_gap=10):   
         self.max_col = max_col  
-        self.card_gap = card_gap  
+        self.card_gap = card_gap 
+        self.cards = [] 
         super().__init__()
 
     def OnStart(self):
@@ -25,18 +26,30 @@ class ManageEventPage(Page):
         content_frame.grid(row=1, column=1, sticky='nsew')
 
         # Get event data from JSON
-        scheduled_data = directory_manager.ReadJSON(EventsManager.local_events_dir, EventsManager.event_json)
+        # scheduled_data = directory_manager.ReadJSON(EventsManager.local_events_dir, EventsManager.event_json)
         
         # Create a grid in the content_frame for each scheduled event
-        GUIInterface.CreateGrid(content_frame, rows=([1] * len(scheduled_data)), cols=[1])
+        GUIInterface.CreateGrid(content_frame, rows=([1] * len(EventsManager.events_db)), cols=[1])
 
         # Create GUI only if there is data
-        if scheduled_data != None:
-            for index, data in enumerate(scheduled_data):
+        if len(EventsManager.events_db) > 0:
+            for index, data in enumerate(EventsManager.events_db):
                 # Pass details into GUI Events Card
                 # Create Card under the scrollable content frame
-                EventCard(content_frame, 
-                          row=index, 
-                          col=0, 
-                          event_details=data, 
-                          gap=self.card_gap)        
+                card = EventCard(content_frame, 
+                                row=index, 
+                                col=0, 
+                                event_details=data, 
+                                gap=self.card_gap)
+                self.cards.append(card)
+
+        # Clears the content and local events json of content_frame
+        # Yet to remove the events scheduled on their respective calendar platform
+        clear_events_json_btn = GUIInterface.CreateButton(on_click=self.Clear, 
+                                                          text='Clear Local',
+                                                          width=self.page.winfo_width() * 0.1)     
+        clear_events_json_btn.grid(row=2, column=2, sticky='nsew')   
+    
+    def Clear(self):
+        EventsManager.ClearEventsJSON() # clear events json
+        for c in self.cards: c.Destroy() # remove card GUIs

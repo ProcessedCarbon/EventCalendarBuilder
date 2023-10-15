@@ -139,7 +139,6 @@ class EventDetailsPanel:
         GUIInterface.UpdateEntry(self.details_entries["End_Time"], "")
 
     def Destroy(self):
-        EventsManager.UpdateEventsDB()
         self.details_frame.destroy()
     
     # Create GUI
@@ -227,13 +226,15 @@ class EventDetailsPanel:
 
             # No clash checking done for default yet
             # No need to add platform to event object as its default
-            EventsManager.AddEvent(self.event, EventsManager.events_db)
+            EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+            EventsManager.WriteEventDBToJSON()
             self.Destroy()
         elif calendar == 'Google':
             success = self.ScheduleGoogleCalendar(input)
             if success:
                 self.event.setPlatform('Google')
-                EventsManager.AddEvent(self.event, EventsManager.events_db)
+                EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+                EventsManager.WriteEventDBToJSON()
                 self.Destroy()
 
     # Right now can only handle 1 event only 

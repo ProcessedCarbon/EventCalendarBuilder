@@ -6,17 +6,17 @@ class EventCard:
         # Variables
         tmp_frame = GUIInterface.current_frame
 
-        self.details_frame = GUIInterface.CreateFrame(parent, fg_color='green')
-        self.details_frame.grid(row=row, 
+        self.card_frame = GUIInterface.CreateFrame(parent, fg_color='green')
+        self.card_frame.grid(row=row, 
                                 column=col, 
                                 sticky='nsew', 
                                 padx=gap, 
                                 pady=gap,)
-        GUIInterface.CreateGrid(self.details_frame, rows=[1] * len(event_details), cols=[1])
-        self.details_frame.update()
+        GUIInterface.CreateGrid(self.card_frame, rows=[1] * len(event_details), cols=[1])
+        self.card_frame.update()
 
         # Details Attributes
-        attribute_width= self.details_frame.winfo_width() * 0.7
+        attribute_width= self.card_frame.winfo_width() * 0.7
         detail_gap = 5
 
         # Details
@@ -73,6 +73,9 @@ class EventCard:
         remove_btn.grid(row=6, column=0, sticky='nsew')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
+
+    def Destroy(self):
+        self.card_frame.destroy()
 
     def RemoveEvent(self):
         pass
