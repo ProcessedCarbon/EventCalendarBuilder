@@ -25,14 +25,12 @@ class ManageEventPage(Page):
         content_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
         content_frame.grid(row=1, column=1, sticky='nsew')
 
-        # Get event data from JSON
-        # scheduled_data = directory_manager.ReadJSON(EventsManager.local_events_dir, EventsManager.event_json)
-        
-        # Create a grid in the content_frame for each scheduled event
-        GUIInterface.CreateGrid(content_frame, rows=([1] * len(EventsManager.events_db)), cols=[1])
-
         # Create GUI only if there is data
         if len(EventsManager.events_db) > 0:
+            
+            # Create a grid in the content_frame for each scheduled event
+            GUIInterface.CreateGrid(content_frame, rows=([1] * len(EventsManager.events_db)), cols=[1])
+
             for index, data in enumerate(EventsManager.events_db):
                 # Pass details into GUI Events Card
                 # Create Card under the scrollable content frame
