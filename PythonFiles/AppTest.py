@@ -30,7 +30,7 @@ def main():
     #TestInstall()
     #MacCalendarTest()
     #TextProcessingManagerTest()
-    OutlookTest()
+    #OutlookTest()
     pass
 
 if __name__ == "__main__":

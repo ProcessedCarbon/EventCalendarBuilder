@@ -4,7 +4,7 @@ import uuid
 import webbrowser
 import threading
 import os
-import Managers.DirectoryManager as dir_manager
+from Calendar.CalendarInterface import CalendarInterface
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -15,6 +15,73 @@ CLIENT_SECRET = "_xm8Q~VKXbbgvNF8mT5BUAMr5I_XyE3Q18aRNczT"
 REDIRECT_URI=f'http://localhost:{local_host}/callback'
 AUTHORITY_URL = 'https://login.microsoftonline.com/common'
 SCOPES = "openid User.Read Calendars.ReadWrite"
+
+# Format:
+# https://learn.microsoft.com/en-us/graph/api/calendar-post-events?view=graph-rest-1.0&tabs=http
+class OutlookEvent():
+    def __init__(self, 
+                 name:str, location:str,  dtstart:str, 
+                 dtend:str, tzstart:str, tzend:str, isonline=False) -> None:
+        
+        self.name = name
+        self.location = location
+        self.dtstart = dtstart
+        self.dtend = dtend
+        self.tzstart = tzstart
+        self.tzend = tzend
+        self.isonline = isonline
+        
+        self.event = {
+            "subject": name,
+            "body": {
+                "contentType": "HTML",
+                "content": "Does mid month work for you?"
+            },
+            "start": {
+                "dateTime": dtstart,
+                "timeZone": tzstart
+            },
+            "end": {
+                "dateTime": dtend,
+                "timeZone": tzend
+            },
+            "location":{
+                "displayName":location
+            },
+            "isOnlineMeeting": isonline,
+            # "attendees": [
+            #     {
+            #     "emailAddress": {
+            #         "address":"adelev@contoso.onmicrosoft.com",
+            #         "name": "Adele Vance"
+            #     },
+            #     "type": "required"
+            #     }
+            # ],
+            # "transactionId":"7E163156-7762-4BEB-A1C6-729EA81755A7"
+            }
+    
+    def get_name(self):
+        return self.name
+    
+    def get_location(self):
+        return self.location
+    
+    def get_dtstart(self):
+        return self.dtstart
+    
+    def get_dtend(self):
+        return self.dtend
+    
+    def get_tzstart(self):
+        return self.tzstart
+    
+    def get_tzend(self):
+        return self.tzend
+    
+    def get_isonline(self):
+        return self.isonline
+    
 
 @app.route('/')
 def login():
@@ -28,7 +95,6 @@ def login():
 
 @app.route('/callback')
 def callback():
-    print(session['token'])
     code = request.args.get('code')
     if not code:
         return "Error: No code provided."
@@ -46,10 +112,13 @@ def callback():
     token_r = requests.post(token_url, data=token_data)
     token = token_r.json().get("access_token")
     session['token'] = token  # Store the token in the session
-    return redirect('/create_event')
+    return 'Authentication Successful can close browser'
 
 @app.route('/create_event')
-def create_event():
+def create_event(event:dict):
+    if 'token' not in session:
+        return False
+    
     token = session.get('token')
     if not token:
         return "Not authenticated."
@@ -58,26 +127,23 @@ def create_event():
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'
     }
-    
-    # Sample data for creating an event
-    event_data = {
-        "subject": "Test Event",
-        "start": {
-            "dateTime": "2023-11-01T12:00:00",
-            "timeZone": "UTC"
-        },
-        "end": {
-            "dateTime": "2023-11-01T13:00:00",
-            "timeZone": "UTC"
-        },
-        "body": {
-            "contentType": "HTML",
-            "content": "Event details here"
-        }
-    }
 
-    response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event_data)
+    response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event)
     return str(response.json())
+
+# Only expecting 1 event per .ics file
+def parse_ics(ics):
+    ics_file = CalendarInterface.ReadICSFile(ics)
+    for component in ics_file.walk():
+        if component.name == "VEVENT":
+           return OutlookEvent(name=component.get('name'),
+                                        location=component.get("location"),
+                                        dtstart=component.get('dtstart').dt.isoformat(),
+                                        dtend=component.get('dtend').dt.isoformat(),
+                                        tzstart=str(component.get('dtstart').dt.tzinfo),
+                                        tzend=str(component.get('dtstart').dt.tzinfo)
+                                    )
+    return None
 
 def start():
     # Only run open_browser in the main Werkzeug process
