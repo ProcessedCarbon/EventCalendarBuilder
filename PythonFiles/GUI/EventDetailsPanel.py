@@ -7,6 +7,8 @@ from Managers.TextProcessing import TextProcessingManager
 # Calendar Intefaces
 from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 from Calendar.CalendarInterface import CalendarInterface
+import Calendar.Outlook.OutlookInterface as outlook_interface
+from Calendar.Outlook.OutlookInterface import OutlookEvent
 
 from sys import platform
 import os
@@ -97,7 +99,7 @@ class EventDetailsPanel:
                                                    placeholder_text="HH:MM:SS")
         et_frame.grid(row=7, column=1,sticky='nsew',pady=self.gap)
 
-        calendars_frame = self.CreateDropdownField(values=["Default", "Google"], entryname="Calendar")
+        calendars_frame = self.CreateDropdownField(values=["Default", "Google", 'Outlook'], entryname="Calendar")
         calendars_frame.grid(row=8, column=1, sticky='nsew',pady=self.gap)
 
         schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule')
@@ -236,6 +238,12 @@ class EventDetailsPanel:
                 EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
                 EventsManager.WriteEventDBToJSON()
                 self.Destroy()
+        elif calendar == 'Outlook':
+            success = self.ScheduleOutlookCalendar(input)
+            if success:
+                self.event.setPlatform('Outlook')
+                EventsManager.AddEvent(self.event, EventsManager.app_scheduled_events)
+                self.Destroy()
 
     # Right now can only handle 1 event only 
     def ScheduleDefault(self, event):
@@ -257,6 +265,14 @@ class EventDetailsPanel:
                 return False
         return True
 
+    def ScheduleOutlookCalendar(self, event)->bool:
+        filename = self.CreateICSFileFromInput(event)
+        event = outlook_interface.parse_ics(filename)
+        scheduled = outlook_interface.create_event(event)
+        if scheduled == False:
+            return False
+        return True
+    
     # Creates ICS files to be parsed 
     # 1 ICS = should have 1 VEVENT
     # returns names of file created

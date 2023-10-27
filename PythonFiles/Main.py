@@ -8,6 +8,7 @@ MANAGERS AND INTERFACES
 from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
 from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+import Calendar.Outlook.OutlookInterface as outlook_interface
 
 from Events.EventsManager import EventsManager
 
@@ -25,7 +26,11 @@ from Pages.ManageEventPage import ManageEventPage
 # Toolbar
 from GUI.AppToolbar import AppToolbar
 
+import threading
+
 #GoogleCalendarInterface.ConnectToGoogleCalendar()
+#outlook_interface.start()
+threading.Thread(target=outlook_interface.start).start() # run the Flask app in a thread
 gui = GUIInterface()
 
 # Application initilization

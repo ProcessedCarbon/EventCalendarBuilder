@@ -37,12 +37,15 @@ def DeleteFilesInDir(dir_path:Path, file_type='ics')->bool:
     try:
         files = glob.glob(f"{dir_path}/*.{file_type}")
         for f in files:
-            os.unlink(f)
+            DeleteFile(f)
         print(f'DELETE ALL FILES IN {dir_path} SUCCESSFULLY!')
         return True
     except:
         print(f'FAILED TO DELETE FILES IN {dir_path}')
         return False
+
+def DeleteFile(path:Path):
+    os.unlink(path)
 
 def WriteJSON(dir_path:Path, file_name:str, content)->bool:
     try:
@@ -97,3 +100,6 @@ def getAllFilePathsInDirectory(dir_path:Path, file_type='ics'):
 
 def getCurrentFileDirectory(file):
     return Path(os.path.dirname(os.path.realpath(file))).absolute()
+
+def checkPathExists(path:Path)->bool:
+    return os.path.exists(path)

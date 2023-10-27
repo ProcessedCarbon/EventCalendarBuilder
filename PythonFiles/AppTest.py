@@ -22,10 +22,15 @@ def TextProcessingManagerTest():
     test_date = "23rd to 25th Aug"
     print(TextProcessingManager.ProcessDate(test_date))
 
+def OutlookTest():
+    import Calendar.Outlook.OutlookInterface as outlook_interface
+    outlook_interface.start()
+
 def main():    
-    TestInstall()
+    #TestInstall()
     #MacCalendarTest()
     #TextProcessingManagerTest()
+    #OutlookTest()
     pass
 
 if __name__ == "__main__":
