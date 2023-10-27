@@ -23,9 +23,8 @@ def TextProcessingManagerTest():
     print(TextProcessingManager.ProcessDate(test_date))
 
 def OutlookTest():
-    import Calendar.Outlook.OutlookInterface
-    #import Calendar.Outlook.configs.write_config
-    #import Calendar.Outlook.MS_Graph_Client
+    import Calendar.Outlook.OutlookInterface as outlook_interface
+    outlook_interface.start()
 
 def main():    
     #TestInstall()
