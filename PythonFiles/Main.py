@@ -28,10 +28,6 @@ from Pages.ManageEventPage import ManageEventPage
 from GUI.AppToolbar import AppToolbar
 
 def client_app():
-    print("Waiting for authentication...")
-    # multiprocessing_manager.process_events['outlook_auth_event'].wait()
-    print("Authentication complete! This process can now proceed.")
-
     gui = GUIInterface()
 
     # Application initilization
@@ -39,9 +35,9 @@ def client_app():
     EventsManager.UpdateEventsDB() # Initialize local event db
 
     # Page initilialization
-    MainPage()                  
-    SchedulePage()         
-    ManageEventPage() 
+    MainPage()                 
+    SchedulePage()          
+    ManageEventPage()   
     PageManager.SwitchPages(0)
 
     # Toolbar
@@ -53,11 +49,11 @@ if __name__ == "__main__":
 
     GoogleCalendarInterface.ConnectToGoogleCalendar()
     multiprocessing_manager.add_process(outlook_interface.run)
-    multiprocessing_manager.add_process(client_app)
 
-    for p in multiprocessing_manager.processes:
-        p.start()
+    for p in multiprocessing_manager.processes: p.start()
         
+    client_app()
+
     for p in multiprocessing_manager.processes: p.join()
     
         

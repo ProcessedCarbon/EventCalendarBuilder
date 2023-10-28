@@ -5,7 +5,6 @@ import webbrowser
 import threading
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
-import Managers.MultiprocessingManager as multiprocessing_mgr
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -113,7 +112,6 @@ def callback():
     
     token_r = requests.post(token_url, data=token_data)
     directory_manager.WriteJSON(token_path, 'api_token_access.json', token_r.json())
-    # multiprocessing_mgr.process_events['outlook_auth_event'].set()
     return 'Authentication Successful can close browser'
 
 @app.route('/create_event')
