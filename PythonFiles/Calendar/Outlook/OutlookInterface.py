@@ -1,10 +1,10 @@
 import requests
-from flask import Flask, redirect, request, session
+from flask import Flask, request, jsonify
 import uuid
 import webbrowser
 import threading
-import os
 from Calendar.CalendarInterface import CalendarInterface
+import Managers.DirectoryManager as directory_manager
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -15,6 +15,8 @@ CLIENT_SECRET = "_xm8Q~VKXbbgvNF8mT5BUAMr5I_XyE3Q18aRNczT"
 REDIRECT_URI=f'http://localhost:{local_host}/callback'
 AUTHORITY_URL = 'https://login.microsoftonline.com/common'
 SCOPES = "openid User.Read Calendars.ReadWrite"
+
+token_path = directory_manager.getCurrentFileDirectory(__file__)
 
 # Format:
 # https://learn.microsoft.com/en-us/graph/api/calendar-post-events?view=graph-rest-1.0&tabs=http
@@ -35,7 +37,7 @@ class OutlookEvent():
             "subject": name,
             "body": {
                 "contentType": "HTML",
-                "content": "Does mid month work for you?"
+                "content": ""
             },
             "start": {
                 "dateTime": dtstart,
@@ -110,43 +112,63 @@ def callback():
     }
     
     token_r = requests.post(token_url, data=token_data)
-    token = token_r.json().get("access_token")
-    session['token'] = token  # Store the token in the session
+    directory_manager.WriteJSON(token_path, 'api_token_access.json', token_r.json())
     return 'Authentication Successful can close browser'
 
 @app.route('/create_event')
-def create_event(event:dict):
-    if 'token' not in session:
-        return False
-    
-    token = session.get('token')
+def create_event():   
+    token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+    token = token_access['access_token']
+
     if not token:
-        return "Not authenticated."
+        return jsonify(status="error", message="Not authenticated!"), 401
     
+    event = request.json
+    print(f'Request Args: \n {event} \n')
+
     headers = {
-        'Authorization': f'Bearer {token}',
+        'Authorization': f'{token_access["token_type"]} {token}',
         'Content-Type': 'application/json'
     }
 
-    response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event)
-    return str(response.json())
+    response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event['event'])
+    return jsonify(status="success", message=f"Event created with status code: {response.status_code}")
+
+
+@app.route('/shutdown', methods=['POST'])
+def shutdown():
+    shutdown_hook = request.environ.get('werkzeug.server.shutdown')
+    if shutdown_hook is not None:
+        shutdown_hook()
+        return 'Server shutting down...'
+    return 'Shut down failed'
 
 # Only expecting 1 event per .ics file
-def parse_ics(ics):
+def parse_ics(ics)->OutlookEvent:
     ics_file = CalendarInterface.ReadICSFile(ics)
     for component in ics_file.walk():
         if component.name == "VEVENT":
            return OutlookEvent(name=component.get('name'),
-                                        location=component.get("location"),
-                                        dtstart=component.get('dtstart').dt.isoformat(),
-                                        dtend=component.get('dtend').dt.isoformat(),
-                                        tzstart=str(component.get('dtstart').dt.tzinfo),
-                                        tzend=str(component.get('dtstart').dt.tzinfo)
-                                    )
+                                location=component.get("location"),
+                                dtstart=component.get('dtstart').dt.isoformat(),
+                                dtend=component.get('dtend').dt.isoformat(),
+                                tzstart=str(component.get('dtstart').dt.tzinfo),
+                                tzend=str(component.get('dtstart').dt.tzinfo)
+                            )
     return None
 
-def start():
-    # Only run open_browser in the main Werkzeug process
-    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-        threading.Thread(target=login).start()
-    app.run(host='localhost', debug=True, port=local_host)
+def send_flask_req(req, json_data={})->bool:
+    response = requests.get(f"http://localhost:{local_host}/{req}", json=json_data)
+
+    '''
+    HTTP status codes in the 200-299 range indicate success, with 200 being the standard response for a successful HTTP request.
+
+    HTTP status codes in the 400-499 range indicate client errors. For instance, a 404 status code means "Not Found", and a 400 means "Bad Request".
+
+    HTTP status codes in the 500-599 range indicate server errors.
+    '''
+    return 200 <= response.status_code < 300
+
+def run():
+    threading.Thread(target=login).start()
+    app.run(host='localhost', port=local_host, use_reloader = False)

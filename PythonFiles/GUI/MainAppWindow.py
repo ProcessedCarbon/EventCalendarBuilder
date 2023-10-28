@@ -1,5 +1,6 @@
 from screeninfo import get_monitors
 from GUI.GUIInterface import GUIInterface
+import Calendar.Outlook.OutlookInterface as outlook_interface
 
 def GetCurrentMonitorInfo()->dict:
         # Monitor(x=0, y=0, width=3840, height=2160, width_mm=708, height_mm=399, name='DP-0', is_primary=True)
@@ -37,3 +38,13 @@ class MainAppWindow:
         GUIInterface.root.columnconfigure(0, weight=1)
         GUIInterface.root.columnconfigure(1, weight=5)
         GUIInterface.root.rowconfigure(0, weight=1)
+
+        # Not working
+        #MainAppWindow.OnClose()
+        GUIInterface.root.protocol("WM_DELETE_WINDOW", MainAppWindow.OnClose)
+
+    
+    def OnClose():
+        outlook_interface.send_flask_req('shutdown')
+        GUIInterface.root.destroy()
+

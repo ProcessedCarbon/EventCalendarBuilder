@@ -242,7 +242,7 @@ class EventDetailsPanel:
             success = self.ScheduleOutlookCalendar(input)
             if success:
                 self.event.setPlatform('Outlook')
-                EventsManager.AddEvent(self.event, EventsManager.app_scheduled_events)
+                EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
                 self.Destroy()
 
     # Right now can only handle 1 event only 
@@ -257,6 +257,7 @@ class EventDetailsPanel:
             os.startfile(file)
 
     def ScheduleGoogleCalendar(self, event)->bool:
+        
         filename = self.CreateICSFileFromInput(event)
         events = GoogleCalendarInterface.Parse_ICS(filename)
         for e in events:
@@ -267,8 +268,10 @@ class EventDetailsPanel:
 
     def ScheduleOutlookCalendar(self, event)->bool:
         filename = self.CreateICSFileFromInput(event)
-        event = outlook_interface.parse_ics(filename)
-        scheduled = outlook_interface.create_event(event)
+        outlook_event = outlook_interface.parse_ics(filename)
+        # Cannot pass an entire dictionary as a param 
+        scheduled = outlook_interface.send_flask_req(req='create_event', 
+                                                     json_data={'event': outlook_event.event})
         if scheduled == False:
             return False
         return True
