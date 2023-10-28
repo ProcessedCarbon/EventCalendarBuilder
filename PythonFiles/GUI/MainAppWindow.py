@@ -32,7 +32,7 @@ class MainAppWindow:
     app_width = int(monitor_width * aspect)
     app_height = int(monitor_height * aspect)
 
-    def Setup():
+    def Setup(processes):
         GUIInterface.root.geometry(f'{MainAppWindow.app_width}x{MainAppWindow.app_height}')
 
         GUIInterface.root.columnconfigure(0, weight=1)
@@ -40,11 +40,16 @@ class MainAppWindow:
         GUIInterface.root.rowconfigure(0, weight=1)
 
         # Not working
-        #MainAppWindow.OnClose()
-        GUIInterface.root.protocol("WM_DELETE_WINDOW", MainAppWindow.OnClose)
+        GUIInterface.root.protocol("WM_DELETE_WINDOW", lambda: MainAppWindow.OnAppClose(processes)) 
 
-    
-    def OnClose():
-        outlook_interface.send_flask_req('shutdown')
+    def OnAppClose(processes):
+        print('App Close')
+        print(f'Num processes: {len(processes)}')
+        #outlook_interface.send_flask_req('shutdown')
+        for p in processes:
+            p.terminate()
+            p.join()
         GUIInterface.root.destroy()
+    
+
 

@@ -84,7 +84,6 @@ class OutlookEvent():
     def get_isonline(self):
         return self.isonline
     
-
 @app.route('/')
 def login():
     # Generate the full authorization endpoint on Microsoft's identity platform
@@ -134,14 +133,28 @@ def create_event():
     response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event['event'])
     return jsonify(status="success", message=f"Event created with status code: {response.status_code}")
 
-
-@app.route('/shutdown', methods=['POST'])
+@app.route('/shutdown')
 def shutdown():
     shutdown_hook = request.environ.get('werkzeug.server.shutdown')
-    if shutdown_hook is not None:
-        shutdown_hook()
-        return 'Server shutting down...'
-    return 'Shut down failed'
+    if shutdown_hook is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    shutdown_hook()
+    return 'Server shutting down...'
+
+@app.route('/server-info')
+def server_info():
+    server = request.environ.get('SERVER_SOFTWARE', 'Unknown')
+    return jsonify(server=server)
+
+@app.route('/environ')
+def display_environ():
+    # Convert the environment dictionary to a standard dict so it can be JSONified
+    environ_dict = dict(request.environ)
+    # Filter out items that are not JSON serializable
+    for key in list(environ_dict.keys()):
+        if not isinstance(environ_dict[key], (str, bytes, int, float, list, dict)):
+            del environ_dict[key]
+    return jsonify(environ_dict)
 
 # Only expecting 1 event per .ics file
 def parse_ics(ics)->OutlookEvent:
@@ -159,7 +172,7 @@ def parse_ics(ics)->OutlookEvent:
 
 def send_flask_req(req, json_data={})->bool:
     response = requests.get(f"http://localhost:{local_host}/{req}", json=json_data)
-
+    print(f'Request completed with response {response.text} with status code {response.status_code}')
     '''
     HTTP status codes in the 200-299 range indicate success, with 200 being the standard response for a successful HTTP request.
 

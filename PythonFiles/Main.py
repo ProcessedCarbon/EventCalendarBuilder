@@ -26,14 +26,14 @@ from Pages.ManageEventPage import ManageEventPage
 # Toolbar
 from GUI.AppToolbar import AppToolbar
 
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 #GoogleCalendarInterface.ConnectToGoogleCalendar()
-def app():
+def client_app(processes):
     gui = GUIInterface()
 
     # Application initilization
-    MainAppWindow.Setup()
+    MainAppWindow.Setup(processes)
     EventsManager.UpdateEventsDB() # Initialize local event db
 
     # Page initilialization
@@ -48,9 +48,21 @@ def app():
     gui.MainLoop()
 
 if __name__ == "__main__":
+    q = Queue()
+    processes = []
+
     flask_process = Process(target=outlook_interface.run)
-    flask_process.start() 
+    google_process = Process(target=GoogleCalendarInterface.ConnectToGoogleCalendar)
 
-    app()
+    processes.append(google_process)
+    processes.append(flask_process)
 
-    flask_process.join()
+    for p in processes:
+        p.start()
+        q.put(p)
+        
+    client_app(processes)
+
+    for p in processes: p.join()
+    
+        
