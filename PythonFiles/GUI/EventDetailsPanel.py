@@ -257,13 +257,11 @@ class EventDetailsPanel:
             os.startfile(file)
 
     def ScheduleGoogleCalendar(self, event)->bool:
-        
         filename = self.CreateICSFileFromInput(event)
-        events = GoogleCalendarInterface.Parse_ICS(filename)
-        for e in events:
-            scheduled = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=e)
-            if scheduled == False:
-                return False
+        google_event = GoogleCalendarInterface.Parse_ICS(filename)
+        scheduled = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
+        if scheduled == False:
+            return False
         return True
 
     def ScheduleOutlookCalendar(self, event)->bool:

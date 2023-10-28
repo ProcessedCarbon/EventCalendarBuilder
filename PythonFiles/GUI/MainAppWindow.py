@@ -1,6 +1,6 @@
 from screeninfo import get_monitors
 from GUI.GUIInterface import GUIInterface
-import Calendar.Outlook.OutlookInterface as outlook_interface
+import Managers.MultiprocessingManager as multiprocessing_mgr
 
 def GetCurrentMonitorInfo()->dict:
         # Monitor(x=0, y=0, width=3840, height=2160, width_mm=708, height_mm=399, name='DP-0', is_primary=True)
@@ -32,7 +32,7 @@ class MainAppWindow:
     app_width = int(monitor_width * aspect)
     app_height = int(monitor_height * aspect)
 
-    def Setup(processes):
+    def Setup():
         GUIInterface.root.geometry(f'{MainAppWindow.app_width}x{MainAppWindow.app_height}')
 
         GUIInterface.root.columnconfigure(0, weight=1)
@@ -40,9 +40,10 @@ class MainAppWindow:
         GUIInterface.root.rowconfigure(0, weight=1)
 
         # Not working
-        GUIInterface.root.protocol("WM_DELETE_WINDOW", lambda: MainAppWindow.OnAppClose(processes)) 
+        GUIInterface.root.protocol("WM_DELETE_WINDOW", MainAppWindow.OnAppClose) 
 
-    def OnAppClose(processes):
+    def OnAppClose():
+        processes = multiprocessing_mgr.processes
         print('App Close')
         print(f'Num processes: {len(processes)}')
         #outlook_interface.send_flask_req('shutdown')

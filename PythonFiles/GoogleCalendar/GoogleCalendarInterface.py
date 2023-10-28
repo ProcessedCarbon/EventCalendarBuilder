@@ -127,28 +127,28 @@ class GoogleCalendarInterface:
                             tzend=tzend
                            )
 
+    # Only expecting 1 event per ics
     def Parse_ICS(ics:str):
         if GoogleCalendarInterface.service == None:
             ErrorCodes.PrintErrorWithCode(1001)
             return
         
-        events = []
         ics_file = CalendarInterface.ReadICSFile(ics)
         for component in ics_file.walk():
-              if component.name == "VEVENT":
-                    start_datetime = component.get('dtstart').dt.isoformat()
-                    end_datetime = component.get('dtend').dt.isoformat()
-                    tzstart = str(component.get('dtstart').dt.tzinfo)
-                    tzend = str(component.get('dtstart').dt.tzinfo)
+            if component.name == "VEVENT":
+                start_datetime = component.get('dtstart').dt.isoformat()
+                end_datetime = component.get('dtend').dt.isoformat()
+                tzstart = str(component.get('dtstart').dt.tzinfo)
+                tzend = str(component.get('dtstart').dt.tzinfo)
 
-                    events.append(GoogleCalendarInterface.CreateGoogleEvent(title=component.get('name'),
-                                                                            location=component.get("location"),
-                                                                            dtstart=start_datetime,
-                                                                            dtend=end_datetime,
-                                                                            tzstart=tzstart,
-                                                                            tzend=tzend
-                                                                        ))
-        return events
+                return GoogleCalendarInterface.CreateGoogleEvent(title=component.get('name'),
+                                                                location=component.get("location"),
+                                                                dtstart=start_datetime,
+                                                                dtend=end_datetime,
+                                                                tzstart=tzstart,
+                                                                tzend=tzend
+                                                                )
+        return None
     
     def getEvents(calendar_id='primary', time_min=None, time_max=None)->list[GoogleEvent]:
         """Get events from a specific calendar within a time range."""

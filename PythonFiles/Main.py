@@ -9,6 +9,7 @@ from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
 from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
+import Managers.MultiprocessingManager as multiprocessing_manager
 
 from Events.EventsManager import EventsManager
 
@@ -26,20 +27,21 @@ from Pages.ManageEventPage import ManageEventPage
 # Toolbar
 from GUI.AppToolbar import AppToolbar
 
-from multiprocessing import Process, Queue
+def client_app():
+    print("Waiting for authentication...")
+    # multiprocessing_manager.process_events['outlook_auth_event'].wait()
+    print("Authentication complete! This process can now proceed.")
 
-#GoogleCalendarInterface.ConnectToGoogleCalendar()
-def client_app(processes):
     gui = GUIInterface()
 
     # Application initilization
-    MainAppWindow.Setup(processes)
+    MainAppWindow.Setup()
     EventsManager.UpdateEventsDB() # Initialize local event db
 
     # Page initilialization
-    MainPage()                  # 1
-    SchedulePage()          # 2
-    ManageEventPage()   # 3
+    MainPage()                  
+    SchedulePage()         
+    ManageEventPage() 
     PageManager.SwitchPages(0)
 
     # Toolbar
@@ -48,21 +50,14 @@ def client_app(processes):
     gui.MainLoop()
 
 if __name__ == "__main__":
-    q = Queue()
-    processes = []
 
-    flask_process = Process(target=outlook_interface.run)
-    google_process = Process(target=GoogleCalendarInterface.ConnectToGoogleCalendar)
+    GoogleCalendarInterface.ConnectToGoogleCalendar()
+    multiprocessing_manager.add_process(outlook_interface.run)
+    multiprocessing_manager.add_process(client_app)
 
-    processes.append(google_process)
-    processes.append(flask_process)
-
-    for p in processes:
+    for p in multiprocessing_manager.processes:
         p.start()
-        q.put(p)
         
-    client_app(processes)
-
-    for p in processes: p.join()
+    for p in multiprocessing_manager.processes: p.join()
     
         
