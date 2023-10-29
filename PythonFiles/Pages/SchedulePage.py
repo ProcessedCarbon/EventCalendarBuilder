@@ -49,7 +49,7 @@ class SchedulePage(Page):
         for index, event in enumerate(events):
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                              event=event['object'],
-                                             remove_callback=self.DeleteDetailPanel,
+                                             remove_callback=lambda: self.RemovePanel(index),
                                              index=index, 
                                              row=index, 
                                              column=0, 
@@ -57,6 +57,7 @@ class SchedulePage(Page):
             self.details_panels.append(detail_panel)
 
     def ResetDetails(self):
+        print(f"Details panels: {self.details_panels}")
         for panel in self.details_panels:
             panel.Reset()
             panel.Destroy()
@@ -65,9 +66,15 @@ class SchedulePage(Page):
     def Update(self):
         for panel in self.details_panels:
             panel.UpdateInputFields()
-        
-    def DeleteDetailPanel(self, index:int):
-        del self.details_panels[index]
+    
+    def RemovePanel(self, r_index):
+        for index, panel in enumerate(self.details_panels):
+            if index == r_index:
+                panel.Destroy()
+                self.details_panels.remove(panel)
+                self.details_panel_frame.update()
+                print("SUCCESSFUL REMOVAL OF PANEL")
+                return
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)

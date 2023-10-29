@@ -60,7 +60,7 @@ class EventDetailsPanel:
         detail_entry_width = self.details_frame.winfo_width() * 0.7
 
         # GUI
-        remove_btn = GUIInterface.CreateButton(on_click=self.OnRemove, text='X', width=50)
+        remove_btn = GUIInterface.CreateButton(on_click=self.remove_callback, text='X', width=50)
         remove_btn.grid(row=0, column=2, pady=10)
 
         e_frame, e_entry = self.CreateEntryField(detail_entry_width, 
@@ -171,11 +171,6 @@ class EventDetailsPanel:
     def getEvent(self):
         return self.event
     
-    def OnRemove(self):
-        EventsManager.RemoveEvent(id=self.event.getId())
-        self.remove_callback(self.index)
-        self.Destroy()
-    
     def PickDate(self, entry):
         date_window, cal, submit_btn = GUIInterface.CreateDateWindow()
         submit_btn.configure(command=lambda:self.GrabDate(entry, cal.get_date(), date_window))
@@ -230,20 +225,20 @@ class EventDetailsPanel:
             # No need to add platform to event object as its default
             EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
             EventsManager.WriteEventDBToJSON()
-            self.Destroy()
+            self.remove_callback()
         elif calendar == 'Google':
             success = self.ScheduleGoogleCalendar(input)
             if success:
                 self.event.setPlatform('Google')
                 EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
                 EventsManager.WriteEventDBToJSON()
-                self.Destroy()
+                self.remove_callback()
         elif calendar == 'Outlook':
             success = self.ScheduleOutlookCalendar(input)
             if success:
                 self.event.setPlatform('Outlook')
                 EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-                self.Destroy()
+                self.remove_callback()
 
     # Right now can only handle 1 event only 
     def ScheduleDefault(self, event):
