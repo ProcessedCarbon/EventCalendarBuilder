@@ -13,6 +13,7 @@ from Calendar.Outlook.OutlookInterface import OutlookEvent
 from sys import platform
 import os
 import subprocess
+import uuid
 
 class EventDetailsPanel:
     def __init__(self, parent, event:Event, remove_callback,index:int, gap:int=10, **grid_params):
@@ -223,13 +224,15 @@ class EventDetailsPanel:
 
             # No clash checking done for default yet
             # No need to add platform to event object as its default
+            self.event.setId(uuid.uuid4())
             EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
             EventsManager.WriteEventDBToJSON()
             self.remove_callback()
         elif calendar == 'Google':
-            success = self.ScheduleGoogleCalendar(input)
-            if success:
+            id = self.ScheduleGoogleCalendar(input)
+            if id != "None":
                 self.event.setPlatform('Google')
+                self.event.setId(id)
                 EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
                 EventsManager.WriteEventDBToJSON()
                 self.remove_callback()
@@ -251,13 +254,11 @@ class EventDetailsPanel:
             file = CalendarInterface.getICSFilePath(filename)
             os.startfile(file)
 
-    def ScheduleGoogleCalendar(self, event)->bool:
+    def ScheduleGoogleCalendar(self, event)->[bool, str]:
         filename = self.CreateICSFileFromInput(event)
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
-        scheduled = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
-        if scheduled == False:
-            return False
-        return True
+        id = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
+        return id
 
     def ScheduleOutlookCalendar(self, event)->bool:
         filename = self.CreateICSFileFromInput(event)

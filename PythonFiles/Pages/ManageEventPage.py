@@ -52,12 +52,12 @@ class ManageEventPage(Page):
     def RemoveCard(self, r_index):
         for index, card in enumerate(self.cards):
             if index == r_index:
-                card.Destroy()
-                self.cards.remove(card)
-                self.content_frame.update()
-                print("SUCCESSFUL REMOVAL OF CARD")
-                return
-            
+                success = card.Destroy()
+                if success:
+                    self.cards.remove(card)
+                    self.content_frame.update()
+                    print("SUCCESSFUL REMOVAL OF CARD")
+                    return
         print("FAILED REMOVAL OF CARD")
      
     def Clear(self):

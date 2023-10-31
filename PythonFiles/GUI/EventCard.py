@@ -1,6 +1,7 @@
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
+from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 from sys import platform
 import subprocess
 
@@ -82,7 +83,7 @@ class EventCard:
 
         GUIInterface.SetCurrentFrame(tmp_frame)
 
-    def Destroy(self):
+    def Destroy(self)->bool:
         removed_from_cal = self.RemoveFromCalender()
 
         if removed_from_cal:
@@ -90,14 +91,19 @@ class EventCard:
             if success:
                 EventsManager.WriteEventDBToJSON()
                 self.card_frame.destroy()
+                return True
+        return False
 
     def RemoveFromCalender(self)->bool:
         if self.platform == 'Default':
             self.RemoveDefault()
             return True
+
+        if self.platform == 'Google':
+            removed = self.RemoveGoogle()
+            return removed == True
         
         return False
-           
     
     def RemoveDefault(self):
         if platform == "linux":
@@ -108,3 +114,10 @@ class EventCard:
         else:
             #os.startfile(file)
             pass
+    
+    def RemoveGoogle(self)->bool:
+        success = GoogleCalendarInterface.DeleteEvent(self.id)
+        return success
+
+    def RemoveOutlook(self):
+        pass

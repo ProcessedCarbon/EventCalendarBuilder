@@ -2,7 +2,6 @@ from Managers.ErrorConfig import ErrorCodes
 from pathlib import Path
 import os
 import Managers.DirectoryManager as directory_manager
-import uuid
 
 class Event:
     def __init__(self, 
@@ -53,7 +52,10 @@ class Event:
             "end_time" : self.end_time,
             "platform" : self.platform
         }
-        
+    
+    def setId(self, id:str):
+        self.id = id
+
     def setName(self, name:str):
         self.name = name
         
@@ -89,15 +91,15 @@ class EventsManager:
     except:
         print("EVENTS DIR ALREADY EXISTS")
 
-    def CreateEventObj(id:int, 
-                       name:str, 
+    def CreateEventObj(name:str, 
                        location:str, 
                        date:str, 
                        start_time:str, 
                        end_time:str,
-                       platform='Default'):
+                       platform='Default',
+                       id='None'):
         
-        return Event(id=f'{id}_{uuid.uuid4()}', # Done this way to reduce chances of UUID clashes
+        return Event(id=id,
                      name=name,
                      location=location,
                      date=date,

@@ -78,7 +78,7 @@ class GoogleCalendarInterface:
         return events
 
     # Event creation
-    def ScheduleCalendarEvent(googleEvent: GoogleEvent)->bool:
+    def ScheduleCalendarEvent(googleEvent: GoogleEvent)->str:
         """
         Creates the google event on the google calendar
 
@@ -87,22 +87,23 @@ class GoogleCalendarInterface:
         
         if GoogleCalendarInterface.service == None:
             ErrorCodes.PrintErrorWithCode(1001)
-            return False
+            return 'None'
         
         if type(googleEvent) is not GoogleEvent:
             ErrorCodes.PrintErrorWithCode(1000)
             print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
-            return False
+            return 'None'
 
         existing_events = GoogleCalendarInterface.getEvents(time_min=googleEvent.getStartDate(), 
                                                             time_max=googleEvent.getEndDate())
 
         if GoogleCalendarInterface.EventOverlaps(googleEvent, existing_events):
-            return False
+            return 'None'
                 
         new_event = GoogleCalendarInterface.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
+        #print(f'{new_event}\n')
         print(f"Event created {new_event.get('htmlLink')}")
-        return True
+        return new_event['id']
 
     # Creates event datatype
     def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, colorId=1):
@@ -176,3 +177,13 @@ class GoogleCalendarInterface:
                 print(f'Event to schedule {new_event.getEvent().upper()} has clash with {event.getEvent().upper()}!')
                 return True
         return False
+    
+    def DeleteEvent(id:str)->bool:
+
+        if GoogleCalendarInterface.service == None:
+            ErrorCodes.PrintErrorWithCode(1001)
+            return False
+        
+        GoogleCalendarInterface.service.events().delete(calendarId='primary', eventId=id).execute()
+        print(f"[GOOGLE_INTERFACE] EVENT DELETED SUCCESSFULLY")
+        return True
