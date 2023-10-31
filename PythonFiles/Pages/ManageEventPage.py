@@ -25,6 +25,19 @@ class ManageEventPage(Page):
         self.content_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
         self.content_frame.grid(row=1, column=1, sticky='nsew')
 
+        #self.UpdateGUI()
+
+        # Clears the content and local events json of content_frame
+        # Yet to remove the events scheduled on their respective calendar platform
+        clear_events_json_btn = GUIInterface.CreateButton(on_click=self.Clear, 
+                                                          text='Clear Local',
+                                                          width=self.page.winfo_width() * 0.1)     
+        clear_events_json_btn.grid(row=2, column=2, sticky='nsew')   
+    
+    def OnEntry(self):
+        self.UpdateGUI()
+
+    def UpdateGUI(self):
         # Create GUI only if there is data
         if len(EventsManager.events_db) > 0:
 
@@ -41,13 +54,6 @@ class ManageEventPage(Page):
                                 gap=self.card_gap,
                                 remove_cb=lambda:self.RemoveCard(r_index=index))
                 self.cards.append(card)
-
-        # Clears the content and local events json of content_frame
-        # Yet to remove the events scheduled on their respective calendar platform
-        clear_events_json_btn = GUIInterface.CreateButton(on_click=self.Clear, 
-                                                          text='Clear Local',
-                                                          width=self.page.winfo_width() * 0.1)     
-        clear_events_json_btn.grid(row=2, column=2, sticky='nsew')   
     
     def RemoveCard(self, r_index):
         for index, card in enumerate(self.cards):
