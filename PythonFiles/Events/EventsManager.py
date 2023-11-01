@@ -119,19 +119,6 @@ class EventsManager:
     
     def ClearEvents():
         EventsManager.events = []
-
-    def RemoveEvent(id:str, target=None):
-        if target == None:
-            ErrorCodes.PrintCustomError("MISSING DB TARGET")
-            return
-        
-        for event in target:
-            e = event['object']
-            if e.getId() == id:
-                target.remove(event)
-                return
-            
-        ErrorCodes.PrintCustomError("EVENT NOT FOUND")
     
     def UpdateEventsDB():
         '''

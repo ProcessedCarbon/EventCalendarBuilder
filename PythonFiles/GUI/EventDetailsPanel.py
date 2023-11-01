@@ -237,10 +237,12 @@ class EventDetailsPanel:
                 EventsManager.WriteEventDBToJSON()
                 self.remove_callback()
         elif calendar == 'Outlook':
-            success = self.ScheduleOutlookCalendar(input)
-            if success:
+            id = self.ScheduleOutlookCalendar(input)
+            if id != "None":
                 self.event.setPlatform('Outlook')
+                self.event.setId(id)
                 EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+                EventsManager.WriteEventDBToJSON()
                 self.remove_callback()
 
     # Right now can only handle 1 event only 
@@ -254,21 +256,20 @@ class EventDetailsPanel:
             file = CalendarInterface.getICSFilePath(filename)
             os.startfile(file)
 
-    def ScheduleGoogleCalendar(self, event)->[bool, str]:
+    def ScheduleGoogleCalendar(self, event)->str:
         filename = self.CreateICSFileFromInput(event)
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
         id = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
         return id
 
-    def ScheduleOutlookCalendar(self, event)->bool:
+    def ScheduleOutlookCalendar(self, event)->str:
         filename = self.CreateICSFileFromInput(event)
         outlook_event = outlook_interface.parse_ics(filename)
         # Cannot pass an entire dictionary as a param 
-        scheduled = outlook_interface.send_flask_req(req='create_event', 
+        scheduled, response = outlook_interface.send_flask_req(req='create_event', 
                                                      json_data={'event': outlook_event.event})
-        if scheduled == False:
-            return False
-        return True
+        id = response['id'] if 'id' in response else 'None'
+        return id
     
     # Creates ICS files to be parsed 
     # 1 ICS = should have 1 VEVENT

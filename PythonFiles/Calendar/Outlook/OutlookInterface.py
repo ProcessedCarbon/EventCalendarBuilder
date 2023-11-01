@@ -123,7 +123,6 @@ def create_event():
         return jsonify(status="error", message="Not authenticated!"), 401
     
     event = request.json
-    print(f'Request Args: \n {event} \n')
 
     headers = {
         'Authorization': f'{token_access["token_type"]} {token}',
@@ -131,7 +130,27 @@ def create_event():
     }
 
     response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event['event'])
-    return jsonify(status="success", message=f"Event created with status code: {response.status_code}")
+    return response.json()
+
+@app.route('/delete_event')
+def delete_event():   
+    token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+    token = token_access['access_token']
+
+    if not token:
+        return jsonify(status="error", message="Not authenticated!"), 401
+    
+    event_id = request.json['event_id']
+
+    headers = {
+        'Authorization': f'{token_access["token_type"]} {token}',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.delete(f"https://graph.microsoft.com/v1.0/me/events/{event_id}", headers=headers)
+    print(f'DELETE RESPONSE STATUS CODE: {response.status_code}')
+    return {}
+
 
 # Only expecting 1 event per .ics file
 def parse_ics(ics)->OutlookEvent:
@@ -147,9 +166,10 @@ def parse_ics(ics)->OutlookEvent:
                             )
     return None
 
-def send_flask_req(req, json_data={})->bool:
+# Require this to go from Flask -> Outlook
+def send_flask_req(req, json_data={})->[bool, dict]:
     response = requests.get(f"http://localhost:{local_host}/{req}", json=json_data)
-    print(f'Request completed with response {response.text} with status code {response.status_code}')
+    print(f'Response Content:\n{response.json()}')
     '''
     HTTP status codes in the 200-299 range indicate success, with 200 being the standard response for a successful HTTP request.
 
@@ -157,7 +177,8 @@ def send_flask_req(req, json_data={})->bool:
 
     HTTP status codes in the 500-599 range indicate server errors.
     '''
-    return 200 <= response.status_code < 300
+    if 200 <= response.status_code < 300: return True, response.json()
+    else: return False, {}
 
 def run():
     threading.Thread(target=login).start()

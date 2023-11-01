@@ -2,6 +2,8 @@ from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+import Calendar.Outlook.OutlookInterface as outlook_interface
+
 from sys import platform
 import subprocess
 
@@ -98,9 +100,13 @@ class EventCard:
         if self.platform == 'Default':
             self.RemoveDefault()
             return True
-
-        if self.platform == 'Google':
+        
+        elif self.platform == 'Google':
             removed = self.RemoveGoogle()
+            return removed == True
+        
+        elif self.platform == 'Outlook':
+            removed = self.RemoveOutlook()
             return removed == True
         
         return False
@@ -116,8 +122,8 @@ class EventCard:
             pass
     
     def RemoveGoogle(self)->bool:
-        success = GoogleCalendarInterface.DeleteEvent(self.id)
-        return success
+        return GoogleCalendarInterface.DeleteEvent(self.id)
 
-    def RemoveOutlook(self):
-        pass
+    def RemoveOutlook(self)->bool:
+        removed, response = outlook_interface.send_flask_req('delete_event', {'event_id':self.id})
+        return removed
