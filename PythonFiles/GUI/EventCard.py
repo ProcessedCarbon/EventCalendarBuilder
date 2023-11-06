@@ -125,5 +125,5 @@ class EventCard:
         return GoogleCalendarInterface.DeleteEvent(self.id)
 
     def RemoveOutlook(self)->bool:
-        removed, response = outlook_interface.send_flask_req('delete_event', {'event_id':self.id})
+        removed, response = outlook_interface.send_flask_req('delete_event', json_data={'event_id':self.id})
         return removed

@@ -122,14 +122,27 @@ def create_event():
     if not token:
         return jsonify(status="error", message="Not authenticated!"), 401
     
-    event = request.json
+    event = request.json['event']
+
+    # Check for any pre-existing event
+    filter_param = {
+       '$filter': f"start/dateTime ge {event['start']['dateTime']} and end/dateTime le {event['end']['dateTime']}"
+   }
+    cal_res = send_flask_req('get_events', param_data=filter_param)
+    # Response format
+    #(True, {'@odata.context': "", 'value': []})
+    cal_events = cal_res[1]['value']
+
+    if len(cal_events) > 0:
+        print(f"CANNOT SCHEDULE EVENT, CLASHES WITH THESE EVENTS: \n {cal_events}")
+        return {}
 
     headers = {
         'Authorization': f'{token_access["token_type"]} {token}',
         'Content-Type': 'application/json'
     }
 
-    response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event['event'])
+    response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event)
     return response.json()
 
 @app.route('/delete_event')
@@ -151,6 +164,22 @@ def delete_event():
     print(f'DELETE RESPONSE STATUS CODE: {response.status_code}')
     return {}
 
+@app.route('/get_events')
+def get_events():   
+    token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+    token = token_access['access_token']
+
+    if not token:
+        return jsonify(status="error", message="Not authenticated!"), 401
+    
+    headers = {
+        'Authorization': f'{token_access["token_type"]} {token}',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.get(f"https://graph.microsoft.com/v1.0/me/events", headers=headers)
+    print(f'GET RESPONSE STATUS CODE: {response.status_code}')
+    return response.json()
 
 # Only expecting 1 event per .ics file
 def parse_ics(ics)->OutlookEvent:
@@ -167,8 +196,8 @@ def parse_ics(ics)->OutlookEvent:
     return None
 
 # Require this to go from Flask -> Outlook
-def send_flask_req(req, json_data={})->[bool, dict]:
-    response = requests.get(f"http://localhost:{local_host}/{req}", json=json_data)
+def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:
+    response = requests.get(f"http://localhost:{local_host}/{req}", json=json_data, params=param_data)
     print(f'Response Content:\n{response.json()}')
     '''
     HTTP status codes in the 200-299 range indicate success, with 200 being the standard response for a successful HTTP request.
