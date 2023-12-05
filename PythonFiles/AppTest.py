@@ -26,11 +26,20 @@ def OutlookTest():
     import Calendar.Outlook.OutlookInterface as outlook_interface
     outlook_interface.start()
 
+def NERTest():
+    with open(r'./Testing/testing_text_r.txt') as f:
+        content = f.read()
+    f.close()
+    from NER.NERInterface import NERInterface
+    events = NERInterface.GetEntitiesFromText(content)
+    for e in events: print(e)
+
 def main():    
     #TestInstall()
     #MacCalendarTest()
     #TextProcessingManagerTest()
     #OutlookTest()
+    NERTest()
     pass
 
 if __name__ == "__main__":
