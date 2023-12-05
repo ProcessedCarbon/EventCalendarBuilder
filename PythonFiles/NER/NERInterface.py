@@ -32,7 +32,7 @@ class NERInterface:
                 #print(f"{str(entity)} - {entity.label_}")
 
                 e = str(entity)
-                if entity.label_ == "EVENT":
+                if entity.label_ == "E_NAME":
                     if event_name != e:
 
                         # To handle if first entity in list is event
@@ -46,17 +46,17 @@ class NERInterface:
                         loc = ""
                         event_name = e
 
-                elif entity.label_ == "DATE":
+                elif entity.label_ == "E_DATE":
                     tmp_date_list.append(e)
 
-                elif entity.label_ == "TIME":
+                elif entity.label_ == "E_TIME":
                     tmp_time_list.append(e)
 
-                elif entity.label_ == "LOC":
+                elif entity.label_ == "E_LOC":
                     loc = e
                 
                 # Append what is left and return list of events
-                if entity == entityList[-1] and entity.label_ != "EVENT":
+                if entity == entityList[-1] and entity.label_ != "E_NAME":
                     events.append(NERInterface.getEntities(e=event_name, t=tmp_time_list, d=tmp_date_list, l=loc))
                     return events
                 
