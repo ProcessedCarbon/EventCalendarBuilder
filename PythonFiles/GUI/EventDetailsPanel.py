@@ -5,7 +5,7 @@ from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
 
 # Calendar Intefaces
-from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 from Calendar.CalendarInterface import CalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
 from Calendar.Outlook.OutlookInterface import OutlookEvent

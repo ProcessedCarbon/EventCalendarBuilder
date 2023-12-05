@@ -1,7 +1,7 @@
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
-from GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
 
 from sys import platform
