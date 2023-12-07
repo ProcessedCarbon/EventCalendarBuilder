@@ -27,7 +27,7 @@ class EventDetailsPanel:
         self.event = event
         self.remove_callback = remove_callback
         self.index = index
-        self.rows = 9
+        self.rows = 11
 
         self.GUI()
         
@@ -75,7 +75,7 @@ class EventDetailsPanel:
         desp_frame.grid(row=2, column=1, sticky='nsew',pady=self.gap)
 
         priorities = ["1", "2", "3", "4", "5"]
-        prio_frame = self.CreateDropdownField(values=priorities, entryname="Priority")
+        prio_frame, prio_label, prio_box = self.CreateDropdownField(values=priorities, entryname="Priority")
         prio_frame.grid(row=3, column=1, sticky='nsew',pady=self.gap)
 
         l_frame, l_entry = self.CreateEntryField(detail_entry_width, 
@@ -83,28 +83,39 @@ class EventDetailsPanel:
                                                  placeholder_text='Location')
         l_frame.grid(row=4, column=1, sticky='nsew',pady=self.gap)
 
-        d_frame, d_entry = self.CreateEntryField(detail_entry_width, 
-                                                 entryname="Date", 
+        s_d_frame, s_d_entry = self.CreateEntryField(detail_entry_width, 
+                                                 entryname="Start Date", 
                                                  entry_state='disabled', 
                                                  placeholder_text='YYYY-MM-DD')
-        d_frame.grid(row=5, column=1,sticky='nsew',pady=self.gap)
-        d_entry.bind('<1>', lambda event, entry=d_entry: self.PickDate(entry))
+        s_d_frame.grid(row=5, column=1,sticky='nsew',pady=self.gap)
+        s_d_entry.bind('<1>', lambda event, entry=s_d_entry: self.PickDate(entry))
+
+        e_d_frame, e_d_entry = self.CreateEntryField(detail_entry_width, 
+                                                 entryname="End Date", 
+                                                 entry_state='disabled', 
+                                                 placeholder_text='YYYY-MM-DD')
+        e_d_frame.grid(row=6, column=1,sticky='nsew',pady=self.gap)
+        e_d_entry.bind('<1>', lambda event, entry=e_d_entry: self.PickDate(entry))
 
         st_frame, st_entry = self.CreateEntryField(detail_entry_width, 
                                                    entryname="Start Time", 
                                                    placeholder_text="HH:MM:SS")
-        st_frame.grid(row=6, column=1,sticky='nsew',pady=self.gap)
+        st_frame.grid(row=7, column=1,sticky='nsew',pady=self.gap)
 
         et_frame, et_entry = self.CreateEntryField(detail_entry_width,
                                                    entryname="End Time", 
                                                    placeholder_text="HH:MM:SS")
-        et_frame.grid(row=7, column=1,sticky='nsew',pady=self.gap)
+        et_frame.grid(row=8, column=1,sticky='nsew',pady=self.gap)
 
-        calendars_frame = self.CreateDropdownField(values=["Default", "Google", 'Outlook'], entryname="Calendar")
-        calendars_frame.grid(row=8, column=1, sticky='nsew',pady=self.gap)
+        calendars_frame, calendar_label, calendar_box = self.CreateDropdownField(values=["Default", "Google", 'Outlook'], entryname="Calendar")
+        calendars_frame.grid(row=9, column=1, sticky='nsew',pady=self.gap)
+
+        recur_option, recur_label, recur_box = self.CreateDropdownField(values=["None", "Daily", 'Weekly', 'Monthly'], entryname="Repeated")
+        recur_option.grid(row=10, column=1, sticky='nsew',pady=self.gap)
+        recur_box.set(self.event.getRecurring())
 
         schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule')
-        schedule_btn.grid(row=9, column=1, sticky='nsew')
+        schedule_btn.grid(row=11, column=1, sticky='nsew')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
 
@@ -112,14 +123,17 @@ class EventDetailsPanel:
         details = self.getCurrentInputFieldsInfo()
         self.event.setName(details['Event'])
         self.event.setLocation(details['Location'])
-        self.event.setDate(details['Date'])
+        self.event.set_S_Date(details['Start_Date'])
+        self.event.set_E_Date(details['End_Date'])
         self.event.setStart_Time(details['Start_Time'])
         self.event.setEnd_Time(details['End_Time'])
 
     def UpdateInputFields(self):
+        print(self.details_entries)
         GUIInterface.UpdateEntry(self.details_entries["Event"], self.event.getName())
         GUIInterface.UpdateEntry(self.details_entries["Location"], self.event.getLocation())
-        GUIInterface.UpdateEntry(self.details_entries["Date"], self.event.getDate())
+        GUIInterface.UpdateEntry(self.details_entries["Start_Date"], self.event.get_S_Date())
+        GUIInterface.UpdateEntry(self.details_entries["End_Date"], self.event.get_E_Date())
         GUIInterface.UpdateEntry(self.details_entries["Start_Time"], self.event.getStart_Time())
         GUIInterface.UpdateEntry(self.details_entries["End_Time"], self.event.getEnd_Time())
         self.filled = True
@@ -137,7 +151,8 @@ class EventDetailsPanel:
 
         GUIInterface.UpdateEntry(self.details_entries["Event"], "")
         GUIInterface.UpdateEntry(self.details_entries["Location"], "")
-        GUIInterface.UpdateEntry(self.details_entries["Date"], "")
+        GUIInterface.UpdateEntry(self.details_entries["Start_Date"], "")
+        GUIInterface.UpdateEntry(self.details_entries["End_Date"], "")
         GUIInterface.UpdateEntry(self.details_entries["Start_Time"], "")
         GUIInterface.UpdateEntry(self.details_entries["End_Time"], "")
 
@@ -158,7 +173,7 @@ class EventDetailsPanel:
         key = self.ConvertEntryNameToKey(entryname)
         dropdown_frame, dropdown_label, dropdown_box = GUIInterface.CreateOptionMenuWithLabel(label=entryname +":", dropdown=values)
         self.details_entries[key] = dropdown_box
-        return dropdown_frame
+        return dropdown_frame, dropdown_label, dropdown_box
     
     def ConvertEntryNameToKey(self, name:str):
         return name.replace(" ", "_")
@@ -189,19 +204,20 @@ class EventDetailsPanel:
             return
         
         input = self.getCurrentInputFieldsInfo()
+        print(input)
 
         # Handle missing or incorrect input for time fields
         if input['Start_Time'] == "":
-            print(f'Missing Start Time field for {input["Event"].upper()}[{input["Date"]}]')
+            print(f'Missing Start Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif input['End_Time'] == "":
-            print(f'Missing End Time field for {input["Event"].upper()}[{input["Date"]}]')
+            print(f'Missing End Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
-            print(f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Date"]}]')
+            print(f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
-            print(f'Incorrect End Time provided for {input["Event"].upper()}[{input["Date"]}]')
+            print(f'Incorrect End Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         
         # If no isses then create ics file
@@ -210,9 +226,10 @@ class EventDetailsPanel:
         time_slots.append(input['Start_Time'])
         time_slots.append(input['End_Time'])
 
-        ics_date = TextProcessingManager.ProcessDateToICSFormat(input['Date'])
+        ics_s_date = TextProcessingManager.ProcessDateToICSFormat(input['Start_Date'])
+        ics_e_date = TextProcessingManager.ProcessDateToICSFormat(input['End_Date'])
         ics_time = TextProcessingManager.ProcessTimeToICSFormat(time_slots)
-        ics_s, ics_e = TextProcessingManager.ProcessICS(ics_date, ics_time)
+        ics_s, ics_e = TextProcessingManager.ProcessICS(ics_s_date, ics_e_date, ics_time)
 
         input['Start_Time_ICS'] = ics_s
         input['End_Time_ICS'] = ics_e
@@ -221,29 +238,39 @@ class EventDetailsPanel:
         calendar = input['Calendar']
         if calendar == 'Default':
             self.ScheduleDefault(input)
+            self.ScheduleActions(id=uuid.uuid4(), platform='Default')
 
             # No clash checking done for default yet
             # No need to add platform to event object as its default
-            self.event.setId(uuid.uuid4())
-            EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-            EventsManager.WriteEventDBToJSON()
-            self.remove_callback()
+            # self.event.setId(uuid.uuid4())
+            # EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+            # EventsManager.WriteEventDBToJSON()
+            # self.remove_callback()
         elif calendar == 'Google':
             id = self.ScheduleGoogleCalendar(input)
             if id != "None":
-                self.event.setPlatform('Google')
-                self.event.setId(id)
-                EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-                EventsManager.WriteEventDBToJSON()
-                self.remove_callback()
+                self.ScheduleActions(id=id, platform='Google')
+                # self.event.setPlatform('Google')
+                # self.event.setId(id)
+                # EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+                # EventsManager.WriteEventDBToJSON()
+                # self.remove_callback()
         elif calendar == 'Outlook':
             id = self.ScheduleOutlookCalendar(input)
             if id != "None":
-                self.event.setPlatform('Outlook')
-                self.event.setId(id)
-                EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-                EventsManager.WriteEventDBToJSON()
-                self.remove_callback()
+                self.ScheduleActions(id=id, platform='Outlook')
+                # self.event.setPlatform('Outlook')
+                # self.event.setId(id)
+                # EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+                # EventsManager.WriteEventDBToJSON()
+                # self.remove_callback()
+
+    def ScheduleActions(self, id, platform='Default'):
+        self.event.setPlatform(platform)
+        self.event.setId(id)
+        EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+        EventsManager.WriteEventDBToJSON()
+        self.remove_callback()
 
     # Right now can only handle 1 event only 
     def ScheduleDefault(self, event):
@@ -281,14 +308,23 @@ class EventDetailsPanel:
         title = event["Event"]
         ics_s = event["Start_Time_ICS"]
         ics_e = event["End_Time_ICS"]
+        
+        time_difference =  ics_e - ics_s
+        hours, remainder = divmod(time_difference.seconds, 3600)
 
+        rrule = {'freq': event["Repeated"].lower(),
+                 'until': ics_e,
+                } if event['Repeated'] != 'None' else {}
+        
         # Create ICS File
         CalendarInterface.CreateICSEvent(e_name=title,
                                         e_description=desp,
                                         s_datetime=ics_s,
                                         e_datetime=ics_e,
                                         e_location=location,
-                                        e_priority=int(priority))
+                                        e_priority=int(priority),
+                                        rrule=rrule,
+                                        duration=hours)
         
         file_name = f'{title}_{ics_s}'
         CalendarInterface.WriteToFile(file_name)

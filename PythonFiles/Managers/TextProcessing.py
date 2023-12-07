@@ -143,7 +143,6 @@ class TextProcessingManager:
             founded_year = date_struct['year'] != None and date_struct['year'] or None
 
             list_of_processed.append(date_struct)
-        
         # Assign year and month to be used for substrings that do not posses one
         currentDate = DateTimeManager.getCurrentDate()
         year = founded_year != None and founded_year or currentDate.year
@@ -168,8 +167,7 @@ class TextProcessingManager:
 
         return: list of formatted times suitable for google calendars
         """
-
-        if time_text == "None" or "" or len(time_text) <= 0:
+        if time_text == "None" or time_text=="" or len(time_text) <= 0:
             ErrorCodes.PrintErrorWithCode(1000)
             return []
 
@@ -253,10 +251,14 @@ class TextProcessingManager:
                 })
         return res if len(res) > 0 else None
 
-    def ProcessICS(date:dict, time:list[dict]):
-        day = int(date["day"])
-        month = int(date["month"])
-        year = int(date["year"])
+    def ProcessICS(s_date:dict, e_date:dict, time:list[dict]):
+        s_day = int(s_date["day"])
+        s_month = int(s_date["month"])
+        s_year = int(s_date["year"])
+
+        e_day = int(e_date["day"])
+        e_month = int(e_date["month"])
+        e_year = int(e_date["year"])
 
         s_time = time[0]
         s_h = int(s_time["hour"])
@@ -268,8 +270,10 @@ class TextProcessingManager:
         e_m = int(e_time["min"])
         e_s = int(e_time["second"])
         
-        s_ics_datetime = DateTimeManager.getDateTime(hour=s_h,min=s_m,sec=s_s,day=day,month=month,year=year)
-        e_ics_datetime = DateTimeManager.getDateTime(hour=e_h,min=e_m,sec=e_s,day=day,month=month,year=year)
+        s_ics_datetime = DateTimeManager.getDateTime(hour=s_h,min=s_m,sec=s_s,
+                                                     day=s_day,month=s_month,year=s_year)
+        e_ics_datetime = DateTimeManager.getDateTime(hour=e_h,min=e_m,sec=e_s,
+                                                     day=e_day,month=e_month,year=e_year)
         return s_ics_datetime, e_ics_datetime
     
     # Tries and match a string to the regex, returns None if no match is found
@@ -281,7 +285,6 @@ def Test_ProcessTimeTo12HFormat():
     print("Test_ProcessTimeForGoogleCalendars")
     print("==========================================================================================")
 
-    text_process_manager = TextProcessingManager()
     # Testing for time
     convert12HTo24H_test_list ={
         "12am",
@@ -296,7 +299,7 @@ def Test_ProcessTimeTo12HFormat():
 
     for t in convert12HTo24H_test_list:
         print("Original: ", t)
-        print(f"After: {text_process_manager.ProcessTime(t)}")
+        print(f"After: {TextProcessingManager.ProcessTime(t)}")
         print("------------------------------------------------")
     print("==========================================================================================")
 

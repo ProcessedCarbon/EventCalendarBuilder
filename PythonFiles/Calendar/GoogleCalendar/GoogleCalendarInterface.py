@@ -106,7 +106,7 @@ class GoogleCalendarInterface:
         return new_event['id']
 
     # Creates event datatype
-    def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, colorId=1):
+    def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, rrule:str, colorId=1):
         """
         Returns the google calendar event format with the given entities in placed to be used to parsed to create a new event on google calendars
         https://developers.google.com/calendar/api/v3/reference/events
@@ -125,7 +125,8 @@ class GoogleCalendarInterface:
                             end_datetime=dtend,
                             colorId=colorId,
                             tzstart=tzstart,
-                            tzend=tzend
+                            tzend=tzend,
+                            rrule=rrule
                            )
 
     # Only expecting 1 event per ics
@@ -141,13 +142,16 @@ class GoogleCalendarInterface:
                 end_datetime = component.get('dtend').dt.isoformat()
                 tzstart = str(component.get('dtstart').dt.tzinfo)
                 tzend = str(component.get('dtstart').dt.tzinfo)
+                rule='RRULE:' + component.get('rrule').to_ical().decode(errors="ignore")+'Z' if component.get('rrule') is not None else ''
+                print(f"RRULE: {str(rule)}")
 
                 return GoogleCalendarInterface.CreateGoogleEvent(title=component.get('name'),
                                                                 location=component.get("location"),
                                                                 dtstart=start_datetime,
                                                                 dtend=end_datetime,
                                                                 tzstart=tzstart,
-                                                                tzend=tzend
+                                                                tzend=tzend,
+                                                                rrule=str(rule) if rule != '' else [],
                                                                 )
         return None
     
@@ -160,7 +164,8 @@ class GoogleCalendarInterface:
                                                                             dtstart=x['start']['dateTime'],
                                                                             tzstart=x['start']['timeZone'],
                                                                             dtend=x['end']['dateTime'],
-                                                                            tzend=x['end']['timeZone']
+                                                                            tzend=x['end']['timeZone'],
+                                                                            rrule=x['recurrence'] if 'recurrence' in x else ''
                                                                         ) for x in existing]
         return existing_google_events  
 

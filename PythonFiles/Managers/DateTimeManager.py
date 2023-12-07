@@ -195,8 +195,8 @@ class DateTimeManager:
         """Compare two time strings and print if the first is smaller, equal, or larger than the second."""
         
         # Convert strings to datetime objects
-        time1 = datetime.strptime(time_str1, fmt)
-        time2 = datetime.strptime(time_str2, fmt)
+        time1 = DateTimeManager.getDateTimeObject(time_str1, fmt)
+        time2 = DateTimeManager.getDateTimeObject(time_str2, fmt)
         
         # Compare times
         return time1 < time2
@@ -206,6 +206,9 @@ class DateTimeManager:
     
     def getDateTimeNow():
         return datetime.now()
+    
+    def getDateTimeObject(time, fmt='%H:%M:%S'):
+        return datetime.strptime(time, fmt)
     
 # For testing
 def main():

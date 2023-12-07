@@ -5,7 +5,9 @@ class GoogleEvent:
                  end_datetime: str, 
                  tzstart: str, 
                  tzend:str, 
-                 colorId=1):
+                 rrule:str,
+                 colorId=1,
+                 ):
         
         self.event = {
             "summary" : event,
@@ -20,9 +22,9 @@ class GoogleEvent:
                 "dateTime" : end_datetime,
                 "timeZone" : tzend
             },
-            # "recurrence" : [
-            #     "RRULE:FREQ=DAILY;COUNT=2"
-            # ],
+            'recurrence': [
+                rrule
+            ],
             # "attendees" : [
             #     {"email":"nonexistantemail@mail.com"}
             # ]

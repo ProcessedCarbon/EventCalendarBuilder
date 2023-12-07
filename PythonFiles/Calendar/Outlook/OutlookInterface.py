@@ -14,7 +14,7 @@ CLIENT_ID = "99b8766f-5d52-490c-8237-187338d09615"
 CLIENT_SECRET = "_xm8Q~VKXbbgvNF8mT5BUAMr5I_XyE3Q18aRNczT"
 REDIRECT_URI=f'http://localhost:{local_host}/callback'
 AUTHORITY_URL = 'https://login.microsoftonline.com/common'
-SCOPES = "openid User.Read Calendars.ReadWrite"
+SCOPES = "openid User.Read Calendars.ReadWrite MailboxSettings.Read"
 
 token_path = directory_manager.getCurrentFileDirectory(__file__)
 
@@ -22,7 +22,7 @@ token_path = directory_manager.getCurrentFileDirectory(__file__)
 # https://learn.microsoft.com/en-us/graph/api/calendar-post-events?view=graph-rest-1.0&tabs=http
 class OutlookEvent():
     def __init__(self, 
-                 name:str, location:str,  dtstart:str, 
+                 name:str, location:str,  dtstart:str, rrule:str,
                  dtend:str, tzstart:str, tzend:str, isonline=False) -> None:
         
         self.name = name
@@ -32,6 +32,8 @@ class OutlookEvent():
         self.tzstart = tzstart
         self.tzend = tzend
         self.isonline = isonline
+        self.rrule = rrule
+        self.reccurence_pattern = self.getRecurrencePatternFromRRULE(rrule=self.rrule)
         
         self.event = {
             "subject": name,
@@ -51,6 +53,7 @@ class OutlookEvent():
                 "displayName":location
             },
             "isOnlineMeeting": isonline,
+            "recurrence": self.reccurence_pattern,
             # "attendees": [
             #     {
             #     "emailAddress": {
@@ -84,6 +87,41 @@ class OutlookEvent():
     def get_isonline(self):
         return self.isonline
     
+    def get_rrule(self):
+        return self.rrule
+
+    # Assuming RRULES come in the following format
+    # FREQ=DAILY;INTERVAL=10;COUNT=5 
+    def getRecurrencePatternFromRRULE(self, rrule:str):
+        if rrule == []: return []
+        split = rrule.split(';')
+        rule_dict = {}
+        # Convert each split into a single dictionary
+        for s in split:
+            split_s = s.split('=')
+            key = split_s[0]
+            val = split_s[1]
+            rule_dict[key] = val
+        
+        freq = rule_dict['FREQ'].lower() if 'FREQ' in rule_dict else ''
+        end_y = rule_dict['UNTIL'][:4]
+        end_m = rule_dict['UNTIL'][4:6] 
+        end_d = rule_dict['UNTIL'][6:8] 
+        end_date = f'{end_y}-{end_m}-{end_d}'
+
+        s_date = self.dtstart.split('T')[0]
+        return {
+            "pattern": {
+                "type": freq,
+                "interval": 1
+            },
+            "range": {
+                "type": "endDate",
+                "startDate": s_date,
+                "endDate": end_date
+            }
+        }
+
 @app.route('/')
 def login():
     # Generate the full authorization endpoint on Microsoft's identity platform
@@ -141,7 +179,7 @@ def create_event():
         'Authorization': f'{token_access["token_type"]} {token}',
         'Content-Type': 'application/json'
     }
-
+    print(f'Event param: {event}')
     response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event)
     return response.json()
 
@@ -181,18 +219,36 @@ def get_events():
     print(f'GET RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
+@app.route('/get_mail_settings')
+def get_mail_settings():
+    token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+    token = token_access['access_token']
+    headers = {
+        'Authorization': f'{token_access["token_type"]} {token}',
+        'Content-Type': 'application/json'
+    }
+    response = requests.get('https://graph.microsoft.com/v1.0/me/mailboxsettings', headers=headers)
+    return response.json()
+
 # Only expecting 1 event per .ics file
 def parse_ics(ics)->OutlookEvent:
     ics_file = CalendarInterface.ReadICSFile(ics)
+    res = send_flask_req(req='get_mail_settings')
+    user_profile = res[1]
+    # Extract the time zone information
+    time_zone = user_profile.get('mailboxSettings', {}).get('timeZone')
+    tz = time_zone if time_zone is not None else 'Asia/Singapore'
     for component in ics_file.walk():
         if component.name == "VEVENT":
-           return OutlookEvent(name=component.get('name'),
+            rule=component.get('rrule').to_ical().decode(errors="ignore") if component.get('rrule') is not None else ''
+            return OutlookEvent(name=component.get('name'),
                                 location=component.get("location"),
                                 dtstart=component.get('dtstart').dt.isoformat(),
                                 dtend=component.get('dtend').dt.isoformat(),
-                                tzstart=str(component.get('dtstart').dt.tzinfo),
-                                tzend=str(component.get('dtstart').dt.tzinfo)
-                            )
+                                tzstart=tz,
+                                tzend=tz,
+                                rrule=rule
+                                )
     return None
 
 # Require this to go from Flask -> Outlook

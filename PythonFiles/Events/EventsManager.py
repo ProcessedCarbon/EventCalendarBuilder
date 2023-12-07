@@ -8,18 +8,22 @@ class Event:
                  id:str, 
                  name:str, 
                  location:str, 
-                 date:str, 
+                 s_date:str, 
+                 e_date:str,
                  start_time:str, 
                  end_time:str,
-                 platform='Default') -> None:
+                 platform='Default',
+                 recurring='None') -> None:
         
         self.id = id
         self.name = name
         self.location = location
-        self.date = date
+        self.s_date = s_date
+        self.e_date = e_date
         self.start_time = start_time
         self.end_time = end_time
         self.platform = platform
+        self.recurring = recurring
     
     def getId(self)->str:
         return self.id
@@ -30,8 +34,11 @@ class Event:
     def getLocation(self)->str:
         return self.location
         
-    def getDate(self)->str:
-        return self.date
+    def get_S_Date(self)->str:
+        return self.s_date
+
+    def get_E_Date(self)->str:
+        return self.e_date
         
     def getStart_Time(self)->str:
         return self.start_time
@@ -42,15 +49,20 @@ class Event:
     def getPlatform(self)->str:
         return self.platform
 
+    def getRecurring(self)->str:
+        return self.recurring
+
     def getEventDict(self):
         return {
             "id" : self.id,
             "name" : self.name,
             "location" : self.location,
-            "date" : self.date,
+            "s_date" : self.s_date,
+            "e_date" : self.e_date,
             "start_time" : self.start_time,
             "end_time" : self.end_time,
-            "platform" : self.platform
+            "platform" : self.platform,
+            'recurring':self.recurring
         }
     
     def setId(self, id:str):
@@ -62,8 +74,11 @@ class Event:
     def setLocation(self, location:str):
         self.location = location
         
-    def setDate(self, date:str):
-        self.date = date
+    def set_S_Date(self, date:str):
+        self.s_date = date
+    
+    def set_E_Date(self, date:str):
+        self.e_date = date
         
     def setStart_Time(self, start_time:str):
         self.start_time = start_time
@@ -74,6 +89,9 @@ class Event:
     def setPlatform(self, platform:str):
         self.platform = platform
     
+    def setRecurring(self, recur:str):
+        self.recurring = recur
+
 class EventsManager:
     # Directories
     parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).absolute()
@@ -92,20 +110,24 @@ class EventsManager:
         print("EVENTS DIR ALREADY EXISTS")
 
     def CreateEventObj(name:str, 
-                       location:str, 
-                       date:str, 
-                       start_time:str, 
-                       end_time:str,
-                       platform='Default',
-                       id='None'):
+                    location:str, 
+                    s_date:str, 
+                    e_date:str,                       
+                    start_time:str, 
+                    end_time:str,
+                    platform='Default',
+                    id='None',
+                    recurring='None'):
         
         return Event(id=id,
                      name=name,
                      location=location,
-                     date=date,
+                     s_date=s_date,
+                     e_date=e_date,
                      start_time=start_time,
                      end_time=end_time,
-                     platform=platform)
+                     platform=platform,
+                     recurring=recurring)
         
     def PrintEvents(events : dict):
         event = events['object']
@@ -113,9 +135,11 @@ class EventsManager:
         print('id:', event.id)
         print("event: ", event.name)
         print("location: ", event.location)
-        print("date: ", event.date)
+        print("start_date: ", event.s_date)
+        print("end_date: ", event.e_date)
         print("start_time: ", event.start_time)
         print("end_time: ", event.end_time)
+        print('recurring:', event.recurring)
     
     def ClearEvents():
         EventsManager.events = []
@@ -134,10 +158,12 @@ class EventsManager:
             event = EventsManager.CreateEventObj(id=d['id'],
                                                 name=d['name'],
                                                 location=d['location'],
-                                                date=d['date'],
+                                                s_date=d['s_date'],
+                                                e_date=d['e_date'],
                                                 start_time=d['start_time'],
                                                 end_time=d['end_time'],
-                                                platform=d['platform'])
+                                                platform=d['platform'],
+                                                recurring=d['recurring'])
             EventsManager.AddEventToEventDB(event=event, target=EventsManager.events_db)
 
     # Send only those that are schedule

@@ -3,6 +3,7 @@ from icalendar import Calendar, Event, vCalAddress, vText
 from pathlib import Path
 import os
 import Managers.DirectoryManager as directory_manager
+from datetime import datetime, timedelta
 
 class CalendarInterface:
     _cal = Calendar()
@@ -32,9 +33,9 @@ class CalendarInterface:
         CalendarInterface._cal.add('version', '2.0')
         pass
         
-    def CreateICSEvent(e_name, e_description, s_datetime, e_datetime, 
+    def CreateICSEvent(e_name, e_description, s_datetime, e_datetime,duration,
                     e_organizer_addr="", e_organizer_name="", e_organizer_role="",
-                    e_location="", e_priority=5):
+                    e_location="", e_priority=5, rrule={}):
         
         # Add subcomponents
         event = Event()
@@ -42,8 +43,13 @@ class CalendarInterface:
         event.add('summary', e_name) # serves as name for some calendars (Mac)
         event.add('description', e_description)
         event.add('dtstart', s_datetime)
-        event.add('dtend', e_datetime)
         
+        if rrule == {}: event.add('dtend', e_datetime)
+        else: 
+            event.add('dtend', s_datetime + timedelta(hours=duration))
+            event.add('rrule', rrule)
+
+
         # Add the organizer
         organizer = vCalAddress(e_organizer_addr)
         
@@ -95,6 +101,7 @@ class CalendarInterface:
                 print(component.get("location"))
                 print(component.decoded("dtstart"))
                 print(component.decoded("dtend"))
+                if 'rrule' in component: print(component.decoded('rrule'))
         return ecal
     
     def getICSFilePath(file_name=None, main=True)->Path:
