@@ -46,13 +46,21 @@ class EventCard:
         GUIInterface.UpdateEntry(l_entry, str(event_details['location']))
         l_frame.grid(row=1, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
-        # date
-        d_frame, d_label, d_entry = GUIInterface.CreateEntryWithLabel(label= "Date" + ":",
+        # start date
+        s_d_frame, s_d_label, s_d_entry = GUIInterface.CreateEntryWithLabel(label= "Start Date" + ":",
                                                                       entry_width=attribute_width, 
                                                                       entry_state='disabled')
         
-        GUIInterface.UpdateEntry(d_entry, str(event_details['date']))
-        d_frame.grid(row=2, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        GUIInterface.UpdateEntry(s_d_entry, str(event_details['s_date']))
+        s_d_frame.grid(row=2, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+
+        # end date
+        e_d_frame, e_d_label, e_d_entry = GUIInterface.CreateEntryWithLabel(label= "End Date" + ":",
+                                                                      entry_width=attribute_width, 
+                                                                      entry_state='disabled')
+        
+        GUIInterface.UpdateEntry(e_d_entry, str(event_details['e_date']))
+        e_d_frame.grid(row=3, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # start time
         st_frame, st_label, st_entry = GUIInterface.CreateEntryWithLabel(label= "Start" + ":",
@@ -60,15 +68,15 @@ class EventCard:
                                                                         entry_state='disabled')
         
         GUIInterface.UpdateEntry(st_entry, str(event_details['start_time']))
-        st_frame.grid(row=3, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        st_frame.grid(row=4, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
-        # start time
+        # end time
         et_frame, et_label, et_entry = GUIInterface.CreateEntryWithLabel(label= "End" + ":",
                                                                         entry_width=attribute_width, 
                                                                         entry_state='disabled')
         
         GUIInterface.UpdateEntry(et_entry, str(event_details['end_time']))
-        et_frame.grid(row=4, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        et_frame.grid(row=5, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # platform
         p_frame, p_label, p_entry = GUIInterface.CreateEntryWithLabel(label= "Platform" + ":",
@@ -76,12 +84,20 @@ class EventCard:
                                                                         entry_state='disabled')
         
         GUIInterface.UpdateEntry(p_entry, str(event_details['platform']))
-        p_frame.grid(row=5, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        p_frame.grid(row=6, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+
+        # recurrence
+        r_frame, r_label, r_entry = GUIInterface.CreateEntryWithLabel(label= "Recurrence" + ":",
+                                                                        entry_width=attribute_width, 
+                                                                        entry_state='disabled')
+        
+        GUIInterface.UpdateEntry(r_entry, str(event_details['recurring']))
+        r_frame.grid(row=7, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # Remove event button
         remove_btn = GUIInterface.CreateButton(on_click=remove_cb, 
                                                text='Remove')
-        remove_btn.grid(row=6, column=0, sticky='nsew')
+        remove_btn.grid(row=8, column=0, sticky='nsew')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
 

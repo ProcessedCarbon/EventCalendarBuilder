@@ -46,7 +46,6 @@ class NERInterface:
                         # tmp_date_list = []
                         tmp_time_list = []
                         dt ={}
-                        dt_list = []
                         curr_dt = None
                         loc = ""
                         event_name = e
