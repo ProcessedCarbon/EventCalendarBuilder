@@ -16,7 +16,7 @@ import subprocess
 import uuid
 
 class EventDetailsPanel:
-    def __init__(self, parent, event:Event, remove_callback,index:int, gap:int=10, **grid_params):
+    def __init__(self, parent, event:Event, remove_cb, key:int, gap:int=10, **grid_params):
         self.gap = gap
         self.parent = parent
         self.grid_params = grid_params
@@ -25,9 +25,9 @@ class EventDetailsPanel:
         self.filled = False
         self.details_frame = None
         self.event = event
-        self.remove_callback = remove_callback
-        self.index = index
         self.rows = 11
+        self.key = key
+        self.remove_cb = remove_cb
 
         self.GUI()
         
@@ -61,7 +61,7 @@ class EventDetailsPanel:
         detail_entry_width = self.details_frame.winfo_width() * 0.7
 
         # GUI
-        remove_btn = GUIInterface.CreateButton(on_click=self.remove_callback, text='X', width=50)
+        remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(self.key), text='X', width=50)
         remove_btn.grid(row=0, column=2, pady=10)
 
         e_frame, e_entry = self.CreateEntryField(detail_entry_width, 
@@ -237,40 +237,25 @@ class EventDetailsPanel:
         # Scheduling
         calendar = input['Calendar']
         if calendar == 'Default':
-            self.ScheduleDefault(input)
-            self.ScheduleActions(id=uuid.uuid4(), platform='Default')
-
             # No clash checking done for default yet
             # No need to add platform to event object as its default
-            # self.event.setId(uuid.uuid4())
-            # EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-            # EventsManager.WriteEventDBToJSON()
-            # self.remove_callback()
+            self.ScheduleDefault(input)
+            self.ScheduleActions(id=uuid.uuid4(), platform='Default')
         elif calendar == 'Google':
             id = self.ScheduleGoogleCalendar(input)
             if id != "None":
                 self.ScheduleActions(id=id, platform='Google')
-                # self.event.setPlatform('Google')
-                # self.event.setId(id)
-                # EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-                # EventsManager.WriteEventDBToJSON()
-                # self.remove_callback()
         elif calendar == 'Outlook':
             id = self.ScheduleOutlookCalendar(input)
             if id != "None":
                 self.ScheduleActions(id=id, platform='Outlook')
-                # self.event.setPlatform('Outlook')
-                # self.event.setId(id)
-                # EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-                # EventsManager.WriteEventDBToJSON()
-                # self.remove_callback()
 
     def ScheduleActions(self, id, platform='Default'):
         self.event.setPlatform(platform)
         self.event.setId(id)
         EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
         EventsManager.WriteEventDBToJSON()
-        self.remove_callback()
+        self.remove_cb(self.key)
 
     # Right now can only handle 1 event only 
     def ScheduleDefault(self, event):

@@ -8,13 +8,15 @@ from sys import platform
 import subprocess
 
 class EventCard:
-    def __init__(self, parent, row, col, event_details:dict, gap:int, remove_cb) -> None:
+    def __init__(self, parent, row, col, event_details:dict, gap:int, remove_cb, index:int) -> None:
 
         # Variables
         tmp_frame = GUIInterface.current_frame
         self.id = event_details['id']
         self.platform = event_details['platform']
         self.name = event_details['name']
+        self.index = index
+        self.remove_cb = remove_cb
 
         self.card_frame = GUIInterface.CreateFrame(parent, fg_color='green')
         self.card_frame.grid(row=row, 
@@ -95,7 +97,7 @@ class EventCard:
         r_frame.grid(row=7, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # Remove event button
-        remove_btn = GUIInterface.CreateButton(on_click=remove_cb, 
+        remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(index), 
                                                text='Remove')
         remove_btn.grid(row=8, column=0, sticky='nsew')
 

@@ -7,7 +7,7 @@ from math import ceil
 
 class SchedulePage(Page):
     def __init__(self):
-        self.details_panels = []
+        self.details_panels = {}
         self.details_panels_max_column = 3
         self.details_panels_frame = None
         super().__init__()
@@ -49,32 +49,31 @@ class SchedulePage(Page):
         for index, event in enumerate(events):
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                              event=event['object'],
-                                             remove_callback=lambda: self.RemovePanel(index),
-                                             index=index, 
+                                             remove_cb=self.RemovePanel,
+                                             key=index,
                                              row=index, 
                                              column=0, 
                                              sticky='nsew')
-            self.details_panels.append(detail_panel)
+            #self.details_panels.append(detail_panel)
+            self.details_panels[index] = detail_panel
 
     def ResetDetails(self):
         print(f"Details panels: {self.details_panels}")
         for panel in self.details_panels:
-            panel.Reset()
-            panel.Destroy()
-        self.details_panels=[]
+            self.details_panels[panel].Reset()
+            self.details_panels[panel].Destroy()
+        self.details_panels={}
     
     def Update(self):
         for panel in self.details_panels:
-            panel.UpdateInputFields()
+            self.details_panels[panel].UpdateInputFields()
     
-    def RemovePanel(self, r_index):
-        for index, panel in enumerate(self.details_panels):
-            if index == r_index:
-                panel.Destroy()
-                self.details_panels.remove(panel)
-                self.details_panel_frame.update()
-                print("SUCCESSFUL REMOVAL OF PANEL")
-                return
+    def RemovePanel(self, key):
+        if key in self.details_panels:
+            self.details_panels[key].Destroy()
+            del self.details_panels[key]
+            self.details_panel_frame.update()
+            print(f"SUCCESSFUL REMOVAL OF PANEL {key}")
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)

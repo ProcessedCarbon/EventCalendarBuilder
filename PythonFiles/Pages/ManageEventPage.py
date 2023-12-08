@@ -1,7 +1,6 @@
 from Pages.Page import Page
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
-import Managers.DirectoryManager as directory_manager
 
 from GUI.EventCard import EventCard
 
@@ -9,7 +8,7 @@ class ManageEventPage(Page):
     def __init__(self, max_col=3, card_gap=10):   
         self.max_col = max_col  
         self.card_gap = card_gap 
-        self.cards = [] 
+        self.cards = {} 
         super().__init__()
 
     def OnStart(self):
@@ -52,19 +51,20 @@ class ManageEventPage(Page):
                                 col=0, 
                                 event_details=data, 
                                 gap=self.card_gap,
-                                remove_cb=lambda:self.RemoveCard(r_index=index))
-                self.cards.append(card)
+                                index=index,
+                                remove_cb=self.RemoveCard)
+                #self.cards.append(card)
+                self.cards[index] = card
     
-    def RemoveCard(self, r_index):
-        for index, card in enumerate(self.cards):
-            if index == r_index:
-                success = card.Destroy()
-                if success:
-                    self.cards.remove(card)
-                    self.content_frame.update()
-                    print("SUCCESSFUL REMOVAL OF CARD")
-                    return
-        print("FAILED REMOVAL OF CARD")
+    def RemoveCard(self, key):
+        print(self.cards)
+        if key in self.cards:
+            success = self.cards[key].Destroy()
+            if success:
+                del self.cards[key]
+                self.content_frame.update()
+                print(f"SUCCESSFUL REMOVAL OF PANEL {key}")
+            else: print(f"FAILED TO REMOVE PANEL {key}")
      
     def Clear(self):
         EventsManager.ClearEventsJSON() # clear events json
