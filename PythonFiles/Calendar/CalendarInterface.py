@@ -7,25 +7,13 @@ import uuid
 
 class CalendarInterface:
     _cal = Calendar()
-    
-    # Directories
-    # parent_dir = Path(os.path.dirname(os.path.realpath(__file__))).absolute()
-    # _main_dir = Path(os.path.join(parent_dir, 'CalendarFiles'))
-    # _split_dir = Path(os.path.join(_main_dir, 'Splitted'))
     _default_ics_file = 'to_schedule'
 
-    # try:
-    #     _main_dir.mkdir(parents=True, exist_ok=False)
-    #     _split_dir.mkdir(parents=True, exist_ok=False)
-    # except:
-    #     print("CALENDAR DIR ALREADY EXISTS")
-
+    # Directories
     parent_dir = directory_manager.getCurrentFileDirectory(__file__)
     _main_dir = directory_manager.getFilePath(parent_dir, 'CalendarFiles')
-    _split_dir = directory_manager.getFilePath(_main_dir, 'Splitted')
 
     directory_manager.MakeDirectory(_main_dir)
-    directory_manager.MakeDirectory(_split_dir)
 
     def __init__(self):
         # Some properties are required to be compliant
@@ -82,10 +70,10 @@ class CalendarInterface:
             return f_name
         else: return None
 
-    def WriteToFile(file_name=None, main=True)->bool:
+    def WriteToFile(file_name=None)->bool:
         try:
             file_name = CalendarInterface._default_ics_file if file_name == None else file_name
-            dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
+            dir_to_open = CalendarInterface._main_dir
             
             directory_manager.WriteFile(dir_to_open, f'{file_name}.ics', CalendarInterface._cal.to_ical(), 'wb')
             return True
@@ -93,9 +81,9 @@ class CalendarInterface:
             print(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open}')
             return False
     
-    def ReadICSFile(file_name=None, main=True):
+    def ReadICSFile(file_name=None):
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name
-        dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
+        dir_to_open = CalendarInterface._main_dir
 
         e = directory_manager.ReadFile(dir_to_open, f'{file_name}.ics', 'rb')
         ecal = icalendar.Calendar.from_ical(e)
@@ -110,9 +98,9 @@ class CalendarInterface:
                 if 'rrule' in component: print(component.decoded('rrule'))
         return ecal
     
-    def getICSFilePath(file_name=None, main=True)->Path:
+    def getICSFilePath(file_name=None)->Path:
         file_name = CalendarInterface._default_ics_file if file_name == None else file_name
-        dir_to_open = CalendarInterface._main_dir if main else CalendarInterface._split_dir
+        dir_to_open = CalendarInterface._main_dir
 
         return directory_manager.getFilePath(dir_to_open, f'{file_name}.ics')
     
