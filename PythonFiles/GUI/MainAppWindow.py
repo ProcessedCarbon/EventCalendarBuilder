@@ -1,6 +1,7 @@
 from screeninfo import get_monitors
 from GUI.GUIInterface import GUIInterface
 import Managers.MultiprocessingManager as multiprocessing_mgr
+from Calendar.CalendarInterface import CalendarInterface
 
 def GetCurrentMonitorInfo()->dict:
         # Monitor(x=0, y=0, width=3840, height=2160, width_mm=708, height_mm=399, name='DP-0', is_primary=True)
@@ -39,17 +40,18 @@ class MainAppWindow:
         GUIInterface.root.columnconfigure(1, weight=5)
         GUIInterface.root.rowconfigure(0, weight=1)
 
-        # Not working
         GUIInterface.root.protocol("WM_DELETE_WINDOW", MainAppWindow.OnAppClose) 
 
     def OnAppClose():
         processes = multiprocessing_mgr.processes
-        print('App Close')
+        print('App Closing')
         print(f'Num processes: {len(processes)}')
-        #outlook_interface.send_flask_req('shutdown')
+        print('Terminating processes')
         for p in processes:
             p.terminate()
             p.join()
+        print('Removing ICS files')
+        CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
         GUIInterface.root.destroy()
     
 
