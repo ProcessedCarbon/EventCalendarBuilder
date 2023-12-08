@@ -33,7 +33,6 @@ class OutlookEvent():
         self.tzend = tzend
         self.isonline = isonline
         self.rrule = rrule
-        self.reccurence_pattern = self.getRecurrencePatternFromRRULE(rrule=self.rrule)
         
         self.event = {
             "subject": name,
@@ -53,7 +52,6 @@ class OutlookEvent():
                 "displayName":location
             },
             "isOnlineMeeting": isonline,
-            "recurrence": self.reccurence_pattern,
             # "attendees": [
             #     {
             #     "emailAddress": {
@@ -65,6 +63,9 @@ class OutlookEvent():
             # ],
             # "transactionId":"7E163156-7762-4BEB-A1C6-729EA81755A7"
             }
+        self.reccurence_pattern = self.getRecurrencePatternFromRRULE(rrule=self.rrule)
+        if self.reccurence_pattern != {}: self.event['recurrence'] = self.reccurence_pattern
+
     
     def get_name(self):
         return self.name
@@ -93,7 +94,7 @@ class OutlookEvent():
     # Assuming RRULES come in the following format
     # FREQ=DAILY;INTERVAL=10;COUNT=5 
     def getRecurrencePatternFromRRULE(self, rrule:str):
-        if rrule == []: return []
+        if rrule == '': return {}
         split = rrule.split(';')
         rule_dict = {}
         # Convert each split into a single dictionary
