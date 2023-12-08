@@ -259,23 +259,37 @@ class EventDetailsPanel:
 
     # Right now can only handle 1 event only 
     def ScheduleDefault(self, event):
+        # Mac
         if platform == 'darwin':
             filename = self.CreateICSFileFromInput(event)
+            if filename == None:
+                print('FAILED TO CREATE ICS FILE FOR MAC')
+                return
             file = CalendarInterface.getICSFilePath(filename)
             subprocess.run(['open', file])
+        # Windows
         else:
             filename = self.CreateICSFileFromInput(event)
+            if filename == None:
+                print('FAILED TO CREATE ICS FILE FOR WINDOWS')
+                return
             file = CalendarInterface.getICSFilePath(filename)
             os.startfile(file)
 
     def ScheduleGoogleCalendar(self, event)->str:
         filename = self.CreateICSFileFromInput(event)
+        if filename == None:
+            print('FAILED TO CREATE ICS FILE FOR GOOGLE')
+            return
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
         id = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
         return id
 
     def ScheduleOutlookCalendar(self, event)->str:
         filename = self.CreateICSFileFromInput(event)
+        if filename == None:
+            print('FAILED TO CREATE ICS FILE FOR OUTLOOK')
+            return
         outlook_event = outlook_interface.parse_ics(filename)
         # Cannot pass an entire dictionary as a param 
         scheduled, response = outlook_interface.send_flask_req(req='create_event', 
@@ -302,15 +316,15 @@ class EventDetailsPanel:
                 } if event['Repeated'] != 'None' else {}
         
         # Create ICS File
-        CalendarInterface.CreateICSEvent(e_name=title,
-                                        e_description=desp,
-                                        s_datetime=ics_s,
-                                        e_datetime=ics_e,
-                                        e_location=location,
-                                        e_priority=int(priority),
-                                        rrule=rrule,
-                                        duration=hours)
+        file_name = CalendarInterface.CreateICSEvent(e_name=title,
+                                                    e_description=desp,
+                                                    s_datetime=ics_s,
+                                                    e_datetime=ics_e,
+                                                    e_location=location,
+                                                    e_priority=int(priority),
+                                                    rrule=rrule,
+                                                    duration=hours)
         
-        file_name = f'{title}_{ics_s}'
-        CalendarInterface.WriteToFile(file_name)
+        #file_name = f'{title}_{ics_s}'
+        #CalendarInterface.WriteToFile(file_name)
         return file_name

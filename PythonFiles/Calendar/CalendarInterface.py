@@ -1,9 +1,9 @@
 import icalendar
 from icalendar import Calendar, Event, vCalAddress, vText
 from pathlib import Path
-import os
 import Managers.DirectoryManager as directory_manager
 from datetime import datetime, timedelta
+import uuid
 
 class CalendarInterface:
     _cal = Calendar()
@@ -59,7 +59,7 @@ class CalendarInterface:
         event['organizer'] = organizer
         event['location'] = vText(e_location)
         
-        event['uid'] = '2022125T111010/272356262376@example.com'
+        event['uid'] = uuid.uuid4()
         event.add('priority', e_priority)
 
         # Not handling attendees for now
@@ -75,6 +75,12 @@ class CalendarInterface:
         
         # Add the event to the calendar
         CalendarInterface._cal.add_component(event)
+        f_name = f'{e_name}_{s_datetime}'
+        success = CalendarInterface.WriteToFile(file_name=f_name)
+        if success: 
+            CalendarInterface._cal.subcomponents.remove(event)
+            return f_name
+        else: return None
 
     def WriteToFile(file_name=None, main=True)->bool:
         try:
