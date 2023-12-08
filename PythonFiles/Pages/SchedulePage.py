@@ -77,6 +77,5 @@ class SchedulePage(Page):
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
-        CalendarInterface.DeleteICSFilesInDir(CalendarInterface._split_dir)
 
         PageManager.SwitchPages(page)
