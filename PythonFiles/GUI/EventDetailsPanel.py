@@ -286,6 +286,10 @@ class EventDetailsPanel:
         return id
 
     def ScheduleOutlookCalendar(self, event)->str:
+        if outlook_interface.outlook_auth == False:
+            print('[OUTLOOK] NOT AUTH')
+            return 'None'
+        
         filename = self.CreateICSFileFromInput(event)
         if filename == None:
             print('FAILED TO CREATE ICS FILE FOR OUTLOOK')

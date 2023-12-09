@@ -43,13 +43,13 @@ class MainAppWindow:
         GUIInterface.root.protocol("WM_DELETE_WINDOW", MainAppWindow.OnAppClose) 
 
     def OnAppClose():
-        processes = multiprocessing_mgr.processes
+        processes = multiprocessing_mgr.mgr_processes
         print('App Closing')
         print(f'Num processes: {len(processes)}')
         print('Terminating processes')
         for p in processes:
-            p.terminate()
-            p.join()
+            processes[p].terminate()
+            processes[p].join()
         print('Removing ICS files')
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
         GUIInterface.root.destroy()

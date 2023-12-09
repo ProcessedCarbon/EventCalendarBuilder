@@ -5,6 +5,7 @@ import webbrowser
 import threading
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
+import Managers.MultiprocessingManager as multiprocessing_mgr
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -123,6 +124,7 @@ class OutlookEvent():
             }
         }
 
+outlook_auth = False
 @app.route('/')
 def login():
     # Generate the full authorization endpoint on Microsoft's identity platform
@@ -137,7 +139,11 @@ def login():
 def callback():
     code = request.args.get('code')
     if not code:
-        return "Error: No code provided."
+        outlook_auth = False
+        # Not working
+        # print(multiprocessing_mgr.mgr_processes)
+        # multiprocessing_mgr.terminate_process('OUTLOOK')
+        return "Failed Authentication."
 
     token_url = f"{AUTHORITY_URL}/oauth2/v2.0/token"
     token_data = {
@@ -151,6 +157,7 @@ def callback():
     
     token_r = requests.post(token_url, data=token_data)
     directory_manager.WriteJSON(token_path, 'api_token_access.json', token_r.json())
+    outlook_auth = True
     return 'Authentication Successful can close browser'
 
 @app.route('/create_event')
