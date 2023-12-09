@@ -50,3 +50,34 @@ class GoogleEvent:
     
     def getEndTz(self)->str:
         return self.event['end']['timeZone']
+    
+    #['RRULE:FREQ=DAILY;UNTIL=20230215T220000Z']
+    def getRRULE(self)->str:
+        return self.event['recurrence'][0]
+    
+    def getRRULEDict(self)->dict:
+        if len(self.getRRULE()) == 0:
+            return {}
+        
+        rules = self.getRRULE().split(';')
+        rule_dict = {}
+        for r in rules:
+            split = r.split('=')
+            rule_dict[split[0]] = split[1]
+        return rule_dict
+    
+    def getUNTILDate(self)->str:
+        '''
+        Returns UNTIL date is there is one in the recurrence param, if not just returns End Date
+        '''
+        rules = self.getRRULEDict()
+        if len(rules) > 0:
+            r_date = rules['UNTIL']
+            _until = self.getEndDate()
+            _until = _until.replace(_until[:4], r_date[:4])
+            _until = _until.replace(_until[5:7], r_date[4:6])
+            _until = _until.replace(_until[8:10], r_date[6:8])
+            return _until
+        else:
+            print('NO UNTIL DATE IN RRULE')
+            return self.getEndDate()

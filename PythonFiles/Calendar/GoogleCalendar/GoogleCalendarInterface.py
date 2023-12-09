@@ -93,9 +93,9 @@ class GoogleCalendarInterface:
             ErrorCodes.PrintErrorWithCode(1000)
             print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             return 'None'
-
+        
         existing_events = GoogleCalendarInterface.getEvents(time_min=googleEvent.getStartDate(), 
-                                                            time_max=googleEvent.getEndDate())
+                                                            time_max=googleEvent.getUNTILDate())
 
         if GoogleCalendarInterface.EventOverlaps(googleEvent, existing_events):
             return 'None'
@@ -143,7 +143,6 @@ class GoogleCalendarInterface:
                 tzstart = str(component.get('dtstart').dt.tzinfo)
                 tzend = str(component.get('dtstart').dt.tzinfo)
                 rule='RRULE:' + component.get('rrule').to_ical().decode(errors="ignore")+'Z' if component.get('rrule') is not None else ''
-                print(f"RRULE: {str(rule)}")
 
                 return GoogleCalendarInterface.CreateGoogleEvent(title=component.get('name'),
                                                                 location=component.get("location"),
@@ -171,8 +170,9 @@ class GoogleCalendarInterface:
 
     def EventOverlaps(new_event:GoogleEvent, existing_events:list[GoogleEvent])->bool:
         """Check if the new event overlaps with any existing events."""
-        new_event_start = new_event.getStartDate().replace("T", " ")
-        new_event_end = new_event.getEndDate().replace("T", " ")
+        # 2023-01-31 18:00:00+08:00
+        new_event_start = new_event.getStartDate().replace("T", " ") 
+        new_event_end = new_event.getUNTILDate().replace("T", " ")
 
         for event in existing_events:
             event_start = event.getStartDate().replace("T", " ")
