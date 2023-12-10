@@ -2,6 +2,8 @@ from Managers.ErrorConfig import ErrorCodes
 from pathlib import Path
 import os
 import Managers.DirectoryManager as directory_manager
+from Managers.DateTimeManager import DateTimeManager
+from Managers.TextProcessing import TextProcessingManager
 
 class Event:
     def __init__(self, 
@@ -219,3 +221,106 @@ class EventsManager:
     
     def ClearEventsJSON():
         directory_manager.WriteJSON(EventsManager.local_events_dir, EventsManager.event_json, content=None)
+    
+    def ProcessEvents(events:list[dict]):
+        count = 0
+        for i in range(len(events)):
+            date_time = events[i]["DATE_TIME"].copy()
+            if len(date_time) == 0:
+                curr_date = DateTimeManager.getCurrentDate()
+                formatted_date = curr_date.strftime("%Y-%m-%d")
+                date = f"{formatted_date}_{count}"
+                events[i]["DATE_TIME"] = {formatted_date : [DateTimeManager.getCurrentTime()]}
+                count += 1
+            else:
+                for d in date_time:
+                    time = date_time[d]
+                    date = TextProcessingManager.ProcessDate(date_text=str(d))
+                    if len(time) > 0: n_time = TextProcessingManager.ProcessTime(time_text=str(time))
+                    else: n_time = [DateTimeManager.getCurrentTime()]
+
+                    events[i]["DATE_TIME"].pop(d)
+                    if isinstance(date, list) and len(date) > 1: 
+                        for o in date: 
+                            events[i]["DATE_TIME"][f'{o}_{count}'] = n_time
+                            count+=1
+                    else: 
+                        events[i]["DATE_TIME"][f"{date}_{count}"] = n_time
+                        count += 1
+
+            # Check how many dates event has, only create and end time if there is only
+            # a single date else just treat that date pair as a range and sort them in ascending
+            # Also handle the pairing of dates
+            for date in events[i]["DATE_TIME"]:
+                n = len(events[i]["DATE_TIME"][date])
+                if n < 2:
+                    # If time only has start time get an end time
+                    for j in range(len(events[i]["DATE_TIME"][date])):
+                        new_time = [DateTimeManager.AddToTime(events[i]["DATE_TIME"][date][j], hrs=1)] if n > 0 else ["", ""]
+                        
+                        # Check if end time is greater than start time after adding if its smaller, minus by 1 hr 
+                        # and swap the first and new time 
+                        if new_time != ["", ""] and DateTimeManager.CompareTimes(str(new_time[0]), str(events[i]["DATE_TIME"][date][j])):
+                            new_time = [DateTimeManager.AddToTime(events[i]["DATE_TIME"][date][j], hrs=-1)]
+                            tmp = events[i]["DATE_TIME"][date]
+                            events[i]["DATE_TIME"][date] = new_time
+                            new_time = tmp
+                        events[i]["DATE_TIME"][date].extend(new_time)
+
+            events[i]["DATE_TIME"] = dict(sorted(events[i]["DATE_TIME"].items()))
+        return events
+
+    def AddEvents(events:list[dict]):
+        event_count = 0
+        for index, event in enumerate(events):
+            keys = list(events[index]['DATE_TIME'].keys())
+            
+            # If not 2 dates just treat as single event for each
+            if len(keys) != 2:
+                if len(keys) == 0:
+                    return
+                
+                for k in keys:
+                    key_split = k.split('_')
+                    start_date = key_split[0]
+
+                    start_time = event['DATE_TIME'][k][0]
+                    end_time = event['DATE_TIME'][k][1]
+
+                    n_event = EventsManager.CreateEventObj(id=event_count,
+                                                            name=event['EVENT'],
+                                                            location=event["LOC"],
+                                                            s_date=start_date,
+                                                            e_date=start_date,
+                                                            start_time=start_time,
+                                                            end_time=end_time)
+                    #print(vars(n_event))
+                    EventsManager.AddEventToEventDB(n_event, EventsManager.events)
+                    event_count += 1
+            else:  
+                # If have 2 dates only, by default treat it as a RANGE event
+                start_date = keys[0].split('_')[0]
+                end_date = keys[1].split('_')[0]
+
+                start_time = event['DATE_TIME'][keys[0]][0]
+                end_time = start_time
+                recurring = 'None'
+
+                # Check for RECURRING event
+                if len(event['DATE_TIME'][keys[0]]) == 2 and len(event['DATE_TIME'][keys[1]]) == 2:
+                    if event['DATE_TIME'][keys[0]] == event['DATE_TIME'][keys[1]]:
+                        recurring = 'Daily'
+                end_time = event['DATE_TIME'][keys[1]][1]
+                
+                n_event = EventsManager.CreateEventObj(id=event_count,
+                                                    name=event['EVENT'],
+                                                    location=event["LOC"],
+                                                    s_date=start_date,
+                                                    e_date=end_date,
+                                                    start_time=start_time,
+                                                    end_time=end_time,
+                                                    recurring=recurring)
+                #print(vars(n_event))
+                EventsManager.AddEventToEventDB(n_event, EventsManager.events)
+                event_count += 1
+        return EventsManager.events

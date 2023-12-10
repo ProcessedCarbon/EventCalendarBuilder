@@ -54,11 +54,10 @@ class SchedulePage(Page):
                                              row=index, 
                                              column=0, 
                                              sticky='nsew')
-            #self.details_panels.append(detail_panel)
             self.details_panels[index] = detail_panel
 
     def ResetDetails(self):
-        print(f"Details panels: {self.details_panels}")
+        #print(f"Details panels: {self.details_panels}")
         for panel in self.details_panels:
             self.details_panels[panel].Reset()
             self.details_panels[panel].Destroy()

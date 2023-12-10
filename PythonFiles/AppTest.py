@@ -28,7 +28,6 @@ def OutlookTest():
     import Calendar.Outlook.OutlookInterface as outlook_interface
     outlook_interface.start()
 
-def NERTest():
     with open(r'./Testing/testing_text_r.txt') as f:
         content = f.read()
     f.close()
@@ -118,12 +117,29 @@ def NERTest():
     # print("AFTER")
     # for e in events: print(e)
 
+def NERGroupTest():
+    with open(r'./Testing/testing_text_grp.txt') as f:
+        content = f.read()
+    f.close()
+    from NER.NERInterface import NERInterface
+    from Events.EventsManager import EventsManager
+
+    events = NERInterface.GetEntitiesFromText(content)
+    print('================= RAW EVENTS ================= ')
+    for e in events: print(e)
+    print('================= PROCESSED EVENTS ================= ')
+    p_events = EventsManager.ProcessEvents(events)
+    for e in p_events: print(e)
+    print('================= ADDED EVENTS ================= ')
+    added_events = EventsManager.AddEvents(events=p_events)
+    for e in added_events: print(e)
+
 def main():    
     #TestInstall()
     #MacCalendarTest()
     #TextProcessingManagerTest()
     #OutlookTest()
-    #NERTest()
+    NERGroupTest()
     pass
 
 if __name__ == "__main__":
