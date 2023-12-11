@@ -1,9 +1,7 @@
 from Pages.Page import *
 from NER.NERInterface import NERInterface
-from Managers.TextProcessing import TextProcessingManager
 from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
-from Managers.DateTimeManager import DateTimeManager
 
 class MainPage(Page):
     def __init__(self): 

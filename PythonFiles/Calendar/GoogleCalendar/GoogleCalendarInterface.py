@@ -78,7 +78,7 @@ class GoogleCalendarInterface:
         return events
 
     # Event creation
-    def ScheduleCalendarEvent(googleEvent: GoogleEvent)->str:
+    def ScheduleCalendarEvent(googleEvent: GoogleEvent)->[str, list]:
         """
         Creates the google event on the google calendar
 
@@ -87,23 +87,25 @@ class GoogleCalendarInterface:
         
         if GoogleCalendarInterface.service == None:
             ErrorCodes.PrintErrorWithCode(1001)
-            return 'None'
+            return '', []
         
         if type(googleEvent) is not GoogleEvent:
             ErrorCodes.PrintErrorWithCode(1000)
             print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
-            return 'None'
+            return '', []
         
         existing_events = GoogleCalendarInterface.getEvents(time_min=googleEvent.getStartDate(), 
                                                             time_max=googleEvent.getUNTILDate())
 
-        if GoogleCalendarInterface.EventOverlaps(googleEvent, existing_events):
-            return 'None'
+        overlapped_events = GoogleCalendarInterface.EventOverlaps(googleEvent, existing_events)
+        # Return clash
+        if len(overlapped_events) > 0:
+            return '', overlapped_events
                 
         new_event = GoogleCalendarInterface.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
         #print(f'{new_event}\n')
         print(f"Event created {new_event.get('htmlLink')}")
-        return new_event['id']
+        return new_event['id'], []
 
     # Creates event datatype
     def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, rrule:str, colorId=1):
@@ -170,6 +172,7 @@ class GoogleCalendarInterface:
 
     def EventOverlaps(new_event:GoogleEvent, existing_events:list[GoogleEvent])->bool:
         """Check if the new event overlaps with any existing events."""
+        overlapped_events = []
         # 2023-01-31 18:00:00+08:00
         new_event_start = new_event.getStartDate().replace("T", " ") 
         new_event_end = new_event.getUNTILDate().replace("T", " ")
@@ -180,8 +183,9 @@ class GoogleCalendarInterface:
 
             if DateTimeManager.hasDateTimeClash(new_event_start, new_event_end, event_start, event_end):
                 print(f'Event to schedule {new_event.getEvent().upper()} has clash with {event.getEvent().upper()}!')
-                return True
-        return False
+                overlapped_events.append(event)
+                #return True
+        return overlapped_events #False
     
     def DeleteEvent(id:str)->bool:
 

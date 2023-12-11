@@ -5,7 +5,7 @@ import webbrowser
 import threading
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
-import Managers.MultiprocessingManager as multiprocessing_mgr
+# import Managers.MultiprocessingManager as multiprocessing_mgr
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -124,7 +124,6 @@ class OutlookEvent():
             }
         }
 
-outlook_auth = False
 @app.route('/')
 def login():
     # Generate the full authorization endpoint on Microsoft's identity platform
@@ -139,10 +138,10 @@ def login():
 def callback():
     code = request.args.get('code')
     if not code:
-        outlook_auth = False
         # Not working
         # print(multiprocessing_mgr.mgr_processes)
         # multiprocessing_mgr.terminate_process('OUTLOOK')
+        directory_manager.WriteJSON(token_path, 'api_token_access.json', '')
         return "Failed Authentication."
 
     token_url = f"{AUTHORITY_URL}/oauth2/v2.0/token"
@@ -154,10 +153,8 @@ def callback():
         'code': code,
         'redirect_uri': REDIRECT_URI
     }
-    
     token_r = requests.post(token_url, data=token_data)
     directory_manager.WriteJSON(token_path, 'api_token_access.json', token_r.json())
-    outlook_auth = True
     return 'Authentication Successful can close browser'
 
 @app.route('/create_event')
@@ -165,8 +162,7 @@ def create_event():
     token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
     token = token_access['access_token']
 
-    if not token:
-        return jsonify(status="error", message="Not authenticated!"), 401
+    if not token: return jsonify(status="error", message="Not authenticated!"), 401
     
     event = request.json['event']
 
@@ -175,19 +171,20 @@ def create_event():
        '$filter': f"start/dateTime ge {event['start']['dateTime']} and end/dateTime le {event['end']['dateTime']}"
    }
     cal_res = send_flask_req('get_events', param_data=filter_param)
+    print(cal_res)
     # Response format
     #(True, {'@odata.context': "", 'value': []})
-    cal_events = cal_res[1]['value']
+    cal_events = cal_res[1]['value'] # overlapped events
 
     if len(cal_events) > 0:
-        print(f"CANNOT SCHEDULE EVENT, CLASHES WITH THESE EVENTS: \n {cal_events}")
-        return {}
+        #print(f"CANNOT SCHEDULE EVENT, CLASHES WITH THESE EVENTS: \n {cal_events}")
+        return {'clash' : cal_events}
 
     headers = {
         'Authorization': f'{token_access["token_type"]} {token}',
         'Content-Type': 'application/json'
     }
-    print(f'Event param: {event}')
+    #print(f'Event param: {event}')
     response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event)
     return response.json()
 
@@ -262,7 +259,7 @@ def parse_ics(ics)->OutlookEvent:
 # Require this to go from Flask -> Outlook
 def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:
     response = requests.get(f"http://localhost:{local_host}/{req}", json=json_data, params=param_data)
-    print(f'Response Content:\n{response.json()}')
+    #print(f'Response Content:\n{response.json()}')
     '''
     HTTP status codes in the 200-299 range indicate success, with 200 being the standard response for a successful HTTP request.
 

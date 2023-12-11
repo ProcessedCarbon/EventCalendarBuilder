@@ -1,7 +1,6 @@
 from tkinter import *
 from customtkinter import *
 from Managers.ErrorConfig import getParamValFromKwarg
-from tkcalendar import *
 
 class GUIInterface:
     current_frame = None    
@@ -292,38 +291,13 @@ class GUIInterface:
         GUIInterface.SetCurrentFrame(tmp_frame)
 
         return combo_frame, label, combobox 
-    
-    def CreateDateWindow(size='250x250'):
-        tmp = GUIInterface.current_frame
-
-        window = GUIInterface.CreateNewWindow(window_name='Choose Date')
-        
-        window_frame = GUIInterface.CreateFrame(window)
-        window_frame.grid(row=0, column=0, sticky='nsew')
-        window_frame.columnconfigure(0, weight=1)
-        window_frame.rowconfigure(0, weight=5)
-        window_frame.rowconfigure(1, weight=1)
-
-        cal = Calendar(window_frame, selectmode='day', date_pattern='y-mm-dd')
-        cal.grid(row=0, column=0, sticky='nsew')
-
-        submit_btn = GUIInterface.CreateButton(on_click=None, text='select')
-        submit_btn.grid(row=1, column=0)
-
-        # Prevent clicking and focus of main window
-        window.grab_set()
-        window.focus_force()
-        #GUIInterface.root.wait_window(window)
-
-        GUIInterface.SetCurrentFrame(tmp)
-        return window, cal, submit_btn
 
     def CreateNewWindow(window_name:str, size='250x250'):
         window = Toplevel(GUIInterface.root)
         window.columnconfigure(0, weight=1)
         window.rowconfigure(0, weight=1)
         window.title(window_name)
-        window.geometry(size)
+        if size != '': window.geometry(size)
 
         def onCloseCallBack():
             window.destroy()
@@ -404,6 +378,12 @@ class GUIInterface:
         entry.delete(0, END)
         entry.insert(0, text_var)
         entry.configure(state=og_state)
+
+    def UpdateTextBox(textbox:CTkTextbox, state:str, text:str):
+        textbox.configure(state='normal')
+        textbox.delete("0.0", END)
+        textbox.insert("0.0", text)
+        textbox.configure(state=state)
         
     def RetrieveCurrentInputFromTextbox(text:CTkTextbox)->str:
         input = text.get("0.0", END)

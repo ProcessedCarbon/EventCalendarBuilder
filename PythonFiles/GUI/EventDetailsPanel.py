@@ -3,12 +3,12 @@ from Managers.ErrorConfig import getParamValFromKwarg
 from Events.EventsManager import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
+import GUI.PopupManager as popup_mgr
 
 # Calendar Intefaces
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 from Calendar.CalendarInterface import CalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
-from Calendar.Outlook.OutlookInterface import OutlookEvent
 
 from sys import platform
 import os
@@ -188,7 +188,7 @@ class EventDetailsPanel:
         return self.event
     
     def PickDate(self, entry):
-        date_window, cal, submit_btn = GUIInterface.CreateDateWindow()
+        date_window, cal, submit_btn = popup_mgr.CreateDateWindow()
         submit_btn.configure(command=lambda:self.GrabDate(entry, cal.get_date(), date_window))
 
     def GrabDate(self, entry, date:str, window):
@@ -243,11 +243,11 @@ class EventDetailsPanel:
             self.ScheduleActions(id=uuid.uuid4(), platform='Default')
         elif calendar == 'Google':
             id = self.ScheduleGoogleCalendar(input)
-            if id != "None":
+            if id != "":
                 self.ScheduleActions(id=id, platform='Google')
         elif calendar == 'Outlook':
             id = self.ScheduleOutlookCalendar(input)
-            if id != "None":
+            if id != "":
                 self.ScheduleActions(id=id, platform='Outlook')
 
     def ScheduleActions(self, id, platform='Default'):
@@ -276,30 +276,52 @@ class EventDetailsPanel:
             file = CalendarInterface.getICSFilePath(filename)
             os.startfile(file)
 
-    def ScheduleGoogleCalendar(self, event)->str:
+    def ScheduleGoogleCalendar(self, event)->[str, list]:
         filename = self.CreateICSFileFromInput(event)
         if filename == None:
             print('FAILED TO CREATE ICS FILE FOR GOOGLE')
-            return
+            return ''
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
-        id = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
-        return id
+        id, clash = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
+
+        # Handle failed scheduling of event
+        if id == '':
+            # Handle clash of events
+            if len(clash) > 0:
+                names = [x.getEvent() for x in clash]
+                base_text = ''
+                for t in names: base_text += (t + ', ')
+                popup_mgr.ClashPopup(base_text)
+            else: popup_mgr.FailedPopup('Failed to schedule event for reasons')
+
+        return id, clash
 
     def ScheduleOutlookCalendar(self, event)->str:
-        if outlook_interface.outlook_auth == False:
-            print('[OUTLOOK] NOT AUTH')
-            return 'None'
+        # if OutlookInterfaceVars.outlook_auth == False:
+        #     print('[OUTLOOK] NOT AUTH')
+        #     return ''
         
         filename = self.CreateICSFileFromInput(event)
         if filename == None:
             print('FAILED TO CREATE ICS FILE FOR OUTLOOK')
-            return
+            return ''
         outlook_event = outlook_interface.parse_ics(filename)
         # Cannot pass an entire dictionary as a param 
         scheduled, response = outlook_interface.send_flask_req(req='create_event', 
                                                      json_data={'event': outlook_event.event})
-        id = response['id'] if 'id' in response else 'None'
-        return id
+        if response == {}: 
+            popup_mgr.FailedPopup('Failed to schedule event for [OUTLOOK] due to failed authentication')
+            return ''
+        if 'clash' in response:
+            names = [x['subject'] for x in response["clash"]]
+            base_text = ''
+            for t in names: base_text += (t + ', ')
+            popup_mgr.ClashPopup(base_text)
+            return ''
+        if 'id' not in response: 
+            popup_mgr.FailedPopup('Failed to schedule event for reasons')
+            return ''
+        return response['id']
     
     # Creates ICS files to be parsed 
     # 1 ICS = should have 1 VEVENT
