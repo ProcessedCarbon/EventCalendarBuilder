@@ -242,9 +242,10 @@ class EventDetailsPanel:
             self.ScheduleDefault(input)
             self.ScheduleActions(id=uuid.uuid4(), platform='Default')
         elif calendar == 'Google':
-            id = self.ScheduleGoogleCalendar(input)
-            if id != "":
-                self.ScheduleActions(id=id, platform='Google')
+            self.ScheduleGoogleCalendar(input)
+            # id = self.ScheduleGoogleCalendar(input)
+            # if id != "":
+            #     self.ScheduleActions(id=id, platform='Google')
         elif calendar == 'Outlook':
             id = self.ScheduleOutlookCalendar(input)
             if id != "":
@@ -282,19 +283,26 @@ class EventDetailsPanel:
             print('FAILED TO CREATE ICS FILE FOR GOOGLE')
             return ''
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
-        id, clash = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
 
-        # Handle failed scheduling of event
-        if id == '':
-            # Handle clash of events
-            if len(clash) > 0:
-                names = [x.getEvent() for x in clash]
-                base_text = ''
-                for t in names: base_text += (t + ', ')
-                popup_mgr.ClashPopup(base_text)
-            else: popup_mgr.FailedPopup('Failed to schedule event for reasons')
+        # Check for existing events
+        existing_events = GoogleCalendarInterface.getEvents(time_min=google_event.getStartDate(), 
+                                                            time_max=google_event.getUNTILDate())
+        overlapped_events = []
+        if len(existing_events) > 0: overlapped_events = GoogleCalendarInterface.EventOverlaps(google_event, existing_events)
 
-        return id, clash
+        # Method to scheudle google event
+        def schedule_google_calendar_event(): 
+            id = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
+            if id == '': popup_mgr.FailedPopup('Failed to schedule event for reasons')
+            else: self.ScheduleActions(id=id, platform='Google')
+
+        # Handle clash of events
+        if len(overlapped_events) > 0:
+            names = [x.getEvent() for x in overlapped_events]
+            base_text = ''
+            for t in names: base_text += (t + ', ')
+            popup_mgr.ClashPopup(base_text, schedule_google_calendar_event)
+        else: schedule_google_calendar_event()
 
     def ScheduleOutlookCalendar(self, event)->str:
         # if OutlookInterfaceVars.outlook_auth == False:
@@ -305,24 +313,34 @@ class EventDetailsPanel:
         if filename == None:
             print('FAILED TO CREATE ICS FILE FOR OUTLOOK')
             return ''
-        outlook_event = outlook_interface.parse_ics(filename)
-        # Cannot pass an entire dictionary as a param 
-        scheduled, response = outlook_interface.send_flask_req(req='create_event', 
-                                                     json_data={'event': outlook_event.event})
-        if response == {}: 
+        outlook_event = outlook_interface.parse_ics(filename).event
+        # Check for any pre-existing event
+        filter_param = {
+        '$filter': f"start/dateTime ge {outlook_event['start']['dateTime']} and end/dateTime le {outlook_event['end']['dateTime']}"
+        }
+        cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
+        
+        # Response format
+        #(True, {'@odata.context': "", 'value': []})
+        if cal_events == {}: 
             popup_mgr.FailedPopup('Failed to schedule event for [OUTLOOK] due to failed authentication')
             return ''
-        if 'clash' in response:
-            names = [x['subject'] for x in response["clash"]]
+
+        def schedule_outlook_calendar_event():
+            response = outlook_interface.send_flask_req(req='create_event', 
+                                                        json_data={'event': outlook_event})
+            details = response[1]
+            if 'id' not in details: popup_mgr.FailedPopup('Failed to schedule event for reasons')
+            else: self.ScheduleActions(id=details['id'], platform='Outlook')
+
+        # Cannot pass an entire dictionary as a param 
+        if len(cal_events) > 0:
+            names = [x['subject'] for x in cal_events]
             base_text = ''
             for t in names: base_text += (t + ', ')
-            popup_mgr.ClashPopup(base_text)
-            return ''
-        if 'id' not in response: 
-            popup_mgr.FailedPopup('Failed to schedule event for reasons')
-            return ''
-        return response['id']
-    
+            popup_mgr.ClashPopup(base_text, schedule_outlook_calendar_event)
+        else: schedule_outlook_calendar_event()
+
     # Creates ICS files to be parsed 
     # 1 ICS = should have 1 VEVENT
     # returns names of file created

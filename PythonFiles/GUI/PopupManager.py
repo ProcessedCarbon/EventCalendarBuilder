@@ -1,7 +1,7 @@
 from GUI.GUIInterface import GUIInterface
 from tkcalendar import *
 
-def ClashPopup(clash_event_names:str):
+def ClashPopup(clash_event_names:str, button_cb):
     tmp = GUIInterface.current_frame
 
     window = GUIInterface.CreateNewWindow(window_name='Event Clash', size='')
@@ -12,6 +12,7 @@ def ClashPopup(clash_event_names:str):
     window_frame.rowconfigure(0, weight=2)
     window_frame.rowconfigure(1, weight=1)
     window_frame.rowconfigure(2, weight=5)
+    window_frame.rowconfigure(3, weight=5)
 
     subtitle_1_label = GUIInterface.CreateLabel(text='Are you sure you want to schedule this event?', 
                                                 font=GUIInterface.getCTKFont(size=16, weight="bold"))
@@ -24,6 +25,13 @@ def ClashPopup(clash_event_names:str):
     content = GUIInterface.CreateTextbox()
     GUIInterface.UpdateTextBox(content, 'disabled', clash_event_names)
     content.grid(row=2, column=0, sticky='nsew')
+
+    def onClick():
+        button_cb()
+        window.destroy()
+
+    yes_btn = GUIInterface.CreateButton(on_click=onClick, text='Yes')
+    yes_btn.grid(row=3, column=0, sticky='nsew')
 
     # Prevent clicking and focus of main window
     window.grab_set()
@@ -42,7 +50,7 @@ def FailedPopup(failed_msg:str):
     window_frame.rowconfigure(0, weight=1)
 
     msg_label = GUIInterface.CreateLabel(text=failed_msg, 
-                                        font=GUIInterface.getCTKFont(size=20, weight="bold"))
+                                        font=GUIInterface.getCTKFont(size=13, weight="bold"))
     msg_label.grid(row=0, column=0, sticky='nsew')
 
     # Prevent clicking and focus of main window

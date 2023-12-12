@@ -47,11 +47,11 @@ def client_app():
 
 if __name__ == "__main__":
 
-    #GoogleCalendarInterface.ConnectToGoogleCalendar()
-    multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
-    processes = multiprocessing_manager.mgr_processes
-    for p in processes: processes[p].start()
+    GoogleCalendarInterface.ConnectToGoogleCalendar()
+    #multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
+    #processes = multiprocessing_manager.mgr_processes
+    #for p in processes: processes[p].start()
         
     client_app()
 
-    for p in processes: processes[p].join()
+    #for p in processes: processes[p].join()

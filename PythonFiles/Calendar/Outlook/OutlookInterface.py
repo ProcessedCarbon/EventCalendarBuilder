@@ -165,21 +165,7 @@ def create_event():
     if not token: return jsonify(status="error", message="Not authenticated!"), 401
     
     event = request.json['event']
-
-    # Check for any pre-existing event
-    filter_param = {
-       '$filter': f"start/dateTime ge {event['start']['dateTime']} and end/dateTime le {event['end']['dateTime']}"
-   }
-    cal_res = send_flask_req('get_events', param_data=filter_param)
-    print(cal_res)
-    # Response format
-    #(True, {'@odata.context': "", 'value': []})
-    cal_events = cal_res[1]['value'] # overlapped events
-
-    if len(cal_events) > 0:
-        #print(f"CANNOT SCHEDULE EVENT, CLASHES WITH THESE EVENTS: \n {cal_events}")
-        return {'clash' : cal_events}
-
+    
     headers = {
         'Authorization': f'{token_access["token_type"]} {token}',
         'Content-Type': 'application/json'
