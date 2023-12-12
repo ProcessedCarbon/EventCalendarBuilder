@@ -1,4 +1,8 @@
 model/model-best
-PythonFiles/Calendar/Outlook/*.json
-GoogleCalendarAPI/*.json
-Testing/*.txt
+PythonFiles/Calendar/Outlook/api_token_access.json
+GoogleCalendarAPI/credentials.json
+GoogleCalendarAPI/token.json
+Testing/testing_text_grp.txt
+Testing/testing_text_multi.txt
+Testing/testing_text_single.txt
+Testing/testing_text_r.txt
