@@ -244,6 +244,7 @@ def parse_ics(ics)->OutlookEvent:
     return None
 
 # Require this to go from Flask -> Outlook
+# send_flask_req will always return true if any sort of response is received
 def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:
     response = requests.get(f"http://localhost:{local_host}/{req}", json=json_data, params=param_data)
     #print(f'Response Content:\n{response.json()}')

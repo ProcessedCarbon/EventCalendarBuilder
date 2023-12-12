@@ -179,12 +179,18 @@ class GoogleCalendarInterface:
                 #return True
         return overlapped_events #False
     
-    def DeleteEvent(id:str)->bool:
-
+    def DeleteEvent(id:str)->[bool,str]:
         if GoogleCalendarInterface.service == None:
             ErrorCodes.PrintErrorWithCode(1001)
-            return False
+            return False,''
         
-        GoogleCalendarInterface.service.events().delete(calendarId='primary', eventId=id).execute()
-        print(f"[GOOGLE_INTERFACE] EVENT DELETED SUCCESSFULLY")
-        return True
+        try:
+            GoogleCalendarInterface.service.events().delete(calendarId='primary', eventId=id).execute()
+            print(f"[GOOGLE_INTERFACE] EVENT DELETED SUCCESSFULLY")
+            return True,''
+        except HttpError as e:
+            #print(f"Error: {e.error_details[0]['reason']}")
+            error_details = e.error_details[0]
+            if 'reason' in error_details['reason'] and error_details['reason'] != '':
+                return False, error_details['reason']
+            else: return False, 'Unknown Reason, Proceeding to Deletion'

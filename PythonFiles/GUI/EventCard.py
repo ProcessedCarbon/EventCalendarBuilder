@@ -105,7 +105,6 @@ class EventCard:
 
     def Destroy(self)->bool:
         removed_from_cal = self.RemoveFromCalender()
-
         if removed_from_cal:
             success = EventsManager.RemoveFromEventDB(self.id, EventsManager.events_db)
             if success:
@@ -120,12 +119,12 @@ class EventCard:
             return True
         
         elif self.platform == 'Google':
-            removed = self.RemoveGoogle()
-            return removed == True
+            removed, reason = self.RemoveGoogle()
+            return True
         
         elif self.platform == 'Outlook':
             removed = self.RemoveOutlook()
-            return removed == True
+            return True
         
         return False
     
