@@ -68,4 +68,4 @@ class ManageEventPage(Page):
      
     def Clear(self):
         EventsManager.ClearEventsJSON() # clear events json
-        for c in self.cards: c.Destroy() # remove card GUIs
+        for c in self.cards: self.cards[c].Destroy() # remove card GUIs
