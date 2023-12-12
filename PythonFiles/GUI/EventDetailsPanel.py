@@ -241,15 +241,8 @@ class EventDetailsPanel:
             # No need to add platform to event object as its default
             self.ScheduleDefault(input)
             self.ScheduleActions(id=uuid.uuid4(), platform='Default')
-        elif calendar == 'Google':
-            self.ScheduleGoogleCalendar(input)
-            # id = self.ScheduleGoogleCalendar(input)
-            # if id != "":
-            #     self.ScheduleActions(id=id, platform='Google')
-        elif calendar == 'Outlook':
-            id = self.ScheduleOutlookCalendar(input)
-            if id != "":
-                self.ScheduleActions(id=id, platform='Outlook')
+        elif calendar == 'Google': self.ScheduleGoogleCalendar(input)
+        elif calendar == 'Outlook': self.ScheduleOutlookCalendar(input)
 
     def ScheduleActions(self, id, platform='Default'):
         self.event.setPlatform(platform)
@@ -305,10 +298,6 @@ class EventDetailsPanel:
         else: schedule_google_calendar_event()
 
     def ScheduleOutlookCalendar(self, event)->str:
-        # if OutlookInterfaceVars.outlook_auth == False:
-        #     print('[OUTLOOK] NOT AUTH')
-        #     return ''
-        
         filename = self.CreateICSFileFromInput(event)
         if filename == None:
             print('FAILED TO CREATE ICS FILE FOR OUTLOOK')

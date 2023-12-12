@@ -207,7 +207,7 @@ def get_events():
     }
 
     response = requests.get(f"https://graph.microsoft.com/v1.0/me/events", headers=headers)
-    print(f'GET RESPONSE STATUS CODE: {response.status_code}')
+    print(f'GET EVENTS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
 @app.route('/get_mail_settings')
@@ -219,6 +219,7 @@ def get_mail_settings():
         'Content-Type': 'application/json'
     }
     response = requests.get('https://graph.microsoft.com/v1.0/me/mailboxsettings', headers=headers)
+    print(f'GET MAIL-SETTINGS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
 # Only expecting 1 event per .ics file

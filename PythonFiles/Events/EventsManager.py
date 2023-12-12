@@ -174,9 +174,6 @@ class EventsManager:
         Writes events db to a local events.json file to store locally
         '''
         try:
-            # eventList = [x for x in EventsManager.local_events if x not in EventsManager.events_db]
-            # EventsManager.events_db.extend(eventList)
-
             db_copy = EventsManager.events_db.copy()
 
             # convert to json dumpable format
