@@ -1,4 +1,4 @@
 model/model-best
 PythonFiles/Calendar/Outlook/*.json
 GoogleCalendarAPI/*.json
-Testing/*txt
+Testing/*.txt
