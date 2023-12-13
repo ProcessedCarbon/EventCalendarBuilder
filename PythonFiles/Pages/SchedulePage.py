@@ -2,7 +2,6 @@ from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
-from Events.EventsManager import Event
 
 from math import ceil
 

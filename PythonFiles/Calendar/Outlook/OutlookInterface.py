@@ -5,7 +5,6 @@ import webbrowser
 import threading
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
-# import Managers.MultiprocessingManager as multiprocessing_mgr
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -222,23 +221,38 @@ def get_mail_settings():
     print(f'GET MAIL-SETTINGS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
+# @app.route('/get_timezones')
+# def get_timezones():
+#     token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+#     token = token_access['access_token']
+#     headers = { 
+#         'Authorization': f'{token_access["token_type"]} {token}',
+#         'Content-Type': 'application/json'
+#     }
+#     response = requests.get('https://graph.microsoft.com/v1.0/me/outlook/supportedTimeZones', headers=headers)
+#     print(f'GET TIMEZONE RESPONSE STATUS CODE: {response.status_code}')
+#     return response.json()
+
 # Only expecting 1 event per .ics file
 def parse_ics(ics)->OutlookEvent:
     ics_file = CalendarInterface.ReadICSFile(ics)
-    res = send_flask_req(req='get_mail_settings')
-    user_profile = res[1]
+    #res = send_flask_req(req='get_mail_settings')
+    #user_profile = res[1]
     # Extract the time zone information
-    time_zone = user_profile.get('mailboxSettings', {}).get('timeZone')
-    tz = time_zone if time_zone is not None else 'Asia/Singapore'
+    #time_zone = user_profile.get('mailboxSettings', {}).get('timeZone')
+    #tz = time_zone if time_zone is not None else 'Asia/Singapore'
+
     for component in ics_file.walk():
         if component.name == "VEVENT":
             rule=component.get('rrule').to_ical().decode(errors="ignore") if component.get('rrule') is not None else ''
+            s_dt = component.get('dtstart').dt
+            e_dt = component.get('dtend').dt
             return OutlookEvent(name=component.get('name'),
                                 location=component.get("location"),
-                                dtstart=component.get('dtstart').dt.isoformat(),
-                                dtend=component.get('dtend').dt.isoformat(),
-                                tzstart=tz,
-                                tzend=tz,
+                                dtstart=s_dt.isoformat(),
+                                dtend=e_dt.isoformat(),
+                                tzstart='UTC',
+                                tzend='UTC',
                                 rrule=rule
                                 )
     return None

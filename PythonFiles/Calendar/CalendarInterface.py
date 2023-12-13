@@ -23,20 +23,26 @@ class CalendarInterface:
         
     def CreateICSEvent(e_name, e_description, s_datetime, e_datetime,duration,
                     e_organizer_addr="", e_organizer_name="", e_organizer_role="",
-                    e_location="", e_priority=5, rrule={}):
+                    e_location="", e_priority=5, rrule={}, tz='Asia/Singapore'):
         
         # Add subcomponents
         event = Event()
         event.add('name', e_name)
         event.add('summary', e_name) # serves as name for some calendars (Mac)
         event.add('description', e_description)
+
+        # timezone = pytz.timezone(tz)  # Replace with the desired timezone
+
+        # # Set the start and end times with timezone information
+        # start_time = timezone.localize(s_datetime)
+        # end_time = timezone.localize(e_datetime)
+
         event.add('dtstart', s_datetime)
         
         if rrule == {}: event.add('dtend', e_datetime)
         else: 
-            event.add('dtend', s_datetime + timedelta(hours=duration))
+            event.add('dtend', e_datetime + timedelta(hours=duration))
             event.add('rrule', rrule)
-
 
         # Add the organizer
         organizer = vCalAddress(e_organizer_addr)

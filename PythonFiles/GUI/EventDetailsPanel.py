@@ -4,6 +4,7 @@ from Events.EventsManager import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
 import GUI.PopupManager as popup_mgr
+import pytz
 
 # Calendar Intefaces
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
@@ -16,6 +17,7 @@ import subprocess
 import uuid
 
 class EventDetailsPanel:
+    outlook_supported_tzs = None
     def __init__(self, parent, event:Event, remove_cb, key:int, gap:int=10, **grid_params):
         self.gap = gap
         self.parent = parent
@@ -25,7 +27,7 @@ class EventDetailsPanel:
         self.filled = False
         self.details_frame = None
         self.event = event
-        self.rows = 11
+        self.rows = 12
         self.key = key
         self.remove_cb = remove_cb
 
@@ -107,15 +109,19 @@ class EventDetailsPanel:
                                                    placeholder_text="HH:MM:SS")
         et_frame.grid(row=8, column=1,sticky='nsew',pady=self.gap)
 
+        tz_frame, tz_label, tz_box = self.CreateDropdownField(values=pytz.all_timezones, entryname="Timezone")
+        tz_frame.grid(row=9, column=1, sticky='nsew',pady=self.gap)
+        tz_box.set('Asia/Singapore')
+
         calendars_frame, calendar_label, calendar_box = self.CreateDropdownField(values=["Default", "Google", 'Outlook'], entryname="Calendar")
-        calendars_frame.grid(row=9, column=1, sticky='nsew',pady=self.gap)
+        calendars_frame.grid(row=10, column=1, sticky='nsew',pady=self.gap)
 
         recur_option, recur_label, recur_box = self.CreateDropdownField(values=["None", "Daily", 'Weekly', 'Monthly'], entryname="Repeated")
-        recur_option.grid(row=10, column=1, sticky='nsew',pady=self.gap)
+        recur_option.grid(row=11, column=1, sticky='nsew',pady=self.gap)
         recur_box.set(self.event.getRecurring())
 
         schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule')
-        schedule_btn.grid(row=11, column=1, sticky='nsew')
+        schedule_btn.grid(row=12, column=1, sticky='nsew')
 
         GUIInterface.SetCurrentFrame(tmp_frame)
 
@@ -336,10 +342,14 @@ class EventDetailsPanel:
         desp = event["Description"]
         priority = int(event["Priority"])
         location = event["Location"]
+        tz = event['Timezone']
         title = event["Event"]
         ics_s = event["Start_Time_ICS"]
         ics_e = event["End_Time_ICS"]
-        
+
+        ics_s = ics_s.replace(tzinfo=pytz.timezone(tz))
+        ics_e = ics_e.replace(tzinfo=pytz.timezone(tz))
+
         time_difference =  ics_e - ics_s
         hours, remainder = divmod(time_difference.seconds, 3600)
 
