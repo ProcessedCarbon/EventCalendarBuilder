@@ -2,6 +2,7 @@ from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
+from Events.EventsManager import Event
 
 from math import ceil
 
@@ -10,6 +11,7 @@ class SchedulePage(Page):
         self.details_panels = {}
         self.details_panels_max_column = 3
         self.details_panels_frame = None
+        self.panels = 0
         super().__init__()
 
     def OnStart(self):
@@ -29,12 +31,15 @@ class SchedulePage(Page):
         self.details_panel_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
         self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
 
+        # Create Event Button
+        create_event = GUIInterface.CreateButton(on_click=self.CreateEventButton, text='Create')
+        create_event.grid(row=2, column=1)
+
     def OnExit(self):
         self.ResetDetails()
 
     def OnEntry(self):
-        if len(self.details_panels) > 0:
-            self.ResetDetails()
+        if len(self.details_panels) > 0: self.ResetDetails()
         
         num_events = len(EventsManager.events)
         if num_events > 0:
@@ -55,6 +60,7 @@ class SchedulePage(Page):
                                              column=0, 
                                              sticky='nsew')
             self.details_panels[index] = detail_panel
+            self.panels += 1
 
     def ResetDetails(self):
         #print(f"Details panels: {self.details_panels}")
@@ -76,5 +82,26 @@ class SchedulePage(Page):
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
-
         PageManager.SwitchPages(page)
+
+    def CreateEventButton(self):
+        try:
+            empty_event = EventsManager.CreateEventObj(id=self.panels,
+                                                        name='',
+                                                        location='',
+                                                        s_date='',
+                                                        e_date='',
+                                                        start_time='',
+                                                        end_time='')
+            detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
+                                            event=empty_event,
+                                            remove_cb=self.RemovePanel,
+                                            key=self.panels,
+                                            row=self.panels, 
+                                            column=0, 
+                                            sticky='nsew')
+            self.details_panels[self.panels] = detail_panel
+            self.panels += 1
+            self.details_panel_frame.update()
+        except Exception as e:
+            ErrorCodes.PrintCustomError(e)

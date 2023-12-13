@@ -196,7 +196,7 @@ class EventDetailsPanel:
         window.destroy()
 
     def ScheduleEvent(self):
-        print("SCHEDULE CLICKED!")
+        #print("SCHEDULE CLICKED!")
 
         # Check if all required fields are filled
         if self.getEmptyInputFieldsCount() == self.rows:
@@ -204,7 +204,6 @@ class EventDetailsPanel:
             return
         
         input = self.getCurrentInputFieldsInfo()
-        print(input)
 
         # Handle missing or incorrect input for time fields
         if input['Start_Time'] == "":

@@ -1,7 +1,9 @@
-from Pages.Page import *
+from Pages.Page import PageManager, Page
 from NER.NERInterface import NERInterface
 from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
+from GUI.GUIInterface import GUIInterface
+from Managers.ErrorConfig import ErrorCodes
 
 class MainPage(Page):
     def __init__(self): 
@@ -19,7 +21,12 @@ class MainPage(Page):
 
         # Button
         button = GUIInterface.CreateButton(text="Submit", on_click=lambda:self.Submit(self.main_page_textbox))
-        button.grid(row=2, column=1, stick='s', pady=10)
+        button.grid(row=2, column=1, pady=10)
+
+        # Go to schedule
+        go_to_schedule_btn = GUIInterface.CreateButton(text='Schedule', on_click=lambda:PageManager.SwitchPages(1))
+        go_to_schedule_btn.grid(row=2, column=2)
+
     
     def OnExit(self):
         if self.main_page_textbox != None:
