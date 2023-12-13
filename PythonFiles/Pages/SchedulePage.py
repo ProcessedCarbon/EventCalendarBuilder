@@ -30,6 +30,11 @@ class SchedulePage(Page):
         # Details
         self.details_panel_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
         self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
+        details_panel_frame_r = [1]
+        details_panel_frame_c = [1]
+        GUIInterface.CreateGrid(self.details_panel_frame, 
+                                rows=details_panel_frame_r,
+                                cols=details_panel_frame_c)
 
         # Create Event Button
         create_event = GUIInterface.CreateButton(on_click=self.CreateEventButton, text='Create')
