@@ -29,7 +29,7 @@ class ManageEventPage(Page):
         # Clears the content and local events json of content_frame
         # Yet to remove the events scheduled on their respective calendar platform
         clear_events_json_btn = GUIInterface.CreateButton(on_click=self.Clear, 
-                                                          text='Clear Local',
+                                                          text='Clear',
                                                           width=self.page.winfo_width() * 0.1)     
         clear_events_json_btn.grid(row=2, column=2, sticky='nsew')   
     
