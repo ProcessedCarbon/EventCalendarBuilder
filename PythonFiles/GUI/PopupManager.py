@@ -22,7 +22,6 @@ def PopupWithBtn(subtitle_1:str, subtitle_2:str, button_cb, textbox_content=''):
                                                 font=GUIInterface.getCTKFont(size=13, weight="normal"))
     subtitle_2_label.grid(row=1, column=0, sticky='nsew')
 
-    #if textbox_content != '':
     content = GUIInterface.CreateTextbox()
     GUIInterface.UpdateTextBox(content, 'disabled', textbox_content)
     if textbox_content != '': content.grid(row=2, column=0, sticky='nsew')

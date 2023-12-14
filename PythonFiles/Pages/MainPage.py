@@ -4,6 +4,7 @@ from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
 from GUI.GUIInterface import GUIInterface
 from Managers.ErrorConfig import ErrorCodes
+import GUI.PopupManager as popup_mgr
 
 class MainPage(Page):
     def __init__(self): 
@@ -44,7 +45,8 @@ class MainPage(Page):
         t = GUIInterface.RetrieveCurrentInputFromTextbox(textbox)
 
         if t == "" or t == " " or t == "\n":
-            print("No text found!")
+            #print("No text found!")
+            popup_mgr.FailedPopup('No text found!\nPlease input text')
             return False
         
         t.strip("\n").strip()

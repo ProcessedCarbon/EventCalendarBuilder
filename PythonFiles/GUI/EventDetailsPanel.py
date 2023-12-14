@@ -214,17 +214,20 @@ class EventDetailsPanel:
         input = self.getCurrentInputFieldsInfo()
 
         # Handle missing or incorrect input for time fields
-        if input['Start_Time'] == "":
-            print(f'Missing Start Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
+        if input['Event'] == '':
+            popup_mgr.FailedPopup(failed_msg=f'Missing Event Name field!')
+            return
+        elif input['Start_Time'] == "":
+            popup_mgr.FailedPopup(failed_msg=f'Missing Start Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif input['End_Time'] == "":
-            print(f'Missing End Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
+            popup_mgr.FailedPopup(failed_msg=f'Missing End Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
-            print(f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
+            popup_mgr.FailedPopup(failed_msg=f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
-            print(f'Incorrect End Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
+            popup_mgr.FailedPopup(failed_msg=f'Incorrect End Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         
         # If no isses then create ics file
@@ -247,7 +250,6 @@ class EventDetailsPanel:
             # No clash checking done for default yet
             # No need to add platform to event object as its default
             self.ScheduleDefault(input)
-            #self.ScheduleActions(id=uuid.uuid4(), platform='Default')
         elif calendar == 'Google': self.ScheduleGoogleCalendar(input)
         elif calendar == 'Outlook': self.ScheduleOutlookCalendar(input)
 
@@ -268,7 +270,6 @@ class EventDetailsPanel:
                 return
             file = CalendarInterface.getICSFilePath(filename)
             def schedule_mac(): 
-                print('ran')
                 subprocess.run(['open', file])
                 self.ScheduleActions(id=uuid.uuid4(), platform='Default')
             popup_mgr.PopupWithBtn(subtitle_1='Warning',
