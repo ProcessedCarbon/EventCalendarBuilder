@@ -5,17 +5,6 @@ from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
 import GUI.PopupManager as popup_mgr
 import pytz
-import Managers.MultiprocessingManager as multiprocess_mgr
-
-# Calendar Intefaces
-from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
-from Calendar.CalendarInterface import CalendarInterface
-import Calendar.Outlook.OutlookInterface as outlook_interface
-
-from sys import platform
-import os
-import subprocess
-import uuid
 
 class EventDetailsPanel:
     outlook_supported_tzs = None
