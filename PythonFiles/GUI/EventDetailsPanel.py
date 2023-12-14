@@ -5,6 +5,7 @@ from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
 import GUI.PopupManager as popup_mgr
 import pytz
+import Managers.MultiprocessingManager as multiprocess_mgr
 
 # Calendar Intefaces
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
@@ -312,7 +313,10 @@ class EventDetailsPanel:
         filter_param = {
         '$filter': f"start/dateTime ge {outlook_event['start']['dateTime']} and end/dateTime le {outlook_event['end']['dateTime']}"
         }
-        cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
+        cal_events ={}
+        try: cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
+        except:
+            if 'OUTLOOK' in multiprocess_mgr.mgr_processes: multiprocess_mgr.terminate_process('OUTLOOK')
         
         # Response format
         #(True, {'@odata.context': "", 'value': []})

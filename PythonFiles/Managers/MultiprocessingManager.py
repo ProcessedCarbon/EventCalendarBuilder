@@ -13,4 +13,5 @@ def add_process(name, process):
 def terminate_process(name):
     mgr_processes[name].terminate()
     mgr_processes[name].join()
+    print(f'Process: {name} terminated!')
     del mgr_processes[name]
