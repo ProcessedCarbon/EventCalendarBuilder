@@ -11,6 +11,7 @@ import Managers.MultiprocessingManager as multiprocess_mgr
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 from Calendar.CalendarInterface import CalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
+import Calendar.CalendarMacInterface as mac_calendar
 
 from sys import platform
 import os
@@ -246,7 +247,7 @@ class EventDetailsPanel:
             # No clash checking done for default yet
             # No need to add platform to event object as its default
             self.ScheduleDefault(input)
-            self.ScheduleActions(id=uuid.uuid4(), platform='Default')
+            #self.ScheduleActions(id=uuid.uuid4(), platform='Default')
         elif calendar == 'Google': self.ScheduleGoogleCalendar(input)
         elif calendar == 'Outlook': self.ScheduleOutlookCalendar(input)
 
@@ -266,7 +267,13 @@ class EventDetailsPanel:
                 print('FAILED TO CREATE ICS FILE FOR MAC')
                 return
             file = CalendarInterface.getICSFilePath(filename)
-            subprocess.run(['open', file])
+            def schedule_mac(): 
+                print('ran')
+                subprocess.run(['open', file])
+                self.ScheduleActions(id=uuid.uuid4(), platform='Default')
+            popup_mgr.PopupWithBtn(subtitle_1='Warning',
+                                   subtitle_2='No checks for other events are done for this.\nAre you sure you want to schedule?',
+                                   button_cb=schedule_mac)
         # Windows
         else:
             filename = self.CreateICSFileFromInput(event)
@@ -300,7 +307,10 @@ class EventDetailsPanel:
             names = [x.getEvent() for x in overlapped_events]
             base_text = ''
             for t in names: base_text += (t + ', ')
-            popup_mgr.ClashPopup(base_text, schedule_google_calendar_event)
+            popup_mgr.PopupWithBtn(subtitle_1='Are you sure you want to schedule this event?',
+                                   subtitle_2='It clashes with the following events:',
+                                   textbox_content=base_text, 
+                                   button_cb=schedule_google_calendar_event)
         else: schedule_google_calendar_event()
 
     def ScheduleOutlookCalendar(self, event)->str:
@@ -336,7 +346,10 @@ class EventDetailsPanel:
             names = [x['subject'] for x in cal_events]
             base_text = ''
             for t in names: base_text += (t + ', ')
-            popup_mgr.ClashPopup(base_text, schedule_outlook_calendar_event)
+            popup_mgr.PopupWithBtn(subtitle_1='Are you sure you want to schedule this event?',
+                                   subtitle_2='It clashes with the following events:',
+                                   textbox_content=base_text, 
+                                   button_cb=schedule_outlook_calendar_event)
         else: schedule_outlook_calendar_event()
 
     # Creates ICS files to be parsed 

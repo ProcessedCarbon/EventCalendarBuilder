@@ -1,7 +1,7 @@
 from GUI.GUIInterface import GUIInterface
 from tkcalendar import *
 
-def ClashPopup(clash_event_names:str, button_cb):
+def PopupWithBtn(subtitle_1:str, subtitle_2:str, button_cb, textbox_content=''):
     tmp = GUIInterface.current_frame
 
     window = GUIInterface.CreateNewWindow(window_name='Event Clash', size='')
@@ -14,17 +14,18 @@ def ClashPopup(clash_event_names:str, button_cb):
     window_frame.rowconfigure(2, weight=5)
     window_frame.rowconfigure(3, weight=5)
 
-    subtitle_1_label = GUIInterface.CreateLabel(text='Are you sure you want to schedule this event?', 
+    subtitle_1_label = GUIInterface.CreateLabel(text=subtitle_1, 
                                                 font=GUIInterface.getCTKFont(size=16, weight="bold"))
     subtitle_1_label.grid(row=0, column=0, sticky='nsew')
 
-    subtitle_2_label = GUIInterface.CreateLabel(text='It clashes with the following events:', 
+    subtitle_2_label = GUIInterface.CreateLabel(text=subtitle_2, 
                                                 font=GUIInterface.getCTKFont(size=13, weight="normal"))
     subtitle_2_label.grid(row=1, column=0, sticky='nsew')
 
+    #if textbox_content != '':
     content = GUIInterface.CreateTextbox()
-    GUIInterface.UpdateTextBox(content, 'disabled', clash_event_names)
-    content.grid(row=2, column=0, sticky='nsew')
+    GUIInterface.UpdateTextBox(content, 'disabled', textbox_content)
+    if textbox_content != '': content.grid(row=2, column=0, sticky='nsew')
 
     def onClick():
         button_cb()

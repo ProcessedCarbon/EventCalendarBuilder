@@ -15,7 +15,8 @@ def TestInstall():
 
 def MacCalendarTest():
     import Calendar.CalendarMacInterface as mac_calendar
-    mac_calendar.getMacCalendarEvents()
+    mac_events = mac_calendar.getMacCalendarEvents()
+    for e in mac_events: print(e)
 
 def TextProcessingManagerTest():
     # from Managers.TextProcessing import TextProcessingManager
@@ -136,10 +137,10 @@ def NERGroupTest():
 
 def main():    
     #TestInstall()
-    #MacCalendarTest()
+    MacCalendarTest()
     #TextProcessingManagerTest()
     #OutlookTest()
-    NERGroupTest()
+    #NERGroupTest()
     pass
 
 if __name__ == "__main__":
