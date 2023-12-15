@@ -29,6 +29,7 @@ from GUI.AppToolbar import AppToolbar
 
 def client_app():
     gui = GUIInterface()
+    GUIInterface.SetDefaultColorTheme(r'./PythonFiles/GUI/ColorThemes/Anthracite.json')
 
     # Application initilization
     MainAppWindow.Setup()

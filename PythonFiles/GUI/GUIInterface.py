@@ -405,6 +405,10 @@ class GUIInterface:
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         set_widget_scaling(new_scaling_float)
 
+    def SetDefaultColorTheme(theme_path=''):
+        if theme_path == '': set_default_color_theme('blue')
+        else: set_default_color_theme(theme_path)
+
     def MainLoop(self):
         self.root.mainloop()
         

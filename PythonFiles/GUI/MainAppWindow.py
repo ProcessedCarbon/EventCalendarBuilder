@@ -24,7 +24,7 @@ def GetCurrentMonitorInfo()->dict:
         return current 
 
 class MainAppWindow:
-    aspect = 0.8
+    aspect = 1
     main_frame = None
 
     monitor_info = GetCurrentMonitorInfo()
