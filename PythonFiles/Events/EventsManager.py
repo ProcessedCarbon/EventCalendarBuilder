@@ -399,7 +399,9 @@ class EventsManager:
         cal_events ={}
         try: cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
         except:
-            if 'OUTLOOK' in multiprocess_mgr.mgr_processes: multiprocess_mgr.terminate_process('OUTLOOK')
+            if 'OUTLOOK' in multiprocess_mgr.process_dict: 
+                multiprocess_mgr.terminate_process('OUTLOOK')
+                multiprocess_mgr.remove_from_process_dict('OUTLOOK')
         
         # Response format
         #(True, {'@odata.context': "", 'value': []})

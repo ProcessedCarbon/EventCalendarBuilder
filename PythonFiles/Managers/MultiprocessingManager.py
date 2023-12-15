@@ -1,17 +1,17 @@
 from multiprocessing import Process, Queue, Event
 
-q = Queue()
-mgr_processes = {}
+#q = Queue()
+process_dict = {}
 
 def add_process(name, process):
     p = Process(target=process)
-    #processes.append(p)
-    tmp = {name : p}
-    mgr_processes.update(tmp)
-    q.put(p)
+    process_dict[name] = p
+    #q.put(p)
 
 def terminate_process(name):
-    mgr_processes[name].terminate()
-    mgr_processes[name].join()
+    process_dict[name].terminate()
+    process_dict[name].join()
     print(f'Process: {name} terminated!')
-    del mgr_processes[name]
+
+def remove_from_process_dict(name):
+    del process_dict[name]

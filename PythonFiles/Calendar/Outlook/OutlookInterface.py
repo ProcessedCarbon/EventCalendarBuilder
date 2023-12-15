@@ -2,7 +2,7 @@ import requests
 from flask import Flask, request, jsonify
 import uuid
 import webbrowser
-import threading
+#import threading
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
 
@@ -137,9 +137,6 @@ def login():
 def callback():
     code = request.args.get('code')
     if not code:
-        # Not working
-        # print(multiprocessing_mgr.mgr_processes)
-        # multiprocessing_mgr.terminate_process('OUTLOOK')
         directory_manager.WriteJSON(token_path, 'api_token_access.json', '')
         return "Failed Authentication."
 
@@ -273,5 +270,6 @@ def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:
     else: return False, {}
 
 def run():
-    threading.Thread(target=login).start()
+    #threading.Thread(target=login).start()
+    login()
     app.run(host='localhost', port=local_host, use_reloader = False)

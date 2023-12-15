@@ -43,16 +43,11 @@ def client_app():
 
     # Toolbar
     AppToolbar() # Must be called here after all pages are created as it requires a list[Page] of all pages
-
     gui.MainLoop()
 
 if __name__ == "__main__":
-
-    #GoogleCalendarInterface.ConnectToGoogleCalendar()
-    #multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
-    #processes = multiprocessing_manager.mgr_processes
-    #for p in processes: processes[p].start()
-        
+    GoogleCalendarInterface.ConnectToGoogleCalendar()
+    multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
+    processes = multiprocessing_manager.process_dict
+    processes['OUTLOOK'].start()
     client_app()
-
-    #for p in processes: processes[p].join()

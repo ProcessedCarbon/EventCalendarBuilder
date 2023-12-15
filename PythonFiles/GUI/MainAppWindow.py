@@ -24,7 +24,7 @@ def GetCurrentMonitorInfo()->dict:
         return current 
 
 class MainAppWindow:
-    aspect = 1
+    aspect = 0.85
     main_frame = None
 
     monitor_info = GetCurrentMonitorInfo()
@@ -43,13 +43,11 @@ class MainAppWindow:
         GUIInterface.root.protocol("WM_DELETE_WINDOW", MainAppWindow.OnAppClose) 
 
     def OnAppClose():
-        processes = multiprocessing_mgr.mgr_processes
         print('App Closing')
-        print(f'Num processes: {len(processes)}')
+        print(f'Num processes: {len(multiprocessing_mgr.process_dict)}')
         print('Terminating processes')
-        for p in processes:
-            processes[p].terminate()
-            processes[p].join()
+        processes = multiprocessing_mgr.process_dict
+        for p in processes: multiprocessing_mgr.terminate_process(p)
         print('Removing ICS files')
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
         GUIInterface.root.destroy()
