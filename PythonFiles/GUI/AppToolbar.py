@@ -5,7 +5,8 @@ from Pages.PageManager import PageManager
 class AppToolbar:
     def __init__(self) -> None:
         self.events_toolbar_frame = GUIInterface.CreateScrollableFrame(GUIInterface.root, 
-                                                                       corner_radius=0,)
+                                                                       corner_radius=0,
+                                                                       fg_color=GUIInterface.color_palette['CTkProgressBar']['fg_color'])
         
         #self.events_toolbar_frame.grid_rowconfigure(4, weight=1)
         rows = [1,1,1,1,1,1,1]
@@ -29,6 +30,7 @@ class AppToolbar:
         self.appearance_mode_label = GUIInterface.CreateLabel(text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid(row=3, column=0, padx=20, pady=(10, 0))
         self.appearance_mode_optionemenu = GUIInterface.CreateOptionMenu(values=["Light", "Dark", "System"], command=GUIInterface.SetAppearanceMode)
+        self.appearance_mode_optionemenu.set('System')
         self.appearance_mode_optionemenu.grid(row=4, column=0, padx=20, pady=(10, 10))
 
         # UI Scaling
@@ -36,6 +38,7 @@ class AppToolbar:
         self.scaling_label.grid(row=5, column=0, padx=20, pady=(10, 0))
         self.scaling_optionemenu = GUIInterface.CreateOptionMenu(values=["80%", "90%", "100%", "110%", "120%"],
                                                                command=GUIInterface.ChangeGUIScaling)
+        self.scaling_optionemenu.set('100%')
         self.scaling_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 20))
 
         GUIInterface.SetCurrentFrame(tmp)
