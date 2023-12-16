@@ -29,8 +29,9 @@ from GUI.AppToolbar import AppToolbar
 
 def client_app():
     gui = GUIInterface()
-    GUIInterface.SetDefaultColorTheme(r'./PythonFiles/GUI/ColorThemes/Anthracite.json')
-
+    GUIInterface.SetDefaultColorTheme(GUIInterface.default_theme_path)
+    GUIInterface.setColorPalette()
+    
     # Application initilization
     MainAppWindow.Setup()
     EventsManager.UpdateEventsDB() # Initialize local event db
@@ -46,8 +47,8 @@ def client_app():
     gui.MainLoop()
 
 if __name__ == "__main__":
-    GoogleCalendarInterface.ConnectToGoogleCalendar()
-    multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
-    processes = multiprocessing_manager.process_dict
-    processes['OUTLOOK'].start()
+    #GoogleCalendarInterface.ConnectToGoogleCalendar()
+    #multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
+    #processes = multiprocessing_manager.process_dict
+    #processes['OUTLOOK'].start()
     client_app()

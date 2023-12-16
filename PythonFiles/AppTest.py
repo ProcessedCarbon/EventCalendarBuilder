@@ -135,12 +135,17 @@ def NERGroupTest():
     added_events = EventsManager.AddEvents(events=p_events)
     for e in added_events: print(e)
 
+def ColorPaletteTest():
+    from GUI.GUIInterface import GUIInterface
+    GUIInterface.setColorPalette()
+
 def main():    
     #TestInstall()
-    MacCalendarTest()
+    #MacCalendarTest()
     #TextProcessingManagerTest()
     #OutlookTest()
     #NERGroupTest()
+    ColorPaletteTest()
     pass
 
 if __name__ == "__main__":

@@ -1,24 +1,29 @@
 from tkinter import *
 from customtkinter import *
 from Managers.ErrorConfig import getParamValFromKwarg
+import Managers.DirectoryManager as dir_manager
 
 class GUIInterface:
     current_frame = None    
     root = CTk()
+    default_theme_path = r'./PythonFiles/GUI/ColorThemes/Anthracite.json'
+    color_palette = {}
 
     def CreateFrame(frame_target, **kwargs)->CTkFrame:
         width =         getParamValFromKwarg('width', kwargs, default=200)
         height =        getParamValFromKwarg('height', kwargs, default=200)
         border_width =  getParamValFromKwarg('border_width', kwargs)
-        fg_color =      getParamValFromKwarg('fg_color', kwargs, default='transparent')
+        fg_color =      getParamValFromKwarg('fg_color', kwargs)
         border_color =  getParamValFromKwarg('border_color', kwargs)
+        bg_color =      getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         frame = CTkFrame(frame_target,
                          width=width,
                          height=height,
                          border_width=border_width,
                          fg_color=fg_color,
-                         border_color=border_color)
+                         border_color=border_color,
+                         bg_color=bg_color)
         
         GUIInterface.SetCurrentFrame(frame)
         return frame
@@ -71,7 +76,7 @@ class GUIInterface:
         hover_color =           getParamValFromKwarg('hover_color', kwargs)
         text_color =            getParamValFromKwarg('text_color', kwargs)
         text_color_disabled =   getParamValFromKwarg('text_color_disabled', kwargs)
-        font =                  getParamValFromKwarg('font', kwargs)
+        font =                  getParamValFromKwarg('font', kwargs, default=GUIInterface.getCTKFont(weight="bold"))
         textvariable =          getParamValFromKwarg('textvariable', kwargs)
         image =                 getParamValFromKwarg('image', kwargs)
         state =                 getParamValFromKwarg('state', kwargs, default='normal')
@@ -136,7 +141,7 @@ class GUIInterface:
     def CreateEntry(**kwargs)->CTkEntry:
         width =                     getParamValFromKwarg('width', kwargs, default=140)
         height =                    getParamValFromKwarg('height', kwargs, default=28)
-        fg_color =                  getParamValFromKwarg('fg_color', kwargs, default='transparent')
+        fg_color =                  getParamValFromKwarg('fg_color', kwargs)
         text_color =                getParamValFromKwarg('text_color', kwargs)
         font =                      getParamValFromKwarg('font', kwargs)
         textvariable =              getParamValFromKwarg('textvariable', kwargs)
@@ -144,6 +149,7 @@ class GUIInterface:
         placeholder_text_color =    getParamValFromKwarg('placeholder_text_color', kwargs, default='grey')
         placeholder_text =          getParamValFromKwarg('placeholder_text', kwargs)
         state =                     getParamValFromKwarg('state', kwargs, default='normal')
+        bg_color =                  getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         textInput = CTkEntry(GUIInterface.current_frame, 
                              width=width,
@@ -252,13 +258,15 @@ class GUIInterface:
         placeholder_text =  getParamValFromKwarg('placeholder_text', kwargs)
 
         tmp_frame = GUIInterface.current_frame
-        entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
+        entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame, 
+                                               border_width=0,
+                                               fg_color='transparent')
 
         entry_frame.columnconfigure(0, weight=1)
         entry_frame.columnconfigure(1, weight=3)
 
         # Entry label
-        label = GUIInterface.CreateLabel(text=label)
+        label = GUIInterface.CreateLabel(text=label,font=GUIInterface.getCTKFont(weight="bold"))
         label.grid(row=0, column=0)
 
         # Entry
@@ -275,13 +283,15 @@ class GUIInterface:
     
     def CreateOptionMenuWithLabel(label:str, dropdown:list[str])->list[CTkFrame,CTkLabel,CTkComboBox]:    
         tmp_frame = GUIInterface.current_frame
-        combo_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame)
+        combo_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame,
+                                               border_width=0,
+                                               fg_color='transparent')
 
         combo_frame.columnconfigure(0, weight=1)
         combo_frame.columnconfigure(1, weight=3)
 
         # Entry label
-        label = GUIInterface.CreateLabel(text=label)
+        label = GUIInterface.CreateLabel(text=label,font=GUIInterface.getCTKFont(weight="bold"))
         label.grid(row=0, column=0)
 
         # Entry
@@ -408,6 +418,13 @@ class GUIInterface:
     def SetDefaultColorTheme(theme_path=''):
         if theme_path == '': set_default_color_theme('blue')
         else: set_default_color_theme(theme_path)
+
+    def setColorPalette():
+        try:
+            curr_path = dir_manager.getCurrentFileDirectory(__file__)
+            theme_dir = dir_manager.getFilePath(curr_path, 'ColorThemes')
+            GUIInterface.color_palette = dir_manager.ReadJSON(dir_path=theme_dir, file_name='Anthracite.json')
+        except: pass
 
     def MainLoop(self):
         self.root.mainloop()

@@ -27,7 +27,7 @@ class SchedulePage(Page):
         title.grid(row=0, column=1, sticky='n')
 
         # Details
-        self.details_panel_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
+        self.details_panel_frame = GUIInterface.CreateScrollableFrame(self.page)
         self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
         details_panel_frame_r = [1]
         details_panel_frame_c = [1]
