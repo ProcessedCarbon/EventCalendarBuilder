@@ -8,7 +8,8 @@ class Page:
             ErrorCodes.PrintErrorWithCode(1003)
             return
 
-        self.page = GUIInterface.CreateFrame(GUIInterface.root)
+        self.page = GUIInterface.CreateFrame(GUIInterface.root,
+                                             fg_color=GUIInterface.color_palette['CTkButton']['fg_color'][1])
         self.page.grid(row=0, column=1, sticky="nsew")
         PageManager.AddPage(self)
     

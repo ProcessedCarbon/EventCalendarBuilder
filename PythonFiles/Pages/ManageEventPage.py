@@ -21,7 +21,7 @@ class ManageEventPage(Page):
         label.grid(row=0, column=1)
 
         # Frame to hold all EventCards
-        self.content_frame = GUIInterface.CreateScrollableFrame(self.page, fg_color='blue')
+        self.content_frame = GUIInterface.CreateScrollableFrame(self.page)
         self.content_frame.grid(row=1, column=1, sticky='nsew')
 
         #self.UpdateGUI()
@@ -30,8 +30,8 @@ class ManageEventPage(Page):
         # Yet to remove the events scheduled on their respective calendar platform
         clear_events_json_btn = GUIInterface.CreateButton(on_click=self.Clear, 
                                                           text='Clear',
-                                                          width=self.page.winfo_width() * 0.1)     
-        clear_events_json_btn.grid(row=2, column=2, sticky='nsew')   
+                                                          width=self.page.winfo_width() * 0.1)  
+        clear_events_json_btn.grid(row=2, column=1)   
     
     def OnEntry(self):
         self.UpdateGUI()
