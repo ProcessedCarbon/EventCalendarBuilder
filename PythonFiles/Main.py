@@ -29,9 +29,8 @@ from GUI.AppToolbar import AppToolbar
 
 def client_app():
     gui = GUIInterface()
-    GUIInterface.SetDefaultColorTheme(GUIInterface.default_theme_path)
-    GUIInterface.setColorPalette()
-    
+    GUIInterface.SetDefaultColorTheme('Oceanix.json')
+
     # Application initilization
     MainAppWindow.Setup()
     EventsManager.UpdateEventsDB() # Initialize local event db

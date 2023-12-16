@@ -6,7 +6,8 @@ import Managers.DirectoryManager as dir_manager
 class GUIInterface:
     current_frame = None    
     root = CTk()
-    default_theme_path = r'./PythonFiles/GUI/ColorThemes/Anthracite.json'
+    default_theme_path = r'./PythonFiles/GUI/ColorThemes/'
+    #theme_file = 'Anthracite.json'
     color_palette = {}
 
     def CreateFrame(frame_target, **kwargs)->CTkFrame:
@@ -415,15 +416,18 @@ class GUIInterface:
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         set_widget_scaling(new_scaling_float)
 
-    def SetDefaultColorTheme(theme_path=''):
-        if theme_path == '': set_default_color_theme('blue')
-        else: set_default_color_theme(theme_path)
+    def SetDefaultColorTheme(theme=''):
+        path = GUIInterface.default_theme_path + theme
+        if path == '': set_default_color_theme('blue')
+        else: 
+            set_default_color_theme(path)
+            GUIInterface.setColorPalette(theme)
 
-    def setColorPalette():
+    def setColorPalette(theme=''):
         try:
             curr_path = dir_manager.getCurrentFileDirectory(__file__)
             theme_dir = dir_manager.getFilePath(curr_path, 'ColorThemes')
-            GUIInterface.color_palette = dir_manager.ReadJSON(dir_path=theme_dir, file_name='Anthracite.json')
+            GUIInterface.color_palette = dir_manager.ReadJSON(dir_path=theme_dir, file_name=theme)
         except: pass
 
     def MainLoop(self):
