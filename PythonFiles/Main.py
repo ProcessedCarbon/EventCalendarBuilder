@@ -46,8 +46,8 @@ def client_app():
     gui.MainLoop()
 
 if __name__ == "__main__":
-    #GoogleCalendarInterface.ConnectToGoogleCalendar()
-    #multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
-    #processes = multiprocessing_manager.process_dict
-    #processes['OUTLOOK'].start()
+    GoogleCalendarInterface.ConnectToGoogleCalendar()
+    # multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
+    # processes = multiprocessing_manager.process_dict
+    # processes['OUTLOOK'].start()
     client_app()

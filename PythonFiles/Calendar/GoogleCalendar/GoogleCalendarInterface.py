@@ -5,6 +5,7 @@ from Managers.ErrorConfig import ErrorCodes
 from Calendar.GoogleCalendar.GoogleEvent import GoogleEvent
 from Calendar.CalendarInterface import CalendarInterface
 from Managers.DateTimeManager import DateTimeManager
+import Managers.DirectoryManager as directory_manager
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -13,9 +14,14 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-GoogleCalendarAPI_path = "./GoogleCalendarAPI/"
-token_path = GoogleCalendarAPI_path + "token.json"
-credentials_path = GoogleCalendarAPI_path + "credentials.json"
+# GoogleCalendarAPI_path = "./GoogleCalendarAPI/"
+# token_path = GoogleCalendarAPI_path + "token.json"
+# credentials_path = GoogleCalendarAPI_path + "credentials.json"
+
+main_path = directory_manager.getCurrentFileDirectory(__file__)
+misc_path = directory_manager.getFilePath(main_path, 'GoogleCalendarAPI')
+token_path = directory_manager.getFilePath(misc_path, 'token.json')
+credentials_path = directory_manager.getFilePath(misc_path, 'credentials.json')
 
 class GoogleCalendarInterface:
     creds = None

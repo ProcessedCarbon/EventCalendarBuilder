@@ -1,7 +1,11 @@
 import spacy
 from Managers.ErrorConfig import ErrorCodes
+import Managers.DirectoryManager as directory_manager
 
-model_path = r"./model/model-best"
+parent_dir = directory_manager.getCurrentFileDirectory(__file__)
+model_path = directory_manager.getFilePath(parent_dir, 'model/model-best')
+
+#model_path = "model/model-best"
 
 class NERInterface:
     nlp = spacy.load(model_path) #load model   

@@ -1,7 +1,7 @@
-model/model-best
+PythonFiles/NER/model/model-best
 PythonFiles/Calendar/Outlook/api_token_access.json
-GoogleCalendarAPI/credentials.json
-GoogleCalendarAPI/token.json
+PythonFiles/Calendar/GoogleCalendar/GoogleCalendarAPI/credentials.json
+PythonFiles/Calendar/GoogleCalendar/GoogleCalendarAPI/token.json
 Testing/testing_text_grp.txt
 Testing/testing_text_multi.txt
 Testing/testing_text_single.txt
