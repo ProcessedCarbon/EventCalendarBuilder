@@ -379,7 +379,7 @@ class EventsManager:
         if len(overlapped_events) > 0:
             names = [x.getEvent() for x in overlapped_events]
             base_text = ''
-            for t in names: base_text += (t + ', ')
+            for t in names: base_text += (t + '\n')
             popup_mgr.PopupWithBtn(subtitle_1='Are you sure you want to schedule this event?',
                                    subtitle_2='It clashes with the following events:',
                                    textbox_content=base_text, 
@@ -397,7 +397,8 @@ class EventsManager:
         '$filter': f"start/dateTime ge {outlook_event['start']['dateTime']} and end/dateTime le {outlook_event['end']['dateTime']}"
         }
         cal_events ={}
-        try: cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
+        try: 
+            cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
         except:
             if 'OUTLOOK' in multiprocess_mgr.process_dict: 
                 multiprocess_mgr.terminate_process('OUTLOOK')
@@ -420,7 +421,7 @@ class EventsManager:
         if len(cal_events) > 0:
             names = [x['subject'] for x in cal_events]
             base_text = ''
-            for t in names: base_text += (t + ', ')
+            for t in names: base_text += (t + '\n')
             popup_mgr.PopupWithBtn(subtitle_1='Are you sure you want to schedule this event?',
                                    subtitle_2='It clashes with the following events:',
                                    textbox_content=base_text, 
