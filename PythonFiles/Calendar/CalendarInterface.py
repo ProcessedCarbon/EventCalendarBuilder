@@ -70,6 +70,7 @@ class CalendarInterface:
         # Add the event to the calendar
         CalendarInterface._cal.add_component(event)
         f_name = f'{e_name}_{s_datetime}'
+        f_name = f_name.replace(' ', '_').replace(':', '_').replace('+', '_')
         success = CalendarInterface.WriteToFile(file_name=f_name)
         if success: 
             CalendarInterface._cal.subcomponents.remove(event)
@@ -80,11 +81,11 @@ class CalendarInterface:
         try:
             file_name = CalendarInterface._default_ics_file if file_name == None else file_name
             dir_to_open = CalendarInterface._main_dir
-            
+
             directory_manager.WriteFile(dir_to_open, f'{file_name}.ics', CalendarInterface._cal.to_ical(), 'wb')
             return True
-        except:
-            print(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open}')
+        except Exception as e:
+            print(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open} because {e}')
             return False
     
     def ReadICSFile(file_name=None):
