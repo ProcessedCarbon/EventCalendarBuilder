@@ -3,9 +3,9 @@ from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
+import GUI.PopupManager as popup_mgr
 
 from sys import platform
-import subprocess
 
 class EventCard:
     def __init__(self, parent, row, col, event_details:dict, gap:int, remove_cb, index:int) -> None:
@@ -126,16 +126,20 @@ class EventCard:
     def RemoveFromCalender(self)->bool:
         if self.platform == 'Default':
             self.RemoveDefault()
+            popup_mgr.BasicPopup(msg=f'Successfully removed {self.name} from Default', pop_up_name='Event removal')
             return True
         
         elif self.platform == 'Google':
             removed, reason = self.RemoveGoogle()
+            popup_mgr.BasicPopup(msg=f'Successfully removed {self.name} from Google', pop_up_name='Event removal')
             return True
         
         elif self.platform == 'Outlook':
             removed = self.RemoveOutlook()
+            popup_mgr.BasicPopup(msg=f'Successfully removed {self.name} from Outlook', pop_up_name='Event removal')
             return True
         
+        popup_mgr.BasicPopup(msg=f'Failed removal of {self.name}', pop_up_name='Event removal')
         return False
     
     def RemoveDefault(self):

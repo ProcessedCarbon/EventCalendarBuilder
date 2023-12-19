@@ -59,7 +59,7 @@ class MainPage(Page):
 
         if t == "" or t == " " or t == "\n":
             #print("No text found!")
-            popup_mgr.FailedPopup('No text found!\nPlease input text')
+            popup_mgr.BasicPopup('No text found!\nPlease input text')
             return False
         
         t.strip("\n").strip()

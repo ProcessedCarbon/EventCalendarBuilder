@@ -214,19 +214,19 @@ class EventDetailsPanel:
 
         # Handle missing or incorrect input for time fields
         if input['Event'] == '':
-            popup_mgr.FailedPopup(failed_msg=f'Missing Event Name field!')
+            popup_mgr.BasicPopup(msg=f'Missing Event Name field!')
             return
         elif input['Start_Time'] == "":
-            popup_mgr.FailedPopup(failed_msg=f'Missing Start Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
+            popup_mgr.BasicPopup(msg=f'Missing Start Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif input['End_Time'] == "":
-            popup_mgr.FailedPopup(failed_msg=f'Missing End Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
+            popup_mgr.BasicPopup(msg=f'Missing End Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
-            popup_mgr.FailedPopup(failed_msg=f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
+            popup_mgr.BasicPopup(msg=f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
-            popup_mgr.FailedPopup(failed_msg=f'Incorrect End Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
+            popup_mgr.BasicPopup(msg=f'Incorrect End Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         
         # If no isses then create ics file
@@ -255,4 +255,5 @@ class EventDetailsPanel:
         self.event.setId(id)
         EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
         EventsManager.WriteEventDBToJSON()
+        popup_mgr.BasicPopup(msg='Successfully schedule event', pop_up_name='Success')
         self.remove_cb(self.key)

@@ -1,10 +1,10 @@
 from GUI.GUIInterface import GUIInterface
 from tkcalendar import *
 
-def PopupWithBtn(subtitle_1:str, subtitle_2:str, button_cb, textbox_content=''):
+def PopupWithBtn(pop_up_name:str, subtitle_1:str, subtitle_2:str, button_cb, textbox_content=''):
     tmp = GUIInterface.current_frame
 
-    window = GUIInterface.CreateNewWindow(window_name='Event Clash', size='')
+    window = GUIInterface.CreateNewWindow(window_name=pop_up_name, size='')
     window_frame = GUIInterface.CreateFrame(window)
     window_frame.grid(row=0, column=0, sticky='nsew')
 
@@ -39,17 +39,17 @@ def PopupWithBtn(subtitle_1:str, subtitle_2:str, button_cb, textbox_content=''):
 
     GUIInterface.SetCurrentFrame(tmp)
 
-def FailedPopup(failed_msg:str):
+def BasicPopup(msg:str, pop_up_name='Failed'):
     tmp = GUIInterface.current_frame
 
-    window = GUIInterface.CreateNewWindow(window_name='Failed To Schedule', size='')
+    window = GUIInterface.CreateNewWindow(window_name=pop_up_name, size='')
     window_frame = GUIInterface.CreateFrame(window)
     window_frame.grid(row=0, column=0, sticky='nsew')
 
     window_frame.columnconfigure(0, weight=1)
     window_frame.rowconfigure(0, weight=1)
 
-    msg_label = GUIInterface.CreateLabel(text=failed_msg, 
+    msg_label = GUIInterface.CreateLabel(text=msg, 
                                         font=GUIInterface.getCTKFont(size=13, weight="bold"))
     msg_label.grid(row=0, column=0, sticky='nsew', pady=10, padx=10)
 

@@ -343,7 +343,8 @@ class EventsManager:
                 subprocess.run(['open', file])
                 #self.ScheduleActions(id=uuid4(), platform='Default')
                 schedule_cb(id=uuid4, platform='Default')
-            popup_mgr.PopupWithBtn(subtitle_1='Warning',
+            popup_mgr.PopupWithBtn(pop_up_name='Warning',
+                                   subtitle_1='Warning',
                                    subtitle_2='No checks for other events are done for this.\nAre you sure you want to schedule?',
                                    button_cb=schedule_mac)
         # Windows
@@ -371,7 +372,7 @@ class EventsManager:
         # Method to scheudle google event
         def schedule_google_calendar_event(): 
             id = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
-            if id == '': popup_mgr.FailedPopup('Failed to schedule event for reasons')
+            if id == '': popup_mgr.BasicPopup('Failed to schedule event for reasons')
             else: schedule_cb(id=id, platform='Google')#self.ScheduleActions(id=id, platform='Google')
 
         # Handle clash of events
@@ -379,7 +380,8 @@ class EventsManager:
             names = [x.getEvent() for x in overlapped_events]
             base_text = ''
             for t in names: base_text += (t + '\n')
-            popup_mgr.PopupWithBtn(subtitle_1='Are you sure you want to schedule this event?',
+            popup_mgr.PopupWithBtn(pop_up_name='Event clash',
+                                   subtitle_1='Are you sure you want to schedule this event?',
                                    subtitle_2='It clashes with the following events:',
                                    textbox_content=base_text, 
                                    button_cb=schedule_google_calendar_event)
@@ -402,14 +404,14 @@ class EventsManager:
         # Response format
         #(True, {'@odata.context': "", 'value': []})
         if cal_events == {}: 
-            popup_mgr.FailedPopup('Failed to schedule event for [OUTLOOK] due to failed authentication')
+            popup_mgr.BasicPopup('Failed to schedule event for [OUTLOOK] due to failed authentication')
             return ''
 
         def schedule_outlook_calendar_event():
             response = outlook_interface.send_flask_req(req='create_event', 
                                                         json_data={'event': outlook_event})
             details = response[1]
-            if 'id' not in details: popup_mgr.FailedPopup('Failed to schedule event for reasons')
+            if 'id' not in details: popup_mgr.BasicPopup('Failed to schedule event for reasons')
             else: schedule_cb(id=details['id'], platform='Outlook')#EventsManager.ScheduleActions(id=details['id'], platform='Outlook')
 
         # Cannot pass an entire dictionary as a param 
@@ -417,7 +419,8 @@ class EventsManager:
             names = [x['subject'] for x in cal_events]
             base_text = ''
             for t in names: base_text += (t + '\n')
-            popup_mgr.PopupWithBtn(subtitle_1='Are you sure you want to schedule this event?',
+            popup_mgr.PopupWithBtn(pop_up_name='Event clash',
+                                   subtitle_1='Are you sure you want to schedule this event?',
                                    subtitle_2='It clashes with the following events:',
                                    textbox_content=base_text, 
                                    button_cb=schedule_outlook_calendar_event)
