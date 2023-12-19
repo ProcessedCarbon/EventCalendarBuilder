@@ -1,7 +1,7 @@
 from screeninfo import get_monitors
 from GUI.GUIInterface import GUIInterface
-import Managers.MultiprocessingManager as multiprocessing_mgr
 from Calendar.CalendarInterface import CalendarInterface
+import os, signal
 
 def GetCurrentMonitorInfo()->dict:
         # Monitor(x=0, y=0, width=3840, height=2160, width_mm=708, height_mm=399, name='DP-0', is_primary=True)
@@ -44,13 +44,9 @@ class MainAppWindow:
 
     def OnAppClose():
         print('App Closing')
-        print(f'Num processes: {len(multiprocessing_mgr.process_dict)}')
-        print('Terminating processes')
-        processes = multiprocessing_mgr.process_dict
-        for p in processes: multiprocessing_mgr.terminate_process(p)
         print('Removing ICS files')
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
         GUIInterface.root.destroy()
-    
-
-
+        # Kill process
+        os.kill(os.getpid(), signal.SIGINT)
+        print('CLOSED')

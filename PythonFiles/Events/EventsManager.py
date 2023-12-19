@@ -11,7 +11,6 @@ from Managers.TextProcessing import TextProcessingManager
 from sys import platform
 import GUI.PopupManager as popup_mgr
 import Calendar.Outlook.OutlookInterface as outlook_interface
-import Managers.MultiprocessingManager as multiprocess_mgr
 import pytz
 
 class Event:
@@ -397,13 +396,9 @@ class EventsManager:
         '$filter': f"start/dateTime ge {outlook_event['start']['dateTime']} and end/dateTime le {outlook_event['end']['dateTime']}"
         }
         cal_events ={}
-        try: 
-            cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
-        except:
-            if 'OUTLOOK' in multiprocess_mgr.process_dict: 
-                multiprocess_mgr.terminate_process('OUTLOOK')
-                multiprocess_mgr.remove_from_process_dict('OUTLOOK')
-        
+        try: cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
+        except: pass
+
         # Response format
         #(True, {'@odata.context': "", 'value': []})
         if cal_events == {}: 

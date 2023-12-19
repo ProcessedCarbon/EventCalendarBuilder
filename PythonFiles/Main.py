@@ -9,7 +9,6 @@ from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
-import Managers.MultiprocessingManager as multiprocessing_manager
 
 from Events.EventsManager import EventsManager
 
@@ -46,8 +45,6 @@ def client_app():
     gui.MainLoop()
 
 if __name__ == "__main__":
-    #GoogleCalendarInterface.ConnectToGoogleCalendar()
-    multiprocessing_manager.add_process('OUTLOOK', outlook_interface.run)
-    processes = multiprocessing_manager.process_dict
-    processes['OUTLOOK'].start()
+    GoogleCalendarInterface.ConnectToGoogleCalendar()
+    outlook_interface.start_flask()
     client_app()

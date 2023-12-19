@@ -6,7 +6,8 @@ import Managers.DirectoryManager as dir_manager
 class GUIInterface:
     current_frame = None    
     root = CTk()
-    default_theme_path = r'./PythonFiles/GUI/ColorThemes/'
+    gui_path = dir_manager.getCurrentFileDirectory(__file__)
+    default_theme_path = dir_manager.getFilePath(gui_path, 'ColorThemes')
     #theme_file = 'Anthracite.json'
     color_palette = {}
 
@@ -417,11 +418,13 @@ class GUIInterface:
         set_widget_scaling(new_scaling_float)
 
     def SetDefaultColorTheme(theme=''):
-        path = GUIInterface.default_theme_path + theme
-        if path == '': set_default_color_theme('blue')
-        else: 
-            set_default_color_theme(path)
-            GUIInterface.setColorPalette(theme)
+        try:
+            path = dir_manager.getFilePath(GUIInterface.default_theme_path, theme)
+            if path == '': set_default_color_theme('blue')
+            else: 
+                set_default_color_theme(path)
+                GUIInterface.setColorPalette(theme)
+        except: set_default_color_theme('blue')
 
     def setColorPalette(theme=''):
         try:

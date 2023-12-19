@@ -2,9 +2,10 @@ import requests
 from flask import Flask, request, jsonify
 import uuid
 import webbrowser
-#import threading
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
+import threading
+import os, signal
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -270,6 +271,9 @@ def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:
     else: return False, {}
 
 def run():
-    #threading.Thread(target=login).start()
     login()
     app.run(host='localhost', port=local_host, use_reloader = False)
+
+def start_flask():
+    flask_thread = threading.Thread(target=run)
+    flask_thread.start()
