@@ -348,14 +348,8 @@ class EventsManager:
                                    subtitle_2='No checks for other events are done for this.\nAre you sure you want to schedule?',
                                    button_cb=schedule_mac)
         # Windows
-        else:
-            filename = EventsManager.CreateICSFileFromInput(event)
-            if filename == None:
-                print('FAILED TO CREATE ICS FILE FOR WINDOWS')
-                return
-            file = CalendarInterface.getICSFilePath(filename)
-            os.startfile(file)
-
+        else: EventsManager.ScheduleOutlookCalendar(event, schedule_cb)
+            
     def ScheduleGoogleCalendar(event, schedule_cb)->[str, list]:
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:

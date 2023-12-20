@@ -143,14 +143,8 @@ class EventCard:
         return False
     
     def RemoveDefault(self):
-        if platform == "linux":
-            #subprocess.run(['xdg-open', file])
-            pass
-        elif platform == 'darwin':
-            cal_mac.RemoveMacCalendarEvents(self.name)
-        else:
-            #os.startfile(file)
-            pass
+        if platform == 'darwin': cal_mac.RemoveMacCalendarEvents(self.name)
+        else: self.RemoveOutlook()
     
     def RemoveGoogle(self)->bool:
         return GoogleCalendarInterface.DeleteEvent(self.id)
