@@ -1,6 +1,5 @@
 import os.path
 import datetime as dt
-from dateutil.parser import parse
 from Managers.ErrorConfig import ErrorCodes
 from Calendar.GoogleCalendar.GoogleEvent import GoogleEvent
 from Calendar.CalendarInterface import CalendarInterface

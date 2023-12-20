@@ -5,7 +5,6 @@ import webbrowser
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
 import threading
-import os, signal
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this

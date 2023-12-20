@@ -2,7 +2,7 @@ import icalendar
 from icalendar import Calendar, Event, vCalAddress, vText
 from pathlib import Path
 import Managers.DirectoryManager as directory_manager
-from datetime import datetime, timedelta
+from datetime import timedelta
 import uuid
 
 class CalendarInterface:
