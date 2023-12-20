@@ -2,19 +2,23 @@ from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
+from Pages.MiniPage import MiniPage
 
 from math import ceil
 
 class SchedulePage(Page):
     def __init__(self):
         self.details_panels = {}
-        self.details_panels_max_column = 3
         self.details_panels_frame = None
         self.panels = 0
+        self.max_panel_per_page = 5
+        self.current_page = None
+        self.page_buttons = 0
+        self.pages = {}
         super().__init__()
 
     def OnStart(self):
-        rows = [1, 6, 1]
+        rows = [1, 6, 1, 1]
         cols = [1, 6, 1]
         self.PageGrid(rows=rows, cols=cols)
 
@@ -34,10 +38,16 @@ class SchedulePage(Page):
         GUIInterface.CreateGrid(self.details_panel_frame, 
                                 rows=details_panel_frame_r,
                                 cols=details_panel_frame_c)
+        
+        # Page Buttons
+        tmp = GUIInterface.current_frame
+        self.page_button_frame = GUIInterface.CreateFrame(self.page, fg_color='blue')
+        self.page_button_frame.grid(row=2, column=1, sticky='nsew')
+        GUIInterface.current_frame = tmp
 
         # Create Event Button
         create_event = GUIInterface.CreateButton(on_click=self.CreateEventButton, text='Create')
-        create_event.grid(row=2, column=1)
+        create_event.grid(row=3, column=1)
 
     def OnExit(self):
         self.ResetDetails()
@@ -52,17 +62,18 @@ class SchedulePage(Page):
             EventsManager.ClearEvents()
 
     def PopulateDetails(self, events:list[dict]):
-        n = len(events)
-        detail_rows = ceil(n / self.details_panels_max_column)
-        GUIInterface.CreateGrid(self.details_panel_frame, rows=([1] * detail_rows), cols=[1])
+        self.current_page = None
         for index, event in enumerate(events):
-            detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
+            if self.panels % 5 == 0 or self.current_page == None: self.current_page = self.current_page = self.NewPage()
+            detail_panel = EventDetailsPanel(parent=self.current_page.getPage(),
                                              event=event['object'],
                                              remove_cb=self.RemovePanel,
                                              key=index,
-                                             row=index, 
+                                             row=self.current_page.getSize(), 
                                              column=0, 
                                              sticky='nsew')
+            self.current_page.Queue(detail_panel)
+            self.current_page.getPage().update()
             self.details_panels[index] = detail_panel
             self.panels += 1
 
@@ -90,6 +101,8 @@ class SchedulePage(Page):
 
     def CreateEventButton(self):
         try:
+            if self.panels % 5 == 0: 
+                self.current_page = self.NewPage()
             empty_event = EventsManager.CreateEventObj(id=self.panels,
                                                         name='',
                                                         location='',
@@ -97,15 +110,35 @@ class SchedulePage(Page):
                                                         e_date='',
                                                         start_time='',
                                                         end_time='')
-            detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
+            detail_panel = EventDetailsPanel(parent=self.current_page.getPage(),
                                             event=empty_event,
                                             remove_cb=self.RemovePanel,
                                             key=self.panels,
-                                            row=self.panels, 
+                                            row=self.current_page.getSize(), 
                                             column=0, 
                                             sticky='nsew')
+            self.current_page.Queue(detail_panel)
+            self.current_page.getPage().update()
             self.details_panels[self.panels] = detail_panel
             self.panels += 1
             self.details_panel_frame.update()
         except Exception as e:
             ErrorCodes.PrintCustomError(e)
+    
+    def NewPage(self):
+        page = MiniPage(size=self.max_panel_per_page,
+                        parent=self.details_panel_frame)
+        tmp = GUIInterface.current_frame
+        self.page_buttons += 1
+        GUIInterface.current_frame = self.page_button_frame
+        GUIInterface.CreateGrid(self.page_button_frame, 
+                                rows=[1],
+                                cols=[1] * self.page_buttons)
+
+        for i in range(self.page_buttons):
+            self.pages[i] = page
+            page_button = GUIInterface.CreateButton(text=str(i+1), on_click=page.SwitchTo)
+            page_button.grid(row=0, column=i, padx=5)
+        GUIInterface.current_frame = tmp
+        self.details_panel_frame.update()
+        return page
