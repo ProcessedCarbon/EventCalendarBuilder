@@ -348,7 +348,23 @@ class EventsManager:
                                    subtitle_2='No checks for other events are done for this.\nAre you sure you want to schedule?',
                                    button_cb=schedule_mac)
         # Windows
-        else: EventsManager.ScheduleOutlookCalendar(event, schedule_cb)
+        else:
+             def schedule_offline():
+                filename = EventsManager.CreateICSFileFromInput(event)
+                if filename == None:
+                    print('FAILED TO CREATE ICS FILE FOR WINDOWS')
+                    return
+                file = CalendarInterface.getICSFilePath(filename)
+                os.startfile(file)
+                schedule_cb(id=0, platform='')
+
+             popup_mgr.PopupWithTwoBtns(pop_up_name='Default Windows Scheduling',
+                                        subtitle_1='Warning!',
+                                        subtitle_2='Choose schedulling type\nNote: Locally schedule events would not be save in this app.',
+                                        button_cb_2=lambda:EventsManager.ScheduleOutlookCalendar(event, schedule_cb),
+                                        button_cb_1=schedule_offline,
+                                        b1_text="Local",
+                                        b2_text='Outlook')
             
     def ScheduleGoogleCalendar(event, schedule_cb)->[str, list]:
         filename = EventsManager.CreateICSFileFromInput(event)
@@ -406,7 +422,7 @@ class EventsManager:
                                                         json_data={'event': outlook_event})
             details = response[1]
             if 'id' not in details: popup_mgr.BasicPopup('Failed to schedule event for reasons')
-            else: schedule_cb(id=details['id'], platform='Outlook')#EventsManager.ScheduleActions(id=details['id'], platform='Outlook')
+            else: schedule_cb(id=details['id'], platform='Outlook')
 
         # Cannot pass an entire dictionary as a param 
         if len(cal_events) > 0:

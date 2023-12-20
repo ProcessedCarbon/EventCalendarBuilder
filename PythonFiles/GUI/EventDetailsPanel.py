@@ -251,9 +251,10 @@ class EventDetailsPanel:
 
     def ScheduleActions(self, id, platform='Default'):
         #print(f'SCHEDULE ACTIONS RAN FOR ID {id}')
-        self.event.setPlatform(platform)
-        self.event.setId(id)
-        EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-        EventsManager.WriteEventDBToJSON()
-        popup_mgr.BasicPopup(msg='Successfully schedule event', pop_up_name='Success')
+        if platform != '':
+            self.event.setPlatform(platform)
+            self.event.setId(id)
+            EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+            EventsManager.WriteEventDBToJSON()
+            popup_mgr.BasicPopup(msg='Successfully schedule event', pop_up_name='Success')
         self.remove_cb(self.key)
