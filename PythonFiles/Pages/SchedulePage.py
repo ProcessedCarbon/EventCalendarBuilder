@@ -2,6 +2,7 @@ from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
+import GUI.PopupManager as popup_mgr
 
 from math import ceil
 
@@ -10,6 +11,7 @@ class SchedulePage(Page):
         self.details_panels = {}
         self.details_panels_max_column = 3
         self.details_panels_frame = None
+        self.max_panels = 10
         self.panels = 0
         super().__init__()
 
@@ -56,6 +58,10 @@ class SchedulePage(Page):
         detail_rows = ceil(n / self.details_panels_max_column)
         GUIInterface.CreateGrid(self.details_panel_frame, rows=([1] * detail_rows), cols=[1])
         for index, event in enumerate(events):
+            if self.panels == self.max_panels:
+                popup_mgr.BasicPopup(msg=f'Max event panels of {self.max_panels} reached.',
+                                     pop_up_name='Max Event Reached!')
+                break
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                              event=event['object'],
                                              remove_cb=self.RemovePanel,
@@ -90,6 +96,11 @@ class SchedulePage(Page):
 
     def CreateEventButton(self):
         try:
+            if self.panels == self.max_panels:
+                popup_mgr.BasicPopup(msg=f'Max event panels of {self.max_panels} reached.',
+                                     pop_up_name='Max Event Reached!')
+                return
+            
             empty_event = EventsManager.CreateEventObj(id=self.panels,
                                                         name='',
                                                         location='',
