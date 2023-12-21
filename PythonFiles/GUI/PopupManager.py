@@ -36,6 +36,7 @@ def PopupWithBtn(pop_up_name:str, subtitle_1:str, subtitle_2:str, button_cb, tex
     # Prevent clicking and focus of main window
     window.grab_set()
     window.focus_force()
+    GUIInterface.centerWindow(window)
 
     GUIInterface.SetCurrentFrame(tmp)
 
@@ -80,6 +81,7 @@ def PopupWithTwoBtns(pop_up_name:str, subtitle_1:str, subtitle_2:str,
     # Prevent clicking and focus of main window
     window.grab_set()
     window.focus_force()
+    GUIInterface.centerWindow(window)
 
     GUIInterface.SetCurrentFrame(tmp)
 
@@ -100,6 +102,7 @@ def BasicPopup(msg:str, pop_up_name='Failed'):
     # Prevent clicking and focus of main window
     window.grab_set()
     window.focus_force()
+    GUIInterface.centerWindow(window)
 
     GUIInterface.SetCurrentFrame(tmp)
 
@@ -107,7 +110,6 @@ def CreateDateWindow(size='450x450'):
     tmp = GUIInterface.current_frame
 
     window = GUIInterface.CreateNewWindow(window_name='Choose Date', size=size)
-    
     window_frame = GUIInterface.CreateFrame(window)
     window_frame.grid(row=0, column=0, sticky='nsew')
     window_frame.columnconfigure(0, weight=1)
@@ -144,6 +146,7 @@ def CreateDateWindow(size='450x450'):
     # Prevent clicking and focus of main window
     window.grab_set()
     window.focus_force()
+    GUIInterface.centerWindow(window)
 
     GUIInterface.SetCurrentFrame(tmp)
     return window, cal, submit_btn

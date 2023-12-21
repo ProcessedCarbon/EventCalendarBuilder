@@ -6,10 +6,14 @@ import Managers.DirectoryManager as dir_manager
 class GUIInterface:
     current_frame = None    
     root = CTk()
+    monitor_width = root.winfo_screenwidth()
+    monitor_height = root.winfo_screenheight()
     gui_path = dir_manager.getCurrentFileDirectory(__file__)
     default_theme_path = dir_manager.getFilePath(gui_path, 'ColorThemes')
-    #theme_file = 'Anthracite.json'
     color_palette = {}
+
+    def getAppWindowSize():
+        return GUIInterface.root.winfo_screenwidth(), GUIInterface.root.winfo_screenheight()
 
     def CreateFrame(frame_target, **kwargs)->CTkFrame:
         width =         getParamValFromKwarg('width', kwargs, default=200)
@@ -320,6 +324,23 @@ class GUIInterface:
 
         return window
     
+    def centerWindow(window):
+        '''
+        Should be ran after all UI elements of the window has been placed
+        '''
+        w_width, w_height, x_disp, y_disp = GUIInterface.getWindowDisplacement(window)
+        window.geometry(f'{w_width}x{w_height}+{x_disp}+{y_disp}')
+
+    def getWindowDisplacement(window)->[int,int,int,int]:
+        w_width, w_height = GUIInterface.getWindowInfo(window)
+
+        screen_width, screen_height = GUIInterface.getAppWindowSize()
+        # Coordinates of the upper left corner of the window to make the window appear in the center
+        x = int((screen_width/2) - (w_width/2))
+        y = int((screen_height/2) - (w_height/2))
+
+        return w_width, w_height, x, y
+    
     def CreateOptionMenu(**kwargs):
         width =                         getParamValFromKwarg('width', kwargs, default=140)
         height =                        getParamValFromKwarg('height', kwargs, default=28)
@@ -383,6 +404,10 @@ class GUIInterface:
                        underline=underline,
                        overstrike=overstrike
                        )
+
+    def getWindowInfo(window)->[int,int]:
+        window.update()
+        return window.winfo_width(), window.winfo_height()
 
     def UpdateEntry(entry:CTkEntry, text_var:str):
         og_state = entry.cget("state")
