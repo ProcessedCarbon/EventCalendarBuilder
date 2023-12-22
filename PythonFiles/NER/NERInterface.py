@@ -1,5 +1,4 @@
 import spacy
-from Managers.ErrorConfig import ErrorCodes
 import Managers.DirectoryManager as directory_manager
 
 parent_dir = directory_manager.getCurrentFileDirectory(__file__)
@@ -19,7 +18,7 @@ class NERInterface:
         :return: The entities of event, time, date and loc. They can be null
         """
         if text == None or "":
-            ErrorCodes.PrintErrorWithCode(1000)
+            print(f"[{__file__}] INVALID PARAM GIVEN!")
             return
 
         doc = NERInterface.nlp(text) 

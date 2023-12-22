@@ -1,11 +1,10 @@
 from GUI.GUIInterface import GUIInterface
-from Managers.ErrorConfig import ErrorCodes
 from Pages.PageManager import PageManager
 
 class Page:
     def __init__(self):
         if GUIInterface.root == None:
-            ErrorCodes.PrintErrorWithCode(1003)
+            print(f"[{__file__}] MISSING PAGES, PAGE NOT FOUND!")
             return
 
         self.page_color = tuple(GUIInterface.color_palette['CTkFrame']['fg_color'])

@@ -1,7 +1,6 @@
 from pathlib import Path
 import os
 import glob
-from Managers.ErrorConfig import ErrorCodes
 import json
 
 # No need to close file after 'with open()' is used
@@ -11,7 +10,7 @@ def MakeDirectory(dir_path:Path):
     try:
         dir_path.mkdir(parents=True, exist_ok=False)
     except Exception as e:
-        ErrorCodes.PrintCustomError(e)
+            print(f'[{__file__}]: {e}')
 
 def WriteFile(dir_path:Path, file_name:str, content, write_type:['w', 'wb']='w')->bool:
     try:
@@ -19,8 +18,7 @@ def WriteFile(dir_path:Path, file_name:str, content, write_type:['w', 'wb']='w')
             file.write(content)
         return True
     except Exception as e:
-        ErrorCodes.PrintCustomError(e)
-        print(f'FAILED TO WRITE {file_name} TO {dir_path}')
+        print(f'[{__file__}]FAILED TO WRITE {file_name} TO {dir_path}')
         return False
 
 def ReadFile(dir_path:Path, file_name:str, read_type:['r', 'rb']='r'):
@@ -29,8 +27,7 @@ def ReadFile(dir_path:Path, file_name:str, read_type:['r', 'rb']='r'):
             content = file.read()
         return content
     except Exception as e:
-        ErrorCodes.PrintCustomError(e)
-        print(f'FAILED TO READ {file_name} TO {dir_path}')
+        print(f'[{__file__}] FAILED TO READ {file_name} TO {dir_path}')
         return False
     
 def DeleteFilesInDir(dir_path:Path, file_type='ics')->bool:
@@ -55,7 +52,7 @@ def WriteJSON(dir_path:Path, file_name:str, content)->bool:
                 json.dump(content, file)
         return True
     except Exception as e:
-        ErrorCodes.PrintCustomError("FAILED TO JSON DUMP:" + str(e))
+        print(f"[{__file__}] FAILED TO JSON DUMP:" + str(e))
         return False
 
 def ReadJSON(dir_path:Path, file_name:str):
@@ -64,7 +61,7 @@ def ReadJSON(dir_path:Path, file_name:str):
 
      # Check if file exists
     if os.path.getsize(file) == 0:
-        ErrorCodes.PrintCustomError("FILE SIZE == 0")
+        print(f"[{__file__}] FILE SIZE == 0")
         return None
     
     with open(file, 'r') as file:
@@ -72,7 +69,7 @@ def ReadJSON(dir_path:Path, file_name:str):
 
         # Return if file content is empty
         if not content:
-            ErrorCodes.PrintCustomError("JSON IS EMPTY!")
+            print(f"[{__file__}] JSON IS EMPTY!")
             file.close()
             return None
         try:
@@ -80,13 +77,13 @@ def ReadJSON(dir_path:Path, file_name:str):
 
             # Check if file has valid json structure
             if not data:
-                ErrorCodes.PrintCustomError("JSON FILE IS HAS EMPTY JSON STRUCT!")
+                print(f"[{__file__}] JSON FILE IS HAS EMPTY JSON STRUCT!")
                 data = None
                 file.close()
                 return None
         except json.JSONDecodeError as e:
             # No need to set scheduled_data = None here as any changes made by try block wont persist if it fails
-            ErrorCodes.PrintCustomError("INVALID JSON :" + str(e))
+            print(f"[{__file__}]INVALID JSON : {str(e)}")
             return None
     return data
 

@@ -36,8 +36,8 @@ def client_app():
 
     # Page initilialization
     MainPage()                 
-    SchedulePage()          
-    ManageEventPage()   
+    #SchedulePage()          
+    #ManageEventPage()   
     PageManager.SwitchPages(0)
 
     # Toolbar

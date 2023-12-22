@@ -1,5 +1,3 @@
-from Managers.ErrorConfig import ErrorCodes
-
 class PageManager:
     pages = []
     current_page = None
@@ -12,11 +10,11 @@ class PageManager:
     
     def SwitchPages(page:int=0, callback=None):
         if len(PageManager.pages) < 1:
-            ErrorCodes.PrintErrorWithCode(1002)
+            print(f"[{__file__}] NO PAGES FOUND!")
             return
         
         if page > len(PageManager.pages) - 1:
-            ErrorCodes.PrintErrorWithCode(1003)
+            print(f"[{__file__}] MISSING PAGES, PAGE NOT FOUND!")
             return
         
         if PageManager.current_page != None:

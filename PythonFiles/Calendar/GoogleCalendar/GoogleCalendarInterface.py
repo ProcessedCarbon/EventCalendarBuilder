@@ -1,6 +1,5 @@
 import os.path
 import datetime as dt
-from Managers.ErrorConfig import ErrorCodes
 from Calendar.GoogleCalendar.GoogleEvent import GoogleEvent
 from Calendar.CalendarInterface import CalendarInterface
 from Managers.DateTimeManager import DateTimeManager
@@ -44,10 +43,9 @@ class GoogleCalendarInterface:
         
         try:
             GoogleCalendarInterface.service = build("calendar", 'v3', credentials = GoogleCalendarInterface.creds)
-            print("CONNECTION SUCCESSFUL!")
+            print(f"[{__file__}] CONNECTION SUCCESSFUL")
         except HttpError as error:
-            print("CONNECTION FAILFURE")
-            ErrorCodes.PrintCustomError(error)
+            print(f"[{__file__}] CONNECTION FAILURE WITH {error}")
 
     # Calendar event query
     def GetUpcomingCalendarEvent(count: int):
@@ -59,7 +57,7 @@ class GoogleCalendarInterface:
         """
 
         if GoogleCalendarInterface.service == None:
-            ErrorCodes.PrintErrorWithCode(1001)
+            print(f"[{__file__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return
 
         now = dt.datetime.now().isoformat() + "Z"
@@ -91,12 +89,11 @@ class GoogleCalendarInterface:
         """
         
         if GoogleCalendarInterface.service == None:
-            ErrorCodes.PrintErrorWithCode(1001)
+            print(f"[{__file__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return '', []
         
         if type(googleEvent) is not GoogleEvent:
-            ErrorCodes.PrintErrorWithCode(1000)
-            print(f"INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
+            print(f"[{__file__}] INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             return '', []
     
         new_event = GoogleCalendarInterface.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
@@ -131,7 +128,7 @@ class GoogleCalendarInterface:
     # Only expecting 1 event per ics
     def Parse_ICS(ics:str):
         if GoogleCalendarInterface.service == None:
-            ErrorCodes.PrintErrorWithCode(1001)
+            print(f"[{__file__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return
         
         ics_file = CalendarInterface.ReadICSFile(ics)
@@ -179,19 +176,18 @@ class GoogleCalendarInterface:
             event_end = event.getEndDate().replace("T", " ")
 
             if DateTimeManager.hasDateTimeClash(new_event_start, new_event_end, event_start, event_end):
-                print(f'Event to schedule {new_event.getEvent().upper()} has clash with {event.getEvent().upper()}!')
+                #print(f'Event to schedule {new_event.getEvent().upper()} has clash with {event.getEvent().upper()}!')
                 overlapped_events.append(event)
-                #return True
         return overlapped_events #False
     
     def DeleteEvent(id:str)->[bool,str]:
         if GoogleCalendarInterface.service == None:
-            ErrorCodes.PrintErrorWithCode(1001)
+            print(f"[{__file__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return False,''
         
         try:
             GoogleCalendarInterface.service.events().delete(calendarId='primary', eventId=id).execute()
-            print(f"[GOOGLE_INTERFACE] EVENT DELETED SUCCESSFULLY")
+            print(f"[{__file__}] EVENT DELETED SUCCESSFULLY")
             return True,''
         except HttpError as e:
             #print(f"Error: {e.error_details[0]['reason']}")

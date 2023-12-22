@@ -3,8 +3,6 @@ import pytz
 from datetime import datetime, timedelta
 from dateutil.parser import parse
 from zoneinfo import ZoneInfo
-from Managers.LocationManager import LocationManager
-from Managers.ErrorConfig import ErrorCodes
 
 class DateTimeManager:
     _months = [
@@ -59,7 +57,7 @@ class DateTimeManager:
             dt = parse(date_string)
             return dt.strftime(format)
         except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+            print(f'[{__file__}]: {e}')
             return None 
     
     def isDateTime(datetime_: str, fuzzy: bool):
@@ -67,7 +65,7 @@ class DateTimeManager:
             parse(datetime_, fuzzy=fuzzy)
             return True
         except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+            print(f'[{__file__}]: {e}')
             return False
         
     def isAPeriod(period_: str):
@@ -133,7 +131,7 @@ class DateTimeManager:
             time_object = datetime.strptime(time_12h, "%I:%M:%S %p")
             return time_object.strftime("%H:%M:%S")
         except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+            print(f'[{__file__}]: {e}')
             return None
     
     def getCurrentDate():
@@ -156,7 +154,7 @@ class DateTimeManager:
                                     )
             return format(new, '%H:%M:%S')
         except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+            print(f'[{__file__}]: {e}')
             return None
     
     # Performs addition to a date
@@ -166,15 +164,14 @@ class DateTimeManager:
             date_string = str(date_obj + timedelta(days=d, weeks=wks))
             return DateTimeManager.FormatToDateTime(date_string, format='%Y-%m-%d')
         except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+            print(f'[{__file__}]: {e}')
             return None
     
     # 2023-05-17 14:00:00+08:00
     # Returns format YYYY-MM-DD HH:MM:SS Z
     def getDateTime(hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
         # Handle timezone
-        country = LocationManager.getCurrentCountry()
-        tz = ZoneInfo(country) if country != None else ZoneInfo("Singapore")
+        tz = ZoneInfo("Singapore")
         return datetime(year, month, day, hour, min, sec, tzinfo=tz)
     
     # Accepts only format of YYYY-MM-DD HH:MM:SS z for both
@@ -189,7 +186,7 @@ class DateTimeManager:
             
             return start_1 <= end_2 and start_2 <= end_1
         except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+            print(f'[{__file__}]: {e}')
 
     def CompareTimes(time_str1, time_str2, fmt='%H:%M:%S')->bool:
         """Compare two time strings and print if the first is smaller, equal, or larger than the second."""
@@ -209,28 +206,3 @@ class DateTimeManager:
     
     def getDateTimeObject(time, fmt='%H:%M:%S'):
         return datetime.strptime(time, fmt)
-    
-# For testing
-def main():
-    dt_config = DateTimeManager()
-    # Testing for time
-    # test_tz = "SST"
-    # test_cc = "SG"
-    # print(dt_config.getTimeZone(country_="Singapore"))
-
-    # test_12h = "7pm"
-    # print(dt_config.convertTime12HTo24H(test_12h))
-
-    # print("Time: " , dt_config.getCurrentTime())
-    # print("Date: " , dt_config.getCurrentDate())
-
-    # current_time = dt_config.getCurrentTime()
-    # new_time = dt_config.AddToTime(time=str(current_time), hrs=1)
-    # print("New Time: " , new_time)
-
-    # current_date = dt_config.getCurrentDate()
-    # new_date = dt_config.AddToDate(date=str(current_date), d=1)
-    # print("New date: ", new_date)
-
-if __name__ == "__main__":
-    main()

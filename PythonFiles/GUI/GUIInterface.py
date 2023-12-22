@@ -1,6 +1,5 @@
 from tkinter import *
 from customtkinter import *
-from Managers.ErrorConfig import getParamValFromKwarg
 import Managers.DirectoryManager as dir_manager
 
 class GUIInterface:
@@ -16,12 +15,12 @@ class GUIInterface:
         return GUIInterface.root.winfo_screenwidth(), GUIInterface.root.winfo_screenheight()
 
     def CreateFrame(frame_target, **kwargs)->CTkFrame:
-        width =         getParamValFromKwarg('width', kwargs, default=200)
-        height =        getParamValFromKwarg('height', kwargs, default=200)
-        border_width =  getParamValFromKwarg('border_width', kwargs)
-        fg_color =      getParamValFromKwarg('fg_color', kwargs)
-        border_color =  getParamValFromKwarg('border_color', kwargs)
-        bg_color =      getParamValFromKwarg('bg_color', kwargs, default='transparent')
+        width =         GUIInterface.getParamValFromKwarg('width', kwargs, default=200)
+        height =        GUIInterface.getParamValFromKwarg('height', kwargs, default=200)
+        border_width =  GUIInterface.getParamValFromKwarg('border_width', kwargs)
+        fg_color =      GUIInterface.getParamValFromKwarg('fg_color', kwargs)
+        border_color =  GUIInterface.getParamValFromKwarg('border_color', kwargs)
+        bg_color =      GUIInterface.getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         frame = CTkFrame(frame_target,
                          width=width,
@@ -35,22 +34,22 @@ class GUIInterface:
         return frame
     
     def CreateScrollableFrame(frame_target, **kwargs)->CTkScrollableFrame:
-        width =         getParamValFromKwarg('width', kwargs, default=200)
-        height =        getParamValFromKwarg('height', kwargs, default=200)
-        corner_radius = getParamValFromKwarg('height', kwargs)
-        border_width =  getParamValFromKwarg('border_width', kwargs)
-        fg_color =      getParamValFromKwarg('fg_color', kwargs)
-        border_color =  getParamValFromKwarg('border_color', kwargs)
-        scrollbar_fg_color = getParamValFromKwarg('scrollbar_fg_color', kwargs)
-        scrollbar_button_color = getParamValFromKwarg('scrollbar_button_color', kwargs)
-        scrollbar_button_hover_color = getParamValFromKwarg('scrollbar_button_hover_color', kwargs)
-        label_fg_color = getParamValFromKwarg('label_fg_color', kwargs)
-        label_text_color = getParamValFromKwarg('label_text_color', kwargs)
-        label_text = getParamValFromKwarg('label_text_color', kwargs)
-        label_font = getParamValFromKwarg('label_font', kwargs)
-        label_anchor = getParamValFromKwarg('label_anchor', kwargs, default='center')
-        orientation = getParamValFromKwarg('orientation', kwargs, default='vertical')
-        bg_color = getParamValFromKwarg('bg_color', kwargs, default='transparent')
+        width =         GUIInterface.getParamValFromKwarg('width', kwargs, default=200)
+        height =        GUIInterface.getParamValFromKwarg('height', kwargs, default=200)
+        corner_radius = GUIInterface.getParamValFromKwarg('height', kwargs)
+        border_width =  GUIInterface.getParamValFromKwarg('border_width', kwargs)
+        fg_color =      GUIInterface.getParamValFromKwarg('fg_color', kwargs)
+        border_color =  GUIInterface.getParamValFromKwarg('border_color', kwargs)
+        scrollbar_fg_color = GUIInterface.getParamValFromKwarg('scrollbar_fg_color', kwargs)
+        scrollbar_button_color = GUIInterface.getParamValFromKwarg('scrollbar_button_color', kwargs)
+        scrollbar_button_hover_color = GUIInterface.getParamValFromKwarg('scrollbar_button_hover_color', kwargs)
+        label_fg_color = GUIInterface.getParamValFromKwarg('label_fg_color', kwargs)
+        label_text_color = GUIInterface.getParamValFromKwarg('label_text_color', kwargs)
+        label_text = GUIInterface.getParamValFromKwarg('label_text_color', kwargs)
+        label_font = GUIInterface.getParamValFromKwarg('label_font', kwargs)
+        label_anchor = GUIInterface.getParamValFromKwarg('label_anchor', kwargs, default='center')
+        orientation = GUIInterface.getParamValFromKwarg('orientation', kwargs, default='vertical')
+        bg_color = GUIInterface.getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         scrollable_frame = CTkScrollableFrame(frame_target,
                                               width=width,
@@ -72,24 +71,24 @@ class GUIInterface:
         return scrollable_frame
 
     def CreateButton(on_click=None, **kwargs)->CTkButton:
-        width =                 getParamValFromKwarg('width', kwargs, default=140)
-        height =                getParamValFromKwarg('height', kwargs, default=28)
-        border_width =          getParamValFromKwarg('border_width', kwargs)
-        fg_color =              getParamValFromKwarg('fg_color', kwargs)
-        border_color =          getParamValFromKwarg('border_color', kwargs)
-        border_spacing =        getParamValFromKwarg('border_spacing', kwargs, default=2)
-        corner_radius =         getParamValFromKwarg('corner_radius', kwargs, default=10)
-        hover_color =           getParamValFromKwarg('hover_color', kwargs, tuple(GUIInterface.color_palette['CTkButton']['hover_color']))
-        text_color =            getParamValFromKwarg('text_color', kwargs)
-        text_color_disabled =   getParamValFromKwarg('text_color_disabled', kwargs)
-        font =                  getParamValFromKwarg('font', kwargs, default=GUIInterface.getCTKFont(weight="bold"))
-        textvariable =          getParamValFromKwarg('textvariable', kwargs)
-        image =                 getParamValFromKwarg('image', kwargs)
-        state =                 getParamValFromKwarg('state', kwargs, default='normal')
-        hover =                 getParamValFromKwarg('hover', kwargs, True)
-        compound =              getParamValFromKwarg('compound', kwargs, default='left')
-        anchor =                getParamValFromKwarg('anchor', kwargs, default='center')
-        text =                  getParamValFromKwarg('text', kwargs, default='Button')
+        width =                 GUIInterface.getParamValFromKwarg('width', kwargs, default=140)
+        height =                GUIInterface.getParamValFromKwarg('height', kwargs, default=28)
+        border_width =          GUIInterface.getParamValFromKwarg('border_width', kwargs)
+        fg_color =              GUIInterface.getParamValFromKwarg('fg_color', kwargs)
+        border_color =          GUIInterface.getParamValFromKwarg('border_color', kwargs)
+        border_spacing =        GUIInterface.getParamValFromKwarg('border_spacing', kwargs, default=2)
+        corner_radius =         GUIInterface.getParamValFromKwarg('corner_radius', kwargs, default=10)
+        hover_color =           GUIInterface.getParamValFromKwarg('hover_color', kwargs, tuple(GUIInterface.color_palette['CTkButton']['hover_color']))
+        text_color =            GUIInterface.getParamValFromKwarg('text_color', kwargs)
+        text_color_disabled =   GUIInterface.getParamValFromKwarg('text_color_disabled', kwargs)
+        font =                  GUIInterface.getParamValFromKwarg('font', kwargs, default=GUIInterface.getCTKFont(weight="bold"))
+        textvariable =          GUIInterface.getParamValFromKwarg('textvariable', kwargs)
+        image =                 GUIInterface.getParamValFromKwarg('image', kwargs)
+        state =                 GUIInterface.getParamValFromKwarg('state', kwargs, default='normal')
+        hover =                 GUIInterface.getParamValFromKwarg('hover', kwargs, True)
+        compound =              GUIInterface.getParamValFromKwarg('compound', kwargs, default='left')
+        anchor =                GUIInterface.getParamValFromKwarg('anchor', kwargs, default='center')
+        text =                  GUIInterface.getParamValFromKwarg('text', kwargs, default='Button')
 
 
         myButton = CTkButton(GUIInterface.current_frame, 
@@ -115,18 +114,18 @@ class GUIInterface:
         return myButton
         
     def CreateLabel(text:str, **kwargs)->CTkLabel:
-        width =             getParamValFromKwarg('width', kwargs, default=0)
-        height =            getParamValFromKwarg('height', kwargs, default=28)
-        fg_color =          getParamValFromKwarg('fg_color', kwargs, default='transparent')
-        text_color =        getParamValFromKwarg('text_color', kwargs)
-        font =              getParamValFromKwarg('font', kwargs)
-        textvariable =      getParamValFromKwarg('textvariable', kwargs)
-        corner_radius =     getParamValFromKwarg('corner_radius', kwargs)
-        anchor =            getParamValFromKwarg('anchor', kwargs, default='center')
-        compound =          getParamValFromKwarg('compound', kwargs, default='center')
-        justify =           getParamValFromKwarg('justify', kwargs, default='center')
-        padx =              getParamValFromKwarg('padx', kwargs, default=1)
-        pady =              getParamValFromKwarg('pady', kwargs, default=1)
+        width =             GUIInterface.getParamValFromKwarg('width', kwargs, default=0)
+        height =            GUIInterface.getParamValFromKwarg('height', kwargs, default=28)
+        fg_color =          GUIInterface.getParamValFromKwarg('fg_color', kwargs, default='transparent')
+        text_color =        GUIInterface.getParamValFromKwarg('text_color', kwargs)
+        font =              GUIInterface.getParamValFromKwarg('font', kwargs)
+        textvariable =      GUIInterface.getParamValFromKwarg('textvariable', kwargs)
+        corner_radius =     GUIInterface.getParamValFromKwarg('corner_radius', kwargs)
+        anchor =            GUIInterface.getParamValFromKwarg('anchor', kwargs, default='center')
+        compound =          GUIInterface.getParamValFromKwarg('compound', kwargs, default='center')
+        justify =           GUIInterface.getParamValFromKwarg('justify', kwargs, default='center')
+        padx =              GUIInterface.getParamValFromKwarg('padx', kwargs, default=1)
+        pady =              GUIInterface.getParamValFromKwarg('pady', kwargs, default=1)
 
         myLabel = CTkLabel(GUIInterface.current_frame, 
                            text=text,
@@ -145,17 +144,17 @@ class GUIInterface:
         return myLabel
 
     def CreateEntry(**kwargs)->CTkEntry:
-        width =                     getParamValFromKwarg('width', kwargs, default=140)
-        height =                    getParamValFromKwarg('height', kwargs, default=28)
-        fg_color =                  getParamValFromKwarg('fg_color', kwargs)
-        text_color =                getParamValFromKwarg('text_color', kwargs)
-        font =                      getParamValFromKwarg('font', kwargs)
-        textvariable =              getParamValFromKwarg('textvariable', kwargs)
-        corner_radius =             getParamValFromKwarg('corner_radius', kwargs)
-        placeholder_text_color =    getParamValFromKwarg('placeholder_text_color', kwargs, default='grey')
-        placeholder_text =          getParamValFromKwarg('placeholder_text', kwargs)
-        state =                     getParamValFromKwarg('state', kwargs, default='normal')
-        bg_color =                  getParamValFromKwarg('bg_color', kwargs, default='transparent')
+        width =                     GUIInterface.getParamValFromKwarg('width', kwargs, default=140)
+        height =                    GUIInterface.getParamValFromKwarg('height', kwargs, default=28)
+        fg_color =                  GUIInterface.getParamValFromKwarg('fg_color', kwargs)
+        text_color =                GUIInterface.getParamValFromKwarg('text_color', kwargs)
+        font =                      GUIInterface.getParamValFromKwarg('font', kwargs)
+        textvariable =              GUIInterface.getParamValFromKwarg('textvariable', kwargs)
+        corner_radius =             GUIInterface.getParamValFromKwarg('corner_radius', kwargs)
+        placeholder_text_color =    GUIInterface.getParamValFromKwarg('placeholder_text_color', kwargs, default='grey')
+        placeholder_text =          GUIInterface.getParamValFromKwarg('placeholder_text', kwargs)
+        state =                     GUIInterface.getParamValFromKwarg('state', kwargs, default='normal')
+        bg_color =                  GUIInterface.getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         textInput = CTkEntry(GUIInterface.current_frame, 
                              width=width,
@@ -171,20 +170,20 @@ class GUIInterface:
         return textInput
     
     def CreateTextbox(**kwargs)->CTkTextbox:
-        width =                         getParamValFromKwarg('width', kwargs, default=200)
-        height =                        getParamValFromKwarg('height', kwargs, default=200)
-        fg_color =                      getParamValFromKwarg('fg_color', kwargs)
-        text_color =                    getParamValFromKwarg('text_color', kwargs)
-        font =                          getParamValFromKwarg('font', kwargs)
-        corner_radius =                 getParamValFromKwarg('corner_radius', kwargs)
-        state =                         getParamValFromKwarg('state', kwargs)
-        border_width =                  getParamValFromKwarg('border_width', kwargs)
-        border_spacing =                getParamValFromKwarg('border_spacing', kwargs, default=3)
-        border_color =                  getParamValFromKwarg('border_color', kwargs)
-        scrollbar_button_color =        getParamValFromKwarg('scrollbar_button_color', kwargs)
-        scrollbar_button_hover_color =  getParamValFromKwarg('scrollbar_button_color', kwargs)
-        activate_scrollbars =           getParamValFromKwarg('activate_scrollbars', kwargs, default=True)
-        wrap =                          getParamValFromKwarg('wrap', kwargs, default='char')
+        width =                         GUIInterface.getParamValFromKwarg('width', kwargs, default=200)
+        height =                        GUIInterface.getParamValFromKwarg('height', kwargs, default=200)
+        fg_color =                      GUIInterface.getParamValFromKwarg('fg_color', kwargs)
+        text_color =                    GUIInterface.getParamValFromKwarg('text_color', kwargs)
+        font =                          GUIInterface.getParamValFromKwarg('font', kwargs)
+        corner_radius =                 GUIInterface.getParamValFromKwarg('corner_radius', kwargs)
+        state =                         GUIInterface.getParamValFromKwarg('state', kwargs)
+        border_width =                  GUIInterface.getParamValFromKwarg('border_width', kwargs)
+        border_spacing =                GUIInterface.getParamValFromKwarg('border_spacing', kwargs, default=3)
+        border_color =                  GUIInterface.getParamValFromKwarg('border_color', kwargs)
+        scrollbar_button_color =        GUIInterface.getParamValFromKwarg('scrollbar_button_color', kwargs)
+        scrollbar_button_hover_color =  GUIInterface.getParamValFromKwarg('scrollbar_button_color', kwargs)
+        activate_scrollbars =           GUIInterface.getParamValFromKwarg('activate_scrollbars', kwargs, default=True)
+        wrap =                          GUIInterface.getParamValFromKwarg('wrap', kwargs, default='char')
 
         text = CTkTextbox(GUIInterface.current_frame, 
                           height=height, 
@@ -204,26 +203,26 @@ class GUIInterface:
         return text
     
     def CreateComboBox(values:list[str], **kwargs)->CTkComboBox:
-        width =                         getParamValFromKwarg('width', kwargs, default=140)
-        height =                        getParamValFromKwarg('height', kwargs, default=28)
-        fg_color =                      getParamValFromKwarg('fg_color', kwargs)
-        text_color =                    getParamValFromKwarg('text_color', kwargs)
-        text_color_disabled =           getParamValFromKwarg('text_color_disabled', kwargs)
-        font =                          getParamValFromKwarg('font', kwargs)
-        corner_radius =                 getParamValFromKwarg('corner_radius', kwargs)
-        state =                         getParamValFromKwarg('state', kwargs, default='readonly')
-        border_width =                  getParamValFromKwarg('border_width', kwargs)
-        border_color =                  getParamValFromKwarg('border_color', kwargs)
-        button_color =                  getParamValFromKwarg('button_color', kwargs)
-        button_hover_color =            getParamValFromKwarg('button_hover_color', kwargs)
-        dropdown_fg_color =             getParamValFromKwarg('dropdown_fg_color', kwargs)
-        dropdown_hover_color =          getParamValFromKwarg('dropdown_hover_color', kwargs)
-        dropdown_text_color =           getParamValFromKwarg('dropdown_text_color', kwargs)
-        dropdown_font =                 getParamValFromKwarg('dropdown_font', kwargs)
-        hover =                         getParamValFromKwarg('hover', kwargs)
-        command =                       getParamValFromKwarg('command', kwargs)
-        variable =                      getParamValFromKwarg('variable', kwargs)
-        justify =                       getParamValFromKwarg('justify', kwargs, default='left')
+        width =                         GUIInterface.getParamValFromKwarg('width', kwargs, default=140)
+        height =                        GUIInterface.getParamValFromKwarg('height', kwargs, default=28)
+        fg_color =                      GUIInterface.getParamValFromKwarg('fg_color', kwargs)
+        text_color =                    GUIInterface.getParamValFromKwarg('text_color', kwargs)
+        text_color_disabled =           GUIInterface.getParamValFromKwarg('text_color_disabled', kwargs)
+        font =                          GUIInterface.getParamValFromKwarg('font', kwargs)
+        corner_radius =                 GUIInterface.getParamValFromKwarg('corner_radius', kwargs)
+        state =                         GUIInterface.getParamValFromKwarg('state', kwargs, default='readonly')
+        border_width =                  GUIInterface.getParamValFromKwarg('border_width', kwargs)
+        border_color =                  GUIInterface.getParamValFromKwarg('border_color', kwargs)
+        button_color =                  GUIInterface.getParamValFromKwarg('button_color', kwargs)
+        button_hover_color =            GUIInterface.getParamValFromKwarg('button_hover_color', kwargs)
+        dropdown_fg_color =             GUIInterface.getParamValFromKwarg('dropdown_fg_color', kwargs)
+        dropdown_hover_color =          GUIInterface.getParamValFromKwarg('dropdown_hover_color', kwargs)
+        dropdown_text_color =           GUIInterface.getParamValFromKwarg('dropdown_text_color', kwargs)
+        dropdown_font =                 GUIInterface.getParamValFromKwarg('dropdown_font', kwargs)
+        hover =                         GUIInterface.getParamValFromKwarg('hover', kwargs)
+        command =                       GUIInterface.getParamValFromKwarg('command', kwargs)
+        variable =                      GUIInterface.getParamValFromKwarg('variable', kwargs)
+        justify =                       GUIInterface.getParamValFromKwarg('justify', kwargs, default='left')
 
         combobox = CTkComboBox(GUIInterface.current_frame, 
                                values=values, 
@@ -258,10 +257,10 @@ class GUIInterface:
             target.grid_columnconfigure(i, weight=cols[i])
 
     def CreateEntryWithLabel(label:str, **kwargs)->list[CTkFrame, CTkLabel, CTkEntry]:
-        entry_width =       getParamValFromKwarg('entry_width', kwargs)
-        default_text =      getParamValFromKwarg('default_text', kwargs)
-        entry_state =       getParamValFromKwarg('entry_state', kwargs)
-        placeholder_text =  getParamValFromKwarg('placeholder_text', kwargs)
+        entry_width =       GUIInterface.getParamValFromKwarg('entry_width', kwargs)
+        default_text =      GUIInterface.getParamValFromKwarg('default_text', kwargs)
+        entry_state =       GUIInterface.getParamValFromKwarg('entry_state', kwargs)
+        placeholder_text =  GUIInterface.getParamValFromKwarg('placeholder_text', kwargs)
 
         tmp_frame = GUIInterface.current_frame
         entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame, 
@@ -342,27 +341,27 @@ class GUIInterface:
         return w_width, w_height, x, y
     
     def CreateOptionMenu(**kwargs):
-        width =                         getParamValFromKwarg('width', kwargs, default=140)
-        height =                        getParamValFromKwarg('height', kwargs, default=28)
-        corner_radius =                        getParamValFromKwarg('corner_radius', kwargs)
-        bg_color =                        getParamValFromKwarg('bg_color', kwargs, default='transparent')
-        fg_color =                        getParamValFromKwarg('fg_color', kwargs)
-        button_color =                        getParamValFromKwarg('button_color', kwargs)
-        button_hover_color =                        getParamValFromKwarg('button_hover_color', kwargs)
-        text_color =                        getParamValFromKwarg('text_color', kwargs)
-        text_color_disabled =                        getParamValFromKwarg('text_color_disabled', kwargs)
-        dropdown_fg_color =                        getParamValFromKwarg('dropdown_fg_color', kwargs)
-        dropdown_hover_color =                        getParamValFromKwarg('dropdown_hover_color', kwargs)
-        dropdown_text_color =                        getParamValFromKwarg('dropdown_text_color', kwargs)
-        font =                        getParamValFromKwarg('font', kwargs)
-        dropdown_font =                        getParamValFromKwarg('dropdown_font', kwargs)
-        values =                        getParamValFromKwarg('values', kwargs)
-        variable =                        getParamValFromKwarg('variable', kwargs)
-        state =                        getParamValFromKwarg('state', kwargs, default=NORMAL)
-        hover =                        getParamValFromKwarg('hover', kwargs, default=True)
-        command =                        getParamValFromKwarg('command', kwargs)
-        dynamic_resizing =                        getParamValFromKwarg('dynamic_resizing', kwargs, default=True)
-        anchor =                        getParamValFromKwarg('anchor', kwargs, default='w')
+        width =                         GUIInterface.getParamValFromKwarg('width', kwargs, default=140)
+        height =                        GUIInterface.getParamValFromKwarg('height', kwargs, default=28)
+        corner_radius =                        GUIInterface.getParamValFromKwarg('corner_radius', kwargs)
+        bg_color =                        GUIInterface.getParamValFromKwarg('bg_color', kwargs, default='transparent')
+        fg_color =                        GUIInterface.getParamValFromKwarg('fg_color', kwargs)
+        button_color =                        GUIInterface.getParamValFromKwarg('button_color', kwargs)
+        button_hover_color =                        GUIInterface.getParamValFromKwarg('button_hover_color', kwargs)
+        text_color =                        GUIInterface.getParamValFromKwarg('text_color', kwargs)
+        text_color_disabled =                        GUIInterface.getParamValFromKwarg('text_color_disabled', kwargs)
+        dropdown_fg_color =                        GUIInterface.getParamValFromKwarg('dropdown_fg_color', kwargs)
+        dropdown_hover_color =                        GUIInterface.getParamValFromKwarg('dropdown_hover_color', kwargs)
+        dropdown_text_color =                        GUIInterface.getParamValFromKwarg('dropdown_text_color', kwargs)
+        font =                        GUIInterface.getParamValFromKwarg('font', kwargs)
+        dropdown_font =                        GUIInterface.getParamValFromKwarg('dropdown_font', kwargs)
+        values =                        GUIInterface.getParamValFromKwarg('values', kwargs)
+        variable =                        GUIInterface.getParamValFromKwarg('variable', kwargs)
+        state =                        GUIInterface.getParamValFromKwarg('state', kwargs, default=NORMAL)
+        hover =                        GUIInterface.getParamValFromKwarg('hover', kwargs, default=True)
+        command =                        GUIInterface.getParamValFromKwarg('command', kwargs)
+        dynamic_resizing =                        GUIInterface.getParamValFromKwarg('dynamic_resizing', kwargs, default=True)
+        anchor =                        GUIInterface.getParamValFromKwarg('anchor', kwargs, default='w')
 
         option_menu = CTkOptionMenu(master=GUIInterface.current_frame,
                                     width=width,
@@ -389,12 +388,12 @@ class GUIInterface:
         return option_menu
 
     def getCTKFont(**kwargs):
-        family = getParamValFromKwarg('family', kwargs)
-        size = getParamValFromKwarg('size', kwargs)
-        weight = getParamValFromKwarg('weight', kwargs)
-        slant = getParamValFromKwarg('slant', kwargs, 'roman')
-        underline = getParamValFromKwarg('slant', kwargs, False)
-        overstrike = getParamValFromKwarg('slant', kwargs, False)
+        family = GUIInterface.getParamValFromKwarg('family', kwargs)
+        size = GUIInterface.getParamValFromKwarg('size', kwargs)
+        weight = GUIInterface.getParamValFromKwarg('weight', kwargs)
+        slant = GUIInterface.getParamValFromKwarg('slant', kwargs, 'roman')
+        underline = GUIInterface.getParamValFromKwarg('slant', kwargs, False)
+        overstrike = GUIInterface.getParamValFromKwarg('slant', kwargs, False)
 
 
         return CTkFont(family=family,
@@ -458,4 +457,7 @@ class GUIInterface:
 
     def MainLoop(self):
         self.root.mainloop()
+
+    def getParamValFromKwarg(param_name:str, kwargs:dict, default=None):
+        return kwargs[param_name] if param_name in kwargs else default
         

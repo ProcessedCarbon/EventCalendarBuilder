@@ -119,4 +119,4 @@ class SchedulePage(Page):
             self.panels += 1
             self.details_panel_frame.update()
         except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+            print(f"[{__file__}]: {e}")

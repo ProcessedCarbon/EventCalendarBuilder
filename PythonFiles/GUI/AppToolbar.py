@@ -1,5 +1,4 @@
 from GUI.GUIInterface import GUIInterface
-from Managers.ErrorConfig import ErrorCodes
 from Pages.PageManager import PageManager
 
 class AppToolbar:
@@ -46,11 +45,12 @@ class AppToolbar:
     def ChangeToPage(self, page:int)->bool:
         n = len(PageManager.pages)
         if n == 0:
-            ErrorCodes.PrintCustomError("NO PAGES AVAILABLE!")
+            #ErrorCodes.PrintCustomError("NO PAGES AVAILABLE!")
+            print(f"[{__file__}] NO PAGES AVAILABLE!")
             return False
 
         if page > n:
-            ErrorCodes.PrintCustomError("PAGE DOES NOT EXISTS!")
+            print(f"[{__file__}] PAGE DOES NOT EXISTS!")
             return False
         
         PageManager.SwitchPages(page)

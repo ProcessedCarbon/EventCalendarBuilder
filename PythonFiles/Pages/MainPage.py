@@ -3,7 +3,6 @@ from NER.NERInterface import NERInterface
 from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
 from GUI.GUIInterface import GUIInterface
-from Managers.ErrorConfig import ErrorCodes
 import GUI.PopupManager as popup_mgr
 
 class MainPage(Page):
@@ -46,7 +45,7 @@ class MainPage(Page):
         if self.main_page_textbox != None:
             GUIInterface.ClearTextBox(self.main_page_textbox)
             return
-        ErrorCodes.PrintCustomError("MISSING TEXTBOX REFERENCE")
+        print(f"[{__file__}] MISSING TEXTBOX REFERENCE")
 
     def Submit(self, textbox):
         success = self.ReadAndProcessText(textbox)

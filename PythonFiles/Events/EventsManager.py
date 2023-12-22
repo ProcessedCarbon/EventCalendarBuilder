@@ -2,7 +2,6 @@ import subprocess
 from uuid import uuid4
 from Calendar.CalendarInterface import CalendarInterface
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
-from Managers.ErrorConfig import ErrorCodes
 from pathlib import Path
 import os
 import Managers.DirectoryManager as directory_manager
@@ -194,7 +193,7 @@ class EventsManager:
             directory_manager.WriteJSON(EventsManager.local_events_dir, EventsManager.event_json, db_copy)
 
         except Exception as e:
-            ErrorCodes.PrintCustomError(e)
+            print(f'[{__file__}]: {e}')
 
     def AddEventToEventDB(event:Event, target=None):
         '''
@@ -202,7 +201,7 @@ class EventsManager:
         Works with the assumption that event db is updated
         '''
         if target == None:
-            ErrorCodes.PrintCustomError("MISSING DB TARGET")
+            print(f"[{__file__}] MISSING DB TARGET")
             return
 
         event_dict = event.getEventDict()
@@ -211,7 +210,7 @@ class EventsManager:
     
     def RemoveFromEventDB(id:str, target=None)->bool:
         if target == None:
-            ErrorCodes.PrintCustomError("MISSING DB TARGET")
+            ErrorCodes.PrintCustomError(f"[{__file__}] MISSING DB TARGET")
             return False
         
         print(f'target_id: {id}')

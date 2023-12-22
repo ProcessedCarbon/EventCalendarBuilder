@@ -1,5 +1,4 @@
 from GUI.GUIInterface import GUIInterface
-from Managers.ErrorConfig import getParamValFromKwarg
 from Events.EventsManager import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
@@ -29,9 +28,9 @@ class EventDetailsPanel:
                                                       fg_color=GUIInterface.color_palette['CTkFrame']['border_color'][0])
 
         # Find grid in parent to place this event panel
-        row = getParamValFromKwarg("row", self.grid_params, default=0)
-        column = getParamValFromKwarg("column", self.grid_params, default=0)
-        sticky = getParamValFromKwarg("sticky", self.grid_params, default='nsew')
+        row = GUIInterface.getParamValFromKwarg("row", self.grid_params, default=0)
+        column = GUIInterface.getParamValFromKwarg("column", self.grid_params, default=0)
+        sticky = GUIInterface.getParamValFromKwarg("sticky", self.grid_params, default='nsew')
         self.details_frame.grid(row=row, 
                                 column=column, 
                                 sticky=sticky, 
