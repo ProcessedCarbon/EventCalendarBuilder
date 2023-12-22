@@ -210,7 +210,7 @@ class EventsManager:
     
     def RemoveFromEventDB(id:str, target=None)->bool:
         if target == None:
-            ErrorCodes.PrintCustomError(f"[{__file__}] MISSING DB TARGET")
+            print(f"[{__file__}] MISSING DB TARGET")
             return False
         
         print(f'target_id: {id}')
