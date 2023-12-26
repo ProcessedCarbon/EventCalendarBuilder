@@ -22,3 +22,11 @@ PythonFiles/GUI/ColorThemes/Sweetkind.json
 PythonFiles/GUI/ColorThemes/TestCard.json
 PythonFiles/GUI/ColorThemes/TrojanBlue.json
 dev_venv
+PythonFiles/__pycache__
+PythonFiles/Calendar/__pycache__
+PythonFiles/EdittedPackages/__pycache__
+PythonFiles/Events/__pycache__
+PythonFiles/GUI/__pycache__
+PythonFiles/Managers/__pycache__
+PythonFiles/NER/__pycache__
+PythonFiles/Pages/__pycache__
