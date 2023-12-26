@@ -30,3 +30,4 @@ PythonFiles/GUI/__pycache__
 PythonFiles/Managers/__pycache__
 PythonFiles/NER/__pycache__
 PythonFiles/Pages/__pycache__
+.DS_Store
