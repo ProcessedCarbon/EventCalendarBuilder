@@ -113,10 +113,8 @@ class EventsManager:
     # Only contains events that are scheduled by app
     events_db = []
 
-    try:
-        local_events_dir.mkdir(parents=True, exist_ok=False)
-    except:
-        print("EVENTS DIR ALREADY EXISTS")
+    try: local_events_dir.mkdir(parents=True, exist_ok=False)
+    except: print(f"[{__file__}]EVENTS DIR ALREADY EXISTS")
 
     def CreateEventObj(name:str, 
                     location:str, 
@@ -160,7 +158,7 @@ class EventsManager:
         # Get event data from JSON
         data = directory_manager.ReadJSON(EventsManager.local_events_dir, EventsManager.event_json)
         if data == None:
-            print("NO LOCALLLY SCHEDULED EVENTS")
+            print(f"[{__file__}]NO LOCALLLY SCHEDULED EVENTS")
             return
         
         for d in data:
@@ -220,7 +218,7 @@ class EventsManager:
                 target.remove(e)
                 return True
             
-        print("TARGET NOT FOUND!")
+        print(f"[{__file__}] REMOVE TARGET NOT FOUND!")
         return False
     
     def ClearEventsJSON():
@@ -335,7 +333,7 @@ class EventsManager:
         if platform == 'darwin':
             filename = EventsManager.CreateICSFileFromInput(event)
             if filename == None:
-                print('FAILED TO CREATE ICS FILE FOR MAC')
+                print(f'[{__file__}] FAILED TO CREATE ICS FILE FOR MAC')
                 return
             file = CalendarInterface.getICSFilePath(filename)
             def schedule_mac(): 
@@ -351,7 +349,7 @@ class EventsManager:
              def schedule_offline():
                 filename = EventsManager.CreateICSFileFromInput(event)
                 if filename == None:
-                    print('FAILED TO CREATE ICS FILE FOR WINDOWS')
+                    print(f'[{__file__}] FAILED TO CREATE ICS FILE FOR WINDOWS')
                     return
                 file = CalendarInterface.getICSFilePath(filename)
                 os.startfile(file)
@@ -368,7 +366,7 @@ class EventsManager:
     def ScheduleGoogleCalendar(event, schedule_cb)->[str, list]:
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
-            print('FAILED TO CREATE ICS FILE FOR GOOGLE')
+            print(f'[{__file__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
             return ''
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
 
@@ -399,7 +397,7 @@ class EventsManager:
     def ScheduleOutlookCalendar(event, schedule_cb)->str:
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
-            print('FAILED TO CREATE ICS FILE FOR OUTLOOK')
+            print(f'[{__file__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
             return ''
         outlook_event = outlook_interface.parse_ics(filename).event
         # Check for any pre-existing event

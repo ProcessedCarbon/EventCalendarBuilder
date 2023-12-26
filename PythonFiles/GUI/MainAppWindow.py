@@ -22,10 +22,10 @@ class MainAppWindow:
         GUIInterface.root.update()
 
     def OnAppClose():
-        print('App Closing')
-        print('Removing ICS files')
+        #print('App Closing')
+        #print('Removing ICS files')
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
         GUIInterface.root.destroy()
         # Kill process
         os.kill(os.getpid(), signal.SIGINT)
-        print('CLOSED')
+        #print('CLOSED')

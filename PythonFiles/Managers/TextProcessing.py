@@ -276,29 +276,6 @@ class TextProcessingManager:
     # Tries and match a string to the regex, returns None if no match is found
     def CheckStringFormat(text, regex='[0-9]{2}:[0-9]{2}:[0-9]{2}'):
         return re.match(regex, text)
-# ================================================  TEST ======================================================================== #
-def Test_ProcessTimeTo12HFormat():
-    print("==========================================================================================")
-    print("Test_ProcessTimeForGoogleCalendars")
-    print("==========================================================================================")
-
-    # Testing for time
-    convert12HTo24H_test_list ={
-        "12am",
-        "1.30am",
-        "1330",
-        "230pm",
-        "1pm",
-        "12.30 - 3pm",
-        "1pm - 3pm",
-        "4-6pm"
-    }
-
-    for t in convert12HTo24H_test_list:
-        print("Original: ", t)
-        print(f"After: {TextProcessingManager.ProcessTime(t)}")
-        print("------------------------------------------------")
-    print("==========================================================================================")
 
     
     

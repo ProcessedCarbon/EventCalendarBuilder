@@ -79,5 +79,5 @@ class GoogleEvent:
             _until = _until.replace(_until[8:10], r_date[6:8])
             return _until
         else:
-            print('NO UNTIL DATE IN RRULE')
+            #print('NO UNTIL DATE IN RRULE')
             return self.getEndDate()

@@ -67,5 +67,5 @@ def RemoveMacCalendarEvents(event_summary)->bool:
         
         stdout, stderr = process.communicate(applescript)
 
-        if stderr: print(f"Error: {stderr}")
-        else: print(f"Result: {stdout}")
+        # if stderr: print(f"Error: {stderr}")
+        # else: print(f"Result: {stdout}")

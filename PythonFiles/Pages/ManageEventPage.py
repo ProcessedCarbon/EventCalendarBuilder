@@ -57,7 +57,7 @@ class ManageEventPage(Page):
                 self.cards[index] = card
     
     def RemoveCard(self, key):
-        print(self.cards)
+        #print(self.cards)
         if key in self.cards:
             success = self.cards[key].Destroy()
             if success:

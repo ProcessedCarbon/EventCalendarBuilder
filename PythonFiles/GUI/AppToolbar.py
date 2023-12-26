@@ -44,7 +44,6 @@ class AppToolbar:
     def ChangeToPage(self, page:int)->bool:
         n = len(PageManager.pages)
         if n == 0:
-            #ErrorCodes.PrintCustomError("NO PAGES AVAILABLE!")
             print(f"[{__file__}] NO PAGES AVAILABLE!")
             return False
 

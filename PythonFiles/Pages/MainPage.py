@@ -65,14 +65,14 @@ class MainPage(Page):
         events = NERInterface.GetEntitiesFromText(text=t)
 
         # Process time and date using the same events list
-        print("Process Events")
+        #print("Process Events")
         p_events = EventsManager.ProcessEvents(events)
         #for e in p_events: print(e)
 
-        print("------------------------------------------------------------------------------")
-        print("Process and Add to event manager list")
+        #print("------------------------------------------------------------------------------")
+        #print("Process and Add to event manager list")
         added_events = EventsManager.AddEvents(events=p_events)
         #for e in added_events: print(e)
-        print("------------------------------------------------------------------------------")            
-        print("Done!")
+        #print("------------------------------------------------------------------------------")            
+        #print("Done!")
         return True

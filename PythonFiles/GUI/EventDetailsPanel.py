@@ -135,7 +135,7 @@ class EventDetailsPanel:
         self.event.setEnd_Time(details['End_Time'])
 
     def UpdateInputFields(self):
-        print(self.details_entries)
+        #print(self.details_entries)
         GUIInterface.UpdateEntry(self.details_entries["Event"], self.event.getName())
         GUIInterface.UpdateEntry(self.details_entries["Location"], self.event.getLocation())
         GUIInterface.UpdateEntry(self.details_entries["Start_Date"], self.event.get_S_Date())
@@ -206,7 +206,7 @@ class EventDetailsPanel:
 
         # Check if all required fields are filled
         if self.getEmptyInputFieldsCount() == self.rows:
-            print("Required field is empty!")
+            #print("Required field is empty!")
             return
         
         input = self.getCurrentInputFieldsInfo()

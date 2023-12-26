@@ -76,7 +76,7 @@ class GoogleCalendarInterface:
             
         for event in events:
             start = event['start'].get('dateTime', event['start'].get('date'))
-            print(start, event['summary'])
+            #print(start, event['summary'])
 
         return events
 
@@ -98,7 +98,7 @@ class GoogleCalendarInterface:
     
         new_event = GoogleCalendarInterface.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
         #print(f'{new_event}\n')
-        print(f"Event created {new_event.get('htmlLink')}")
+        #print(f"Event created {new_event.get('htmlLink')}")
         return new_event['id']
 
     # Creates event datatype
