@@ -24,6 +24,8 @@ PythonFiles/GUI/ColorThemes/TrojanBlue.json
 dev_venv
 PythonFiles/__pycache__
 PythonFiles/Calendar/__pycache__
+PythonFiles/Calendar/GoogleCalendar/__pycache__
+PythonFiles/Calendar/Outlook/__pycache__
 PythonFiles/EdittedPackages/__pycache__
 PythonFiles/Events/__pycache__
 PythonFiles/GUI/__pycache__
