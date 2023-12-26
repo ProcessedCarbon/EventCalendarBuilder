@@ -123,7 +123,7 @@ class EventDetailsPanel:
         recur_option.grid(row=1, column=1, sticky='nsew',pady=self.gap)
         recur_box.set(self.event.getRecurring())
 
-        GUIInterface.SetCurrentFrame(tmp_frame)
+        GUIInterface.current_frame = tmp_frame
 
     def UpdateEventWithDetails(self):
         details = self.getCurrentInputFieldsInfo()

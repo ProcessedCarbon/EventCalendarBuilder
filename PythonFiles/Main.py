@@ -36,8 +36,8 @@ def client_app():
 
     # Page initilialization
     MainPage()                 
-    #SchedulePage()          
-    #ManageEventPage()   
+    SchedulePage()          
+    ManageEventPage()   
     PageManager.SwitchPages(0)
 
     # Toolbar
@@ -45,6 +45,6 @@ def client_app():
     gui.MainLoop()
 
 if __name__ == "__main__":
-    # GoogleCalendarInterface.ConnectToGoogleCalendar()
-    # outlook_interface.start_flask()
+    GoogleCalendarInterface.ConnectToGoogleCalendar()
+    outlook_interface.start_flask()
     client_app()

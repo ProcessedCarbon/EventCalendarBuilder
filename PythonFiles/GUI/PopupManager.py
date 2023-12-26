@@ -37,8 +37,8 @@ def PopupWithBtn(pop_up_name:str, subtitle_1:str, subtitle_2:str, button_cb, tex
     window.grab_set()
     window.focus_force()
     GUIInterface.centerWindow(window)
-
-    GUIInterface.SetCurrentFrame(tmp)
+    
+    GUIInterface.current_frame = tmp
 
 def PopupWithTwoBtns(pop_up_name:str, subtitle_1:str, subtitle_2:str, 
                      button_cb_1, button_cb_2,
@@ -83,7 +83,7 @@ def PopupWithTwoBtns(pop_up_name:str, subtitle_1:str, subtitle_2:str,
     window.focus_force()
     GUIInterface.centerWindow(window)
 
-    GUIInterface.SetCurrentFrame(tmp)
+    GUIInterface.current_frame = tmp
 
 def BasicPopup(msg:str, pop_up_name='Failed'):
     tmp = GUIInterface.current_frame
@@ -104,7 +104,7 @@ def BasicPopup(msg:str, pop_up_name='Failed'):
     window.focus_force()
     GUIInterface.centerWindow(window)
 
-    GUIInterface.SetCurrentFrame(tmp)
+    GUIInterface.current_frame = tmp
 
 def CreateDateWindow(size='450x450'):
     tmp = GUIInterface.current_frame
@@ -148,5 +148,5 @@ def CreateDateWindow(size='450x450'):
     window.focus_force()
     GUIInterface.centerWindow(window)
 
-    GUIInterface.SetCurrentFrame(tmp)
+    GUIInterface.current_frame = tmp
     return window, cal, submit_btn

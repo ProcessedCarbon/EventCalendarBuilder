@@ -30,7 +30,7 @@ class GUIInterface:
                          border_color=border_color,
                          bg_color=bg_color)
         
-        GUIInterface.SetCurrentFrame(frame)
+        GUIInterface.current_frame = frame
         return frame
     
     def CreateScrollableFrame(frame_target, **kwargs)->CTkScrollableFrame:
@@ -282,7 +282,7 @@ class GUIInterface:
         
         entry.grid(row=0, column=1, sticky='e')
 
-        GUIInterface.SetCurrentFrame(tmp_frame)
+        GUIInterface.current_frame = tmp_frame
 
         return entry_frame, label ,entry
     
@@ -303,7 +303,7 @@ class GUIInterface:
         combobox = GUIInterface.CreateOptionMenu(values=dropdown)
         combobox.grid(row=0, column=1, sticky='e')
 
-        GUIInterface.SetCurrentFrame(tmp_frame)
+        GUIInterface.current_frame = tmp_frame
 
         return combo_frame, label, combobox 
 
@@ -430,9 +430,6 @@ class GUIInterface:
 
     def ClearTextBox(textbox:CTkTextbox):
         textbox.delete("0.0", END)
-
-    def SetCurrentFrame(frame):
-        GUIInterface.current_frame = frame
     
     def SetAppearanceMode(new_appearance_mode:str):
         set_appearance_mode(new_appearance_mode)

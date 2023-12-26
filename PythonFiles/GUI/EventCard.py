@@ -111,7 +111,7 @@ class EventCard:
                                                text='Remove')
         remove_btn.grid(row=8, column=0)
 
-        GUIInterface.SetCurrentFrame(tmp_frame)
+        GUIInterface.current_frame = tmp_frame
 
     def Destroy(self)->bool:
         removed_from_cal = self.RemoveFromCalender()

@@ -39,7 +39,7 @@ class MainPage(Page):
         go_to_schedule_btn = GUIInterface.CreateButton(text='To Schedule', on_click=lambda:PageManager.SwitchPages(1))
         go_to_schedule_btn.grid(row=1, column=1)
 
-        GUIInterface.SetCurrentFrame(tmp)
+        GUIInterface.current_frame = tmp
 
     def OnExit(self):
         if self.main_page_textbox != None:
