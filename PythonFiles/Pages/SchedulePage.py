@@ -88,7 +88,7 @@ class SchedulePage(Page):
             self.details_panels[key].Destroy()
             del self.details_panels[key]
             self.details_panel_frame.update()
-            print(f"[{__file__}] SUCCESSFUL REMOVAL OF PANEL {key}")
+            print(f"[{__name__}] SUCCESSFUL REMOVAL OF PANEL {key}")
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
@@ -119,4 +119,4 @@ class SchedulePage(Page):
             self.panels += 1
             self.details_panel_frame.update()
         except Exception as e:
-            print(f"[{__file__}]: {e}")
+            print(f"[{__name__}]: {e}")

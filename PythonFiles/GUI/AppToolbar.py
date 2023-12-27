@@ -44,11 +44,11 @@ class AppToolbar:
     def ChangeToPage(self, page:int)->bool:
         n = len(PageManager.pages)
         if n == 0:
-            print(f"[{__file__}] NO PAGES AVAILABLE!")
+            print(f"[{__name__}] NO PAGES AVAILABLE!")
             return False
 
         if page > n:
-            print(f"[{__file__}] PAGE DOES NOT EXISTS!")
+            print(f"[{__name__}] PAGE DOES NOT EXISTS!")
             return False
         
         PageManager.SwitchPages(page)

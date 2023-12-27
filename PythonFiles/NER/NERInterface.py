@@ -18,7 +18,7 @@ class NERInterface:
         :return: The entities of event, time, date and loc. They can be null
         """
         if text == None or "":
-            print(f"[{__file__}] INVALID PARAM GIVEN!")
+            print(f"[{__name__}] INVALID PARAM GIVEN!")
             return
 
         doc = NERInterface.nlp(text) 

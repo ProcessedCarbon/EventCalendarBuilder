@@ -4,7 +4,7 @@ from Pages.PageManager import PageManager
 class Page:
     def __init__(self):
         if GUIInterface.root == None:
-            print(f"[{__file__}] MISSING PAGES, PAGE NOT FOUND!")
+            print(f"[{__name__}] MISSING PAGES, PAGE NOT FOUND!")
             return
 
         self.page_color = tuple(GUIInterface.color_palette['CTkFrame']['fg_color'])

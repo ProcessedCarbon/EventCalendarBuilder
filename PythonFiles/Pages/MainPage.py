@@ -45,7 +45,7 @@ class MainPage(Page):
         if self.main_page_textbox != None:
             GUIInterface.ClearTextBox(self.main_page_textbox)
             return
-        print(f"[{__file__}] MISSING TEXTBOX REFERENCE")
+        print(f"[{__name__}] MISSING TEXTBOX REFERENCE")
 
     def Submit(self, textbox):
         success = self.ReadAndProcessText(textbox)

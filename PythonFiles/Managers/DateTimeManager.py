@@ -57,7 +57,7 @@ class DateTimeManager:
             dt = parse(date_string)
             return dt.strftime(format)
         except Exception as e:
-            print(f'[{__file__}]: {e}')
+            print(f'[{__name__}]: {e}')
             return None 
     
     def isDateTime(datetime_: str, fuzzy: bool):
@@ -65,7 +65,7 @@ class DateTimeManager:
             parse(datetime_, fuzzy=fuzzy)
             return True
         except Exception as e:
-            print(f'[{__file__}]: {e}')
+            print(f'[{__name__}]: {e}')
             return False
         
     def isAPeriod(period_: str):
@@ -131,7 +131,7 @@ class DateTimeManager:
             time_object = datetime.strptime(time_12h, "%I:%M:%S %p")
             return time_object.strftime("%H:%M:%S")
         except Exception as e:
-            print(f'[{__file__}]: {e}')
+            print(f'[{__name__}]: {e}')
             return None
     
     def getCurrentDate():
@@ -154,7 +154,7 @@ class DateTimeManager:
                                     )
             return format(new, '%H:%M:%S')
         except Exception as e:
-            print(f'[{__file__}]: {e}')
+            print(f'[{__name__}]: {e}')
             return None
     
     # Performs addition to a date
@@ -164,7 +164,7 @@ class DateTimeManager:
             date_string = str(date_obj + timedelta(days=d, weeks=wks))
             return DateTimeManager.FormatToDateTime(date_string, format='%Y-%m-%d')
         except Exception as e:
-            print(f'[{__file__}]: {e}')
+            print(f'[{__name__}]: {e}')
             return None
     
     # 2023-05-17 14:00:00+08:00
@@ -186,7 +186,7 @@ class DateTimeManager:
             
             return start_1 <= end_2 and start_2 <= end_1
         except Exception as e:
-            print(f'[{__file__}]: {e}')
+            print(f'[{__name__}]: {e}')
 
     def CompareTimes(time_str1, time_str2, fmt='%H:%M:%S')->bool:
         """Compare two time strings and print if the first is smaller, equal, or larger than the second."""

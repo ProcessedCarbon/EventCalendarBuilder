@@ -84,7 +84,7 @@ class TextProcessingManager:
         
         # Check return None if time includes seconds, if not check if first digit of hour is single
         if len(string_obj) > 6:
-            print(f"[{__file__}] INVALID PARAM GIVEN!")
+            print(f"[{__name__}] INVALID PARAM GIVEN!")
             return None
         
         # Pad string with zeros till length is even, do not take into account last 2 char when counting len
@@ -111,7 +111,7 @@ class TextProcessingManager:
         """
 
         if date_text == "None" or "" or len(date_text) <= 0:
-            print(f"[{__file__}] INVALID PARAM GIVEN!")
+            print(f"[{__name__}] INVALID PARAM GIVEN!")
             return []
 
         date_to_use = TextProcessingManager.RemoveUncessarySpecialChars(string=date_text, special_char_to_keep=TextProcessingManager._accepted_chars)
@@ -165,7 +165,7 @@ class TextProcessingManager:
         return: list of formatted times suitable for google calendars
         """
         if time_text == "None" or time_text=="" or len(time_text) <= 0:
-            print(f"[{__file__}] INVALID PARAM GIVEN!")
+            print(f"[{__name__}] INVALID PARAM GIVEN!")
             return []
 
         # Form new list of accepted chars which include delims and time periods
