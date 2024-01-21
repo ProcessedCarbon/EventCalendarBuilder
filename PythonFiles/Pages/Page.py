@@ -1,10 +1,12 @@
 from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
+import logging
 
 class Page:
     def __init__(self):
         if GUIInterface.root == None:
-            print(f"[{__name__}] MISSING PAGES, PAGE NOT FOUND!")
+            #print(f"[{__name__}] MISSING PAGES, PAGE NOT FOUND!")
+            logging.error(f"[{__name__}] MISSING PAGES, PAGE NOT FOUND!")
             return
 
         self.page_color = tuple(GUIInterface.color_palette['CTkFrame']['fg_color'])

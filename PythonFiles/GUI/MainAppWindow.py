@@ -1,6 +1,7 @@
 from GUI.GUIInterface import GUIInterface
 from Calendar.CalendarInterface import CalendarInterface
 import os, signal
+import logging
 
 class MainAppWindow:
     aspect = 0.85
@@ -23,9 +24,12 @@ class MainAppWindow:
 
     def OnAppClose():
         #print('App Closing')
+        logging.info('App Closing')
+        logging.info('Removing ICS files')
         #print('Removing ICS files')
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
         GUIInterface.root.destroy()
         # Kill process
         os.kill(os.getpid(), signal.SIGINT)
         #print('CLOSED')
+        logging.info('CLOSED')

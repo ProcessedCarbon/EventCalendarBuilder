@@ -10,6 +10,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import logging
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 # GoogleCalendarAPI_path = "./GoogleCalendarAPI/"
@@ -26,7 +27,8 @@ class GoogleCalendarInterface:
     service = None
     # Tries to establish connection with Google Calendar API
     def ConnectToGoogleCalendar():
-        print("ESTABLISHING CONNECTION TO GOOGLE CALENDARS......")
+        #print("ESTABLISHING CONNECTION TO GOOGLE CALENDARS......")
+        logging.info("ESTABLISHING CONNECTION TO GOOGLE CALENDARS......")
         if os.path.exists(r'token_path'):
             GoogleCalendarInterface.creds = Credentials.from_authorized_user_file(token_path)
         
@@ -43,9 +45,9 @@ class GoogleCalendarInterface:
         
         try:
             GoogleCalendarInterface.service = build("calendar", 'v3', credentials = GoogleCalendarInterface.creds)
-            print(f"[{__name__}] CONNECTION SUCCESSFUL")
+            logging.info(f"[{__name__}] CONNECTION SUCCESSFUL")
         except HttpError as error:
-            print(f"[{__name__}] CONNECTION FAILURE WITH {error}")
+            logging.error(f"[{__name__}] CONNECTION FAILURE WITH {error}")
 
     # Calendar event query
     def GetUpcomingCalendarEvent(count: int):
@@ -89,11 +91,13 @@ class GoogleCalendarInterface:
         """
         
         if GoogleCalendarInterface.service == None:
-            print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            #print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            logging.error(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return '', []
         
         if type(googleEvent) is not GoogleEvent:
-            print(f"[{__name__}] INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
+            #print(f"[{__name__}] INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
+            logging.error(f"[{__name__}] INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             return '', []
     
         new_event = GoogleCalendarInterface.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
@@ -128,7 +132,8 @@ class GoogleCalendarInterface:
     # Only expecting 1 event per ics
     def Parse_ICS(ics:str):
         if GoogleCalendarInterface.service == None:
-            print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            #print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            logging.warning(f"[{__name__}] INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             return
         
         ics_file = CalendarInterface.ReadICSFile(ics)
@@ -182,12 +187,14 @@ class GoogleCalendarInterface:
     
     def DeleteEvent(id:str)->[bool,str]:
         if GoogleCalendarInterface.service == None:
-            print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            #print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return False,''
         
         try:
             GoogleCalendarInterface.service.events().delete(calendarId='primary', eventId=id).execute()
-            print(f"[{__name__}] EVENT DELETED SUCCESSFULLY")
+            #print(f"[{__name__}] EVENT DELETED SUCCESSFULLY")
+            logging.info(f"[{__name__}] EVENT DELETED SUCCESSFULLY")
             return True,''
         except HttpError as e:
             #print(f"Error: {e.error_details[0]['reason']}")

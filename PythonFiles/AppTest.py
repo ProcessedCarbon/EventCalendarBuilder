@@ -19,9 +19,6 @@ def MacCalendarTest():
     for e in mac_events: print(e)
 
 def TextProcessingManagerTest():
-    # from Managers.TextProcessing import TextProcessingManager
-    # test_date = "23rd to 25th Aug"
-    # print(TextProcessingManager.ProcessDate(test_date))
     from Managers.TextProcessing  import Test_ProcessTimeTo12HFormat
     Test_ProcessTimeTo12HFormat()
 
@@ -34,8 +31,6 @@ def OutlookTest():
     f.close()
     from NER.NERInterface import NERInterface
     events = NERInterface.GetEntitiesFromText(content)
-    # print("BEFORE")
-    # for e in events: print(e)
 
     from Managers.TextProcessing import TextProcessingManager
     from Managers.DateTimeManager import DateTimeManager
@@ -80,9 +75,6 @@ def OutlookTest():
 
                 events[i]["DATE_TIME"][date].extend(new_time)
         else: events[i]["DATE_TIME"] = dict(sorted(events[i]["DATE_TIME"].items()))
-
-    # print("MID")
-    # for e in events: print(e)
 
     print("------------------------------------------------------------------------------")
     print("Add to event manager list")
@@ -138,15 +130,3 @@ def NERGroupTest():
 def ColorPaletteTest():
     from GUI.GUIInterface import GUIInterface
     GUIInterface.setColorPalette()
-
-def main():    
-    #TestInstall()
-    #MacCalendarTest()
-    #TextProcessingManagerTest()
-    #OutlookTest()
-    #NERGroupTest()
-    ColorPaletteTest()
-    pass
-
-if __name__ == "__main__":
-    main()

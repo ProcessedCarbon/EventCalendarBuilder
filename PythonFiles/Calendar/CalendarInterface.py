@@ -4,6 +4,7 @@ from pathlib import Path
 import Managers.DirectoryManager as directory_manager
 from datetime import timedelta
 import uuid
+import logging
 
 class CalendarInterface:
     _cal = Calendar()
@@ -85,7 +86,8 @@ class CalendarInterface:
             directory_manager.WriteFile(dir_to_open, f'{file_name}.ics', CalendarInterface._cal.to_ical(), 'wb')
             return True
         except Exception as e:
-            print(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open} because {e}')
+            #print(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open} because {e}')
+            logging.error(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open} because {e}')
             return False
     
     def ReadICSFile(file_name=None):
@@ -111,6 +113,7 @@ class CalendarInterface:
 
         return directory_manager.getFilePath(dir_to_open, f'{file_name}.ics')
     
-    def DeleteICSFilesInDir(dir:Path)->bool:
+    def DeleteICSFilesInDir(dir: Path) ->bool:
         opt = directory_manager.DeleteFilesInDir(dir, 'ics')
         return opt
+    

@@ -88,7 +88,7 @@ class SchedulePage(Page):
             self.details_panels[key].Destroy()
             del self.details_panels[key]
             self.details_panel_frame.update()
-            print(f"[{__name__}] SUCCESSFUL REMOVAL OF PANEL {key}")
+            #print(f"[{__name__}] SUCCESSFUL REMOVAL OF PANEL {key}")
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)

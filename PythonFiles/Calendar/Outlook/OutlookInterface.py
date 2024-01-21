@@ -5,6 +5,7 @@ import webbrowser
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
 import threading
+import logging
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -186,7 +187,8 @@ def delete_event():
     }
 
     response = requests.delete(f"https://graph.microsoft.com/v1.0/me/events/{event_id}", headers=headers)
-    print(f'DELETE RESPONSE STATUS CODE: {response.status_code}')
+    #print(f'DELETE RESPONSE STATUS CODE: {response.status_code}')
+    logging.info(f'DELETE RESPONSE STATUS CODE: {response.status_code}')
     return {}
 
 @app.route('/get_events')
@@ -203,7 +205,8 @@ def get_events():
     }
 
     response = requests.get(f"https://graph.microsoft.com/v1.0/me/events", headers=headers)
-    print(f'GET EVENTS RESPONSE STATUS CODE: {response.status_code}')
+    #print(f'GET EVENTS RESPONSE STATUS CODE: {response.status_code}')
+    logging.info(f'GET EVENTS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
 @app.route('/get_mail_settings')
@@ -215,7 +218,8 @@ def get_mail_settings():
         'Content-Type': 'application/json'
     }
     response = requests.get('https://graph.microsoft.com/v1.0/me/mailboxsettings', headers=headers)
-    print(f'GET MAIL-SETTINGS RESPONSE STATUS CODE: {response.status_code}')
+    #print(f'GET MAIL-SETTINGS RESPONSE STATUS CODE: {response.status_code}')
+    logging.info(f'GET MAIL-SETTINGS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
 # @app.route('/get_timezones')
@@ -274,5 +278,6 @@ def run():
     app.run(host='localhost', port=local_host, use_reloader = False)
 
 def start_flask():
+    logging.info('ESTABLISHING CONNECTION TO OUTLOOK API THROUGH FLASK')
     flask_thread = threading.Thread(target=run)
     flask_thread.start()

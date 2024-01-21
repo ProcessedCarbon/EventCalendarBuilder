@@ -1,6 +1,7 @@
 from Pages.Page import Page
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
+import logging
 
 from GUI.EventCard import EventCard
 
@@ -63,8 +64,11 @@ class ManageEventPage(Page):
             if success:
                 del self.cards[key]
                 self.content_frame.update()
-                print(f"SUCCESSFUL REMOVAL OF PANEL {key}")
-            else: print(f"FAILED TO REMOVE PANEL {key}")
+                #print(f"SUCCESSFUL REMOVAL OF PANEL {key}")
+                logging.info(f"SUCCESSFUL REMOVAL OF PANEL {key}")
+            else: 
+                #print(f"FAILED TO REMOVE PANEL {key}")
+                logging.info(f"FAILED TO REMOVE PANEL {key}")
      
     def Clear(self):
         EventsManager.ClearEventsJSON() # clear events json

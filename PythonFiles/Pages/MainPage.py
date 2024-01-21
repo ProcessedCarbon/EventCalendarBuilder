@@ -4,6 +4,7 @@ from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
 from GUI.GUIInterface import GUIInterface
 import GUI.PopupManager as popup_mgr
+import logging
 
 class MainPage(Page):
     def __init__(self): 
@@ -45,7 +46,8 @@ class MainPage(Page):
         if self.main_page_textbox != None:
             GUIInterface.ClearTextBox(self.main_page_textbox)
             return
-        print(f"[{__name__}] MISSING TEXTBOX REFERENCE")
+        #print(f"[{__name__}] MISSING TEXTBOX REFERENCE")
+        logging.warning(f"[{__name__}] MISSING TEXTBOX REFERENCE")
 
     def Submit(self, textbox):
         success = self.ReadAndProcessText(textbox)

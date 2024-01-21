@@ -1,5 +1,6 @@
 import spacy
 import Managers.DirectoryManager as directory_manager
+import logging
 
 parent_dir = directory_manager.getCurrentFileDirectory(__file__)
 model_path = directory_manager.getFilePath(parent_dir, 'model/model-best')
@@ -18,7 +19,8 @@ class NERInterface:
         :return: The entities of event, time, date and loc. They can be null
         """
         if text == None or "":
-            print(f"[{__name__}] INVALID PARAM GIVEN!")
+            #print(f"[{__name__}] INVALID PARAM GIVEN!")
+            logging.error(f"[{__name__}] INVALID PARAM GIVEN!")
             return
 
         doc = NERInterface.nlp(text) 

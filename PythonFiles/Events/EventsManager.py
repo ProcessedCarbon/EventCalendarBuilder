@@ -11,6 +11,7 @@ from sys import platform
 import GUI.PopupManager as popup_mgr
 import Calendar.Outlook.OutlookInterface as outlook_interface
 import pytz
+import logging
 
 class Event:
     def __init__(self, 
@@ -158,7 +159,8 @@ class EventsManager:
         # Get event data from JSON
         data = directory_manager.ReadJSON(EventsManager.local_events_dir, EventsManager.event_json)
         if data == None:
-            print(f"[{__name__}]NO LOCALLLY SCHEDULED EVENTS")
+            #print(f"[{__name__}]NO LOCALLLY SCHEDULED EVENTS")
+            logging.info(f"[{__name__}]NO LOCALLLY SCHEDULED EVENTS")
             return
         
         for d in data:
@@ -199,7 +201,8 @@ class EventsManager:
         Works with the assumption that event db is updated
         '''
         if target == None:
-            print(f"[{__name__}] MISSING DB TARGET")
+            #print(f"[{__name__}] MISSING DB TARGET")
+            logging.warning(f"[{__name__}] MISSING DB TARGET")
             return
 
         event_dict = event.getEventDict()
@@ -208,7 +211,8 @@ class EventsManager:
     
     def RemoveFromEventDB(id:str, target=None)->bool:
         if target == None:
-            print(f"[{__name__}] MISSING DB TARGET")
+            #print(f"[{__name__}] MISSING DB TARGET")
+            logging.warning(f"[{__name__}] MISSING DB TARGET")
             return False
         
         print(f'target_id: {id}')
@@ -218,7 +222,8 @@ class EventsManager:
                 target.remove(e)
                 return True
             
-        print(f"[{__name__}] REMOVE TARGET NOT FOUND!")
+        #print(f"[{__name__}] REMOVE TARGET NOT FOUND!")
+        logging.warning(f"[{__name__}] REMOVE TARGET NOT FOUND!")
         return False
     
     def ClearEventsJSON():
@@ -333,7 +338,8 @@ class EventsManager:
         if platform == 'darwin':
             filename = EventsManager.CreateICSFileFromInput(event)
             if filename == None:
-                print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR MAC')
+                #print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR MAC')
+                logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR MAC')
                 return
             file = CalendarInterface.getICSFilePath(filename)
             def schedule_mac(): 
@@ -349,7 +355,8 @@ class EventsManager:
              def schedule_offline():
                 filename = EventsManager.CreateICSFileFromInput(event)
                 if filename == None:
-                    print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR WINDOWS')
+                    #print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR WINDOWS')
+                    logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR WINDOWS')
                     return
                 file = CalendarInterface.getICSFilePath(filename)
                 os.startfile(file)
@@ -366,7 +373,8 @@ class EventsManager:
     def ScheduleGoogleCalendar(event, schedule_cb)->[str, list]:
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
-            print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
+            #print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
+            logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
             return ''
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
 
@@ -397,7 +405,8 @@ class EventsManager:
     def ScheduleOutlookCalendar(event, schedule_cb)->str:
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
-            print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
+            #print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
+            logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
             return ''
         outlook_event = outlook_interface.parse_ics(filename).event
         # Check for any pre-existing event

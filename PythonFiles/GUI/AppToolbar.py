@@ -1,5 +1,6 @@
 from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
+import logging
 
 class AppToolbar:
     def __init__(self) -> None:
@@ -44,11 +45,13 @@ class AppToolbar:
     def ChangeToPage(self, page:int)->bool:
         n = len(PageManager.pages)
         if n == 0:
-            print(f"[{__name__}] NO PAGES AVAILABLE!")
+            #print(f"[{__name__}] NO PAGES AVAILABLE!")
+            logging.error(f"[{__name__}] NO PAGES AVAILABLE!")
             return False
 
         if page > n:
-            print(f"[{__name__}] PAGE DOES NOT EXISTS!")
+            #print(f"[{__name__}] PAGE DOES NOT EXISTS!")
+            logging.error(f"[{__name__}] PAGE DOES NOT EXISTS!")
             return False
         
         PageManager.SwitchPages(page)
