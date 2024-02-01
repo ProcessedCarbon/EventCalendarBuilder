@@ -6,6 +6,7 @@ from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
 import threading
 import logging
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 app.secret_key = 'EventCalendarBuilder'  # Change this
@@ -275,6 +276,7 @@ def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:
 
 def run():
     login()
+    app.wsgi_app = ProxyFix(app.wsgi_app)
     app.run(host='localhost', port=local_host, use_reloader = False)
 
 def start_flask():
