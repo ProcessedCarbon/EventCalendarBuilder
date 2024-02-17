@@ -20,7 +20,7 @@ def WriteFile(dir_path:Path, file_name:str, content, write_type:['w', 'wb']='w')
         return True
     except Exception as e:
         #print(f'[{__name__}]FAILED TO WRITE {file_name} TO {dir_path}')
-        logging.error(f'[{__name__}]FAILED TO WRITE {file_name} TO {dir_path}')
+        logging.error(f'[{__name__}]FAILED TO WRITE {file_name} TO {dir_path} due to {e}')
         return False
 
 def ReadFile(dir_path:Path, file_name:str, read_type:['r', 'rb']='r'):

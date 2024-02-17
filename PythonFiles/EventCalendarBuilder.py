@@ -28,6 +28,8 @@ from GUI.AppToolbar import AppToolbar
 
 import logging
 LOG_PATH = Path('./app.log')
+ALLOW_GOOGLE = False
+ALLOW_OUTLOOK = False
 
 def client_app():
     logging.info('App Starting.....')
@@ -52,6 +54,6 @@ if __name__ == "__main__":
     if os.path.exists(LOG_PATH):
         os.remove(LOG_PATH)
     logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-    GoogleCalendarInterface.ConnectToGoogleCalendar()
-    outlook_interface.start_flask()
+    if ALLOW_GOOGLE: GoogleCalendarInterface.ConnectToGoogleCalendar()
+    if ALLOW_OUTLOOK: outlook_interface.start_flask()
     client_app()

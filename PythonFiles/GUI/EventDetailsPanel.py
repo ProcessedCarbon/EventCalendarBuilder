@@ -2,6 +2,7 @@ from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
+from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR
 import GUI.PopupManager as popup_mgr
 import pytz
 
@@ -106,15 +107,11 @@ class EventDetailsPanel:
         drop_down_frame.rowconfigure(1, weight=1)
         drop_down_frame.grid(row=9, column=1, sticky='nsew', pady=self.gap)
 
-        prio_frame, prio_label, prio_box = self.CreateDropdownField(values=["1", "2", "3", "4", "5"], 
-                                                                    entryname="Priority")
-        prio_frame.grid(row=0, column=0, sticky='nsew',pady=self.gap)
-
         tz_frame, tz_label, tz_box = self.CreateDropdownField(values=pytz.all_timezones, entryname="Timezone")
         tz_box.set('Asia/Singapore')
         tz_frame.grid(row=0, column=1, sticky='nsew',pady=self.gap)
 
-        calendars_frame, calendar_label, calendar_box = self.CreateDropdownField(values=["Default", "Google", 'Outlook'], 
+        calendars_frame, calendar_label, calendar_box = self.CreateDropdownField(values=[DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR], 
                                                                                  entryname="Calendar")
         calendars_frame.grid(row=1, column=0, sticky='nsew',pady=self.gap)
 
@@ -127,8 +124,11 @@ class EventDetailsPanel:
 
     def UpdateEventWithDetails(self):
         details = self.getCurrentInputFieldsInfo()
-        self.event.setName(details['Event'])
-        self.event.setLocation(details['Location'])
+
+        self.event.setName(TextProcessingManager.sanitize_raw_string(details['Event']))
+        self.event.setLocation(TextProcessingManager.sanitize_raw_string(details['Location']))
+        self.event.setDescription(TextProcessingManager.sanitize_raw_string(details['Description']))
+
         self.event.set_S_Date(details['Start_Date'])
         self.event.set_E_Date(details['End_Date'])
         self.event.setStart_Time(details['Start_Time'])
@@ -143,14 +143,6 @@ class EventDetailsPanel:
         GUIInterface.UpdateEntry(self.details_entries["Start_Time"], self.event.getStart_Time())
         GUIInterface.UpdateEntry(self.details_entries["End_Time"], self.event.getEnd_Time())
         self.filled = True
-
-    def getEmptyInputFieldsCount(self)->int:
-        count = 0
-        for entry in self.details_entries:
-            t = self.details_entries[entry].get()
-            if t == "" or t == " ":
-                count += 1
-        return count
     
     def Reset(self):
         self.filled = False
@@ -161,6 +153,7 @@ class EventDetailsPanel:
         GUIInterface.UpdateEntry(self.details_entries["End_Date"], "")
         GUIInterface.UpdateEntry(self.details_entries["Start_Time"], "")
         GUIInterface.UpdateEntry(self.details_entries["End_Time"], "")
+        GUIInterface.UpdateEntry(self.details_entries["Description"], "")
 
     def Destroy(self):
         self.details_frame.destroy()
@@ -201,14 +194,11 @@ class EventDetailsPanel:
         GUIInterface.UpdateEntry(entry, date)
         window.destroy()
 
-    def ScheduleEvent(self):
-        #print("SCHEDULE CLICKED!")
+    def ScheduleEvent(self):        
+        # update event object before scheduling
+        self.UpdateEventWithDetails()
 
-        # Check if all required fields are filled
-        if self.getEmptyInputFieldsCount() == self.rows:
-            #print("Required field is empty!")
-            return
-        
+        # Get input
         input = self.getCurrentInputFieldsInfo()
 
         # Handle missing or incorrect input for time fields
@@ -244,16 +234,15 @@ class EventDetailsPanel:
 
         # Scheduling
         calendar = input['Calendar']
-        if calendar == 'Default': EventsManager.ScheduleDefault(input, schedule_cb=self.ScheduleActions)# No clash checking done for default yet
-        elif calendar == 'Google': EventsManager.ScheduleGoogleCalendar(input, schedule_cb=self.ScheduleActions)
-        elif calendar == 'Outlook': EventsManager.ScheduleOutlookCalendar(input, schedule_cb=self.ScheduleActions)
+        if calendar == DEFAULT_CALENDAR: EventsManager.ScheduleDefault(input, schedule_cb=self.ScheduleActions)
+        elif calendar == GOOGLE_CALENDAR: EventsManager.ScheduleGoogleCalendar(input, schedule_cb=self.ScheduleActions)
+        elif calendar == OUTLOOK_CALENDAR: EventsManager.ScheduleOutlookCalendar(input, schedule_cb=self.ScheduleActions)
 
-    def ScheduleActions(self, id, platform='Default'):
+    def ScheduleActions(self, id, platform=DEFAULT_CALENDAR):
         #print(f'SCHEDULE ACTIONS RAN FOR ID {id}')
-        if platform != '':
+        if platform != DEFAULT_CALENDAR:
             self.event.setPlatform(platform)
             self.event.setId(id)
             EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-            EventsManager.WriteEventDBToJSON()
             popup_mgr.BasicPopup(msg='Successfully schedule event', pop_up_name='Success')
         self.remove_cb(self.key)

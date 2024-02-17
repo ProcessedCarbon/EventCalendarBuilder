@@ -24,7 +24,7 @@ token_path = directory_manager.getCurrentFileDirectory(__file__)
 # https://learn.microsoft.com/en-us/graph/api/calendar-post-events?view=graph-rest-1.0&tabs=http
 class OutlookEvent():
     def __init__(self, 
-                 name:str, location:str,  dtstart:str, rrule:str,
+                 name:str, location:str,  dtstart:str, rrule:str, description: str,
                  dtend:str, tzstart:str, tzend:str, isonline=False) -> None:
         
         self.name = name
@@ -35,12 +35,13 @@ class OutlookEvent():
         self.tzend = tzend
         self.isonline = isonline
         self.rrule = rrule
+        self.description = description
         
         self.event = {
             "subject": name,
             "body": {
                 "contentType": "HTML",
-                "content": ""
+                "content": description
             },
             "start": {
                 "dateTime": dtstart,
@@ -54,16 +55,6 @@ class OutlookEvent():
                 "displayName":location
             },
             "isOnlineMeeting": isonline,
-            # "attendees": [
-            #     {
-            #     "emailAddress": {
-            #         "address":"adelev@contoso.onmicrosoft.com",
-            #         "name": "Adele Vance"
-            #     },
-            #     "type": "required"
-            #     }
-            # ],
-            # "transactionId":"7E163156-7762-4BEB-A1C6-729EA81755A7"
             }
         self.reccurence_pattern = self.getRecurrencePatternFromRRULE(rrule=self.rrule)
         if self.reccurence_pattern != {}: self.event['recurrence'] = self.reccurence_pattern
@@ -92,6 +83,9 @@ class OutlookEvent():
     
     def get_rrule(self):
         return self.rrule
+    
+    def get_descriptuon(self):
+        return self.description
 
     # Assuming RRULES come in the following format
     # FREQ=DAILY;INTERVAL=10;COUNT=5 
@@ -255,7 +249,8 @@ def parse_ics(ics)->OutlookEvent:
                                 dtend=e_dt.isoformat(),
                                 tzstart='UTC',
                                 tzend='UTC',
-                                rrule=rule
+                                rrule=rule,
+                                description=component.get('description')
                                 )
     return None
 

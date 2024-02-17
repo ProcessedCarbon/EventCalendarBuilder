@@ -43,6 +43,14 @@ class EventCard:
         GUIInterface.UpdateEntry(n_entry, str(event_details['name']))
         n_frame.grid(row=0, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
+        # desc
+        desc_frame, desc_label, desc_entry = GUIInterface.CreateEntryWithLabel(label= "Description" + ":",
+                                                                      entry_width=attribute_width, 
+                                                                      entry_state='disabled')
+        desc_entry.configure(fg_color=frame_color, border_color = frame_color, text_color=text_color)
+        GUIInterface.UpdateEntry(desc_entry, str(event_details['description']))
+        desc_frame.grid(row=1, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+
         # location
         l_frame, l_label, l_entry = GUIInterface.CreateEntryWithLabel(label= "Location" + ":",
                                                                       entry_width=attribute_width, 
@@ -50,7 +58,7 @@ class EventCard:
         
         GUIInterface.UpdateEntry(l_entry, str(event_details['location']))
         l_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        l_frame.grid(row=1, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        l_frame.grid(row=2, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # start date
         s_d_frame, s_d_label, s_d_entry = GUIInterface.CreateEntryWithLabel(label= "Start Date" + ":",
@@ -59,7 +67,7 @@ class EventCard:
         
         GUIInterface.UpdateEntry(s_d_entry, str(event_details['s_date']))
         s_d_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        s_d_frame.grid(row=2, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        s_d_frame.grid(row=3, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # end date
         e_d_frame, e_d_label, e_d_entry = GUIInterface.CreateEntryWithLabel(label= "End Date" + ":",
@@ -68,7 +76,7 @@ class EventCard:
         
         GUIInterface.UpdateEntry(e_d_entry, str(event_details['e_date']))
         e_d_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        e_d_frame.grid(row=3, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        e_d_frame.grid(row=4, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # start time
         st_frame, st_label, st_entry = GUIInterface.CreateEntryWithLabel(label= "Start" + ":",
@@ -77,7 +85,7 @@ class EventCard:
         
         GUIInterface.UpdateEntry(st_entry, str(event_details['start_time']))
         st_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        st_frame.grid(row=4, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        st_frame.grid(row=5, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # end time
         et_frame, et_label, et_entry = GUIInterface.CreateEntryWithLabel(label= "End" + ":",
@@ -86,7 +94,7 @@ class EventCard:
         
         GUIInterface.UpdateEntry(et_entry, str(event_details['end_time']))
         et_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        et_frame.grid(row=5, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        et_frame.grid(row=6, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # platform
         p_frame, p_label, p_entry = GUIInterface.CreateEntryWithLabel(label= "Platform" + ":",
@@ -95,7 +103,7 @@ class EventCard:
         
         GUIInterface.UpdateEntry(p_entry, str(event_details['platform']))
         p_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        p_frame.grid(row=6, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        p_frame.grid(row=7, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # recurrence
         r_frame, r_label, r_entry = GUIInterface.CreateEntryWithLabel(label= "Recurrence" + ":",
@@ -104,12 +112,12 @@ class EventCard:
         
         GUIInterface.UpdateEntry(r_entry, str(event_details['recurring']))
         r_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        r_frame.grid(row=7, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
+        r_frame.grid(row=8, column=0, sticky='nsew', padx=detail_gap, pady=detail_gap)
 
         # Remove event button
         remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(index), 
                                                text='Remove')
-        remove_btn.grid(row=8, column=0)
+        remove_btn.grid(row=9, column=0)
 
         GUIInterface.current_frame = tmp_frame
 
@@ -118,7 +126,6 @@ class EventCard:
         if removed_from_cal:
             success = EventsManager.RemoveFromEventDB(self.id, EventsManager.events_db)
             if success:
-                EventsManager.WriteEventDBToJSON()
                 self.card_frame.destroy()
                 return True
         return False

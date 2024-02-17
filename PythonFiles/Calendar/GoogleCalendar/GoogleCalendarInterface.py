@@ -27,7 +27,6 @@ class GoogleCalendarInterface:
     service = None
     # Tries to establish connection with Google Calendar API
     def ConnectToGoogleCalendar():
-        #print("ESTABLISHING CONNECTION TO GOOGLE CALENDARS......")
         logging.info("ESTABLISHING CONNECTION TO GOOGLE CALENDARS......")
         if os.path.exists(r'token_path'):
             GoogleCalendarInterface.creds = Credentials.from_authorized_user_file(token_path)
@@ -106,7 +105,7 @@ class GoogleCalendarInterface:
         return new_event['id']
 
     # Creates event datatype
-    def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, rrule:str, colorId=1):
+    def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, rrule:str, colorId=1, description=''):
         """
         Returns the google calendar event format with the given entities in placed to be used to parsed to create a new event on google calendars
         https://developers.google.com/calendar/api/v3/reference/events
@@ -126,7 +125,8 @@ class GoogleCalendarInterface:
                             colorId=colorId,
                             tzstart=tzstart,
                             tzend=tzend,
-                            rrule=rrule
+                            rrule=rrule,
+                            description=description
                            )
 
     # Only expecting 1 event per ics
@@ -152,6 +152,7 @@ class GoogleCalendarInterface:
                                                                 tzstart=tzstart,
                                                                 tzend=tzend,
                                                                 rrule=str(rule) if rule != '' else [],
+                                                                description=component.get('description')
                                                                 )
         return None
     
@@ -165,7 +166,8 @@ class GoogleCalendarInterface:
                                                                             tzstart=x['start']['timeZone'],
                                                                             dtend=x['end']['dateTime'],
                                                                             tzend=x['end']['timeZone'],
-                                                                            rrule=x['recurrence'] if 'recurrence' in x else ''
+                                                                            rrule=x['recurrence'] if 'recurrence' in x else '',
+                                                                            description=x['description'] if 'description' in x else ''
                                                                         ) for x in existing]
         return existing_google_events  
 

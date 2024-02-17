@@ -1,6 +1,6 @@
 import subprocess
-from uuid import uuid4
 from Calendar.CalendarInterface import CalendarInterface
+from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 from pathlib import Path
 import os
@@ -23,7 +23,8 @@ class Event:
                  start_time:str, 
                  end_time:str,
                  platform='Default',
-                 recurring='None') -> None:
+                 recurring='None',
+                 description='') -> None:
         
         self.id = id
         self.name = name
@@ -34,6 +35,7 @@ class Event:
         self.end_time = end_time
         self.platform = platform
         self.recurring = recurring
+        self.description = description
     
     def getId(self)->str:
         return self.id
@@ -61,6 +63,9 @@ class Event:
 
     def getRecurring(self)->str:
         return self.recurring
+    
+    def getDescription(self)->str:
+        return self.description
 
     def getEventDict(self):
         return {
@@ -72,7 +77,8 @@ class Event:
             "start_time" : self.start_time,
             "end_time" : self.end_time,
             "platform" : self.platform,
-            'recurring':self.recurring
+            'recurring':self.recurring,
+            'description': self.description,
         }
     
     def setId(self, id:str):
@@ -101,6 +107,9 @@ class Event:
     
     def setRecurring(self, recur:str):
         self.recurring = recur
+    
+    def setDescription(self, desc: str):
+        self.description = desc
 
 class EventsManager:
     # Directories
@@ -125,7 +134,8 @@ class EventsManager:
                     end_time:str,
                     platform='Default',
                     id='None',
-                    recurring='None'):
+                    recurring='None',
+                    description=''):
         
         return Event(id=id,
                      name=name,
@@ -135,19 +145,8 @@ class EventsManager:
                      start_time=start_time,
                      end_time=end_time,
                      platform=platform,
-                     recurring=recurring)
-        
-    def PrintEvents(events : dict):
-        event = events['object']
-        print("------------------------------------------------------------------------------")
-        print('id:', event.id)
-        print("event: ", event.name)
-        print("location: ", event.location)
-        print("start_date: ", event.s_date)
-        print("end_date: ", event.e_date)
-        print("start_time: ", event.start_time)
-        print("end_time: ", event.end_time)
-        print('recurring:', event.recurring)
+                     recurring=recurring,
+                     description=description)
     
     def ClearEvents():
         EventsManager.events = []
@@ -208,6 +207,7 @@ class EventsManager:
         event_dict = event.getEventDict()
         event_dict['object'] = event
         target.append(event_dict)
+        EventsManager.WriteEventDBToJSON()
     
     def RemoveFromEventDB(id:str, target=None)->bool:
         if target == None:
@@ -220,6 +220,7 @@ class EventsManager:
             if e['id'] == id:
                 print(f'found: {e["id"]}')
                 target.remove(e)
+                EventsManager.WriteEventDBToJSON()
                 return True
             
         #print(f"[{__name__}] REMOVE TARGET NOT FOUND!")
@@ -345,7 +346,7 @@ class EventsManager:
             def schedule_mac(): 
                 subprocess.run(['open', file])
                 #self.ScheduleActions(id=uuid4(), platform='Default')
-                schedule_cb(id=uuid4, platform='Default')
+                schedule_cb(id=0, platform=DEFAULT_CALENDAR)
             popup_mgr.PopupWithBtn(pop_up_name='Warning',
                                    subtitle_1='Warning',
                                    subtitle_2='No checks for other events are done for this.\nAre you sure you want to schedule?',
@@ -360,7 +361,7 @@ class EventsManager:
                     return
                 file = CalendarInterface.getICSFilePath(filename)
                 os.startfile(file)
-                schedule_cb(id=0, platform='')
+                schedule_cb(id=0, platform=DEFAULT_CALENDAR)
 
              popup_mgr.PopupWithTwoBtns(pop_up_name='Default Windows Scheduling',
                                         subtitle_1='Warning!',
@@ -373,7 +374,6 @@ class EventsManager:
     def ScheduleGoogleCalendar(event, schedule_cb)->[str, list]:
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
-            #print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
             return ''
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
@@ -446,8 +446,8 @@ class EventsManager:
     # 1 ICS = should have 1 VEVENT
     # returns names of file created
     def CreateICSFileFromInput(event)->str:
+        print('Creating ICS FILE')
         desp = event["Description"]
-        priority = int(event["Priority"])
         location = event["Location"]
         tz = event['Timezone']
         title = event["Event"]
@@ -470,10 +470,6 @@ class EventsManager:
                                                     s_datetime=ics_s,
                                                     e_datetime=ics_e,
                                                     e_location=location,
-                                                    e_priority=int(priority),
                                                     rrule=rrule,
                                                     duration=hours)
-        
-        #file_name = f'{title}_{ics_s}'
-        #CalendarInterface.WriteToFile(file_name)
         return file_name

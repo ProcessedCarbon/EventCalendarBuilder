@@ -7,12 +7,13 @@ class GoogleEvent:
                  tzend:str, 
                  rrule:str,
                  colorId=1,
+                 description=''
                  ):
         
         self.event = {
             "summary" : event,
             "location" : location,
-            "description" : "Test description",
+            "description" : description,
             "colorId" : colorId,
             "start" : {
                 "dateTime" : start_datetime,

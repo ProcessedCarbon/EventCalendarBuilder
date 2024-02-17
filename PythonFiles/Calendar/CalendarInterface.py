@@ -2,6 +2,7 @@ import icalendar
 from icalendar import Calendar, Event, vCalAddress, vText
 from pathlib import Path
 import Managers.DirectoryManager as directory_manager
+from Managers.TextProcessing import TextProcessingManager
 from datetime import timedelta
 import uuid
 import logging
@@ -56,22 +57,10 @@ class CalendarInterface:
         
         event['uid'] = uuid.uuid4()
         event.add('priority', e_priority)
-
-        # Not handling attendees for now
-        # attendee = vCalAddress('MAILTO:rdoe@example.com')
-        # attendee.params['name'] = vText('Richard Roe')
-        # attendee.params['role'] = vText('REQ-PARTICIPANT')
-        # event.add('attendee', attendee, encode=0)
-        
-        # attendee = vCalAddress('MAILTO:jsmith@example.com')
-        # attendee.params['name'] = vText('John Smith')
-        # attendee.params['role'] = vText('REQ-PARTICIPANT')
-        # event.add('attendee', attendee, encode=0)
         
         # Add the event to the calendar
         CalendarInterface._cal.add_component(event)
-        f_name = f'{e_name}_{s_datetime}'
-        f_name = f_name.replace(' ', '_').replace(':', '_').replace('+', '_')
+        f_name = f'{e_name}_{s_datetime}' # sanitization of name should already be done in the input
         success = CalendarInterface.WriteToFile(file_name=f_name)
         if success: 
             CalendarInterface._cal.subcomponents.remove(event)
@@ -86,7 +75,6 @@ class CalendarInterface:
             directory_manager.WriteFile(dir_to_open, f'{file_name}.ics', CalendarInterface._cal.to_ical(), 'wb')
             return True
         except Exception as e:
-            #print(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open} because {e}')
             logging.error(f'FAILED TO WRITE {file_name}.ics TO {dir_to_open} because {e}')
             return False
     

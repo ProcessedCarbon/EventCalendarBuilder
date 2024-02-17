@@ -280,6 +280,10 @@ class TextProcessingManager:
     # Tries and match a string to the regex, returns None if no match is found
     def CheckStringFormat(text, regex='[0-9]{2}:[0-9]{2}:[0-9]{2}'):
         return re.match(regex, text)
-
     
-    
+    def sanitize_raw_string(input_string: str):
+        sanitized_string = input_string.replace('\\', '\\\\')  # Escape backslashes
+        sanitized_string = sanitized_string.replace('\n', '\\n')  # Replace newline characters
+        sanitized_string = sanitized_string.replace('\t', '\\t')  # Replace tab characters
+        # You can add more replacements for other special characters if needed
+        return sanitized_string
