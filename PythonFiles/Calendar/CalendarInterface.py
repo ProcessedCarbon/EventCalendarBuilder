@@ -33,12 +33,6 @@ class CalendarInterface:
         event.add('summary', e_name) # serves as name for some calendars (Mac)
         event.add('description', e_description)
 
-        # timezone = pytz.timezone(tz)  # Replace with the desired timezone
-
-        # # Set the start and end times with timezone information
-        # start_time = timezone.localize(s_datetime)
-        # end_time = timezone.localize(e_datetime)
-
         event.add('dtstart', s_datetime)
         
         if rrule == {}: event.add('dtend', e_datetime)
@@ -61,6 +55,7 @@ class CalendarInterface:
         # Add the event to the calendar
         CalendarInterface._cal.add_component(event)
         f_name = f'{e_name}_{s_datetime}' # sanitization of name should already be done in the input
+        f_name = TextProcessingManager.sanitize_raw_string(f_name)
         success = CalendarInterface.WriteToFile(file_name=f_name)
         if success: 
             CalendarInterface._cal.subcomponents.remove(event)

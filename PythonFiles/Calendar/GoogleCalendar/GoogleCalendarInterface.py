@@ -132,8 +132,7 @@ class GoogleCalendarInterface:
     # Only expecting 1 event per ics
     def Parse_ICS(ics:str):
         if GoogleCalendarInterface.service == None:
-            #print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
-            logging.warning(f"[{__name__}] INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
+            logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return
         
         ics_file = CalendarInterface.ReadICSFile(ics)
@@ -189,17 +188,14 @@ class GoogleCalendarInterface:
     
     def DeleteEvent(id:str)->[bool,str]:
         if GoogleCalendarInterface.service == None:
-            #print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return False,''
         
         try:
             GoogleCalendarInterface.service.events().delete(calendarId='primary', eventId=id).execute()
-            #print(f"[{__name__}] EVENT DELETED SUCCESSFULLY")
             logging.info(f"[{__name__}] EVENT DELETED SUCCESSFULLY")
             return True,''
         except HttpError as e:
-            #print(f"Error: {e.error_details[0]['reason']}")
             error_details = e.error_details[0]
             if 'reason' in error_details['reason'] and error_details['reason'] != '':
                 return False, error_details['reason']

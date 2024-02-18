@@ -16,7 +16,7 @@ CLIENT_ID = "99b8766f-5d52-490c-8237-187338d09615"
 CLIENT_SECRET = "_xm8Q~VKXbbgvNF8mT5BUAMr5I_XyE3Q18aRNczT"
 REDIRECT_URI=f'http://localhost:{local_host}/callback'
 AUTHORITY_URL = 'https://login.microsoftonline.com/common'
-SCOPES = "openid User.Read Calendars.ReadWrite MailboxSettings.Read"
+SCOPES = "openid User.Read Calendars.ReadWrite"
 
 token_path = directory_manager.getCurrentFileDirectory(__file__)
 
@@ -217,27 +217,9 @@ def get_mail_settings():
     logging.info(f'GET MAIL-SETTINGS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
-# @app.route('/get_timezones')
-# def get_timezones():
-#     token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
-#     token = token_access['access_token']
-#     headers = { 
-#         'Authorization': f'{token_access["token_type"]} {token}',
-#         'Content-Type': 'application/json'
-#     }
-#     response = requests.get('https://graph.microsoft.com/v1.0/me/outlook/supportedTimeZones', headers=headers)
-#     print(f'GET TIMEZONE RESPONSE STATUS CODE: {response.status_code}')
-#     return response.json()
-
 # Only expecting 1 event per .ics file
 def parse_ics(ics)->OutlookEvent:
     ics_file = CalendarInterface.ReadICSFile(ics)
-    #res = send_flask_req(req='get_mail_settings')
-    #user_profile = res[1]
-    # Extract the time zone information
-    #time_zone = user_profile.get('mailboxSettings', {}).get('timeZone')
-    #tz = time_zone if time_zone is not None else 'Asia/Singapore'
-
     for component in ics_file.walk():
         if component.name == "VEVENT":
             rule=component.get('rrule').to_ical().decode(errors="ignore") if component.get('rrule') is not None else ''

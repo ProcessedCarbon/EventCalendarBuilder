@@ -405,7 +405,6 @@ class EventsManager:
     def ScheduleOutlookCalendar(event, schedule_cb)->str:
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
-            #print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
             return ''
         outlook_event = outlook_interface.parse_ics(filename).event
@@ -446,7 +445,6 @@ class EventsManager:
     # 1 ICS = should have 1 VEVENT
     # returns names of file created
     def CreateICSFileFromInput(event)->str:
-        print('Creating ICS FILE')
         desp = event["Description"]
         location = event["Location"]
         tz = event['Timezone']

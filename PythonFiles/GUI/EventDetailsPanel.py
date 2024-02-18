@@ -125,9 +125,9 @@ class EventDetailsPanel:
     def UpdateEventWithDetails(self):
         details = self.getCurrentInputFieldsInfo()
 
-        self.event.setName(TextProcessingManager.sanitize_raw_string(details['Event']))
-        self.event.setLocation(TextProcessingManager.sanitize_raw_string(details['Location']))
-        self.event.setDescription(TextProcessingManager.sanitize_raw_string(details['Description']))
+        self.event.setName(details['Event'])
+        self.event.setLocation(details['Location'])
+        self.event.setDescription(details['Description'])
 
         self.event.set_S_Date(details['Start_Date'])
         self.event.set_E_Date(details['End_Date'])

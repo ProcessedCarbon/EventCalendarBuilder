@@ -283,7 +283,11 @@ class TextProcessingManager:
     
     def sanitize_raw_string(input_string: str):
         sanitized_string = input_string.replace('\\', '\\\\')  # Escape backslashes
-        sanitized_string = sanitized_string.replace('\n', '\\n')  # Replace newline characters
-        sanitized_string = sanitized_string.replace('\t', '\\t')  # Replace tab characters
+        sanitized_string = sanitized_string.replace('\n', ' ')  # Replace newline characters
+        sanitized_string = sanitized_string.replace('\t', ' ')  # Replace tab characters
+        sanitized_string = sanitized_string.replace(' ', '_')  # Replace space characters
+        sanitized_string = sanitized_string.replace('+', '_')  # Replace + characters
+        sanitized_string = sanitized_string.replace(':', '_')  # Replace : characters
+        sanitized_string = sanitized_string.replace('-', '_')  # Replace - characters
         # You can add more replacements for other special characters if needed
         return sanitized_string

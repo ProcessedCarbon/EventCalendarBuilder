@@ -26,9 +26,6 @@ class GoogleEvent:
             'recurrence': [
                 rrule
             ],
-            # "attendees" : [
-            #     {"email":"nonexistantemail@mail.com"}
-            # ]
         }
 
     def __repr__(self):
