@@ -11,7 +11,7 @@ class Page:
 
         self.page_color = tuple(GUIInterface.color_palette['CTkFrame']['fg_color'])
         self.page = GUIInterface.CreateFrame(GUIInterface.root,
-                                             fg_color=self.page_color)
+                                            fg_color=self.page_color)
         self.page.grid(row=0, column=1, sticky="nsew")
         PageManager.AddPage(self)
     

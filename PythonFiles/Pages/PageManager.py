@@ -12,12 +12,10 @@ class PageManager:
     
     def SwitchPages(page:int=0, callback=None):
         if len(PageManager.pages) < 1:
-            #print(f"[{__name__}] NO PAGES FOUND!")
             logging.warning(f"[{__name__}] NO PAGES FOUND!")
             return
         
         if page > len(PageManager.pages) - 1:
-            #print(f"[{__name__}] MISSING PAGES, PAGE NOT FOUND!")
             logging.error(f"[{__name__}] MISSING PAGES, PAGE NOT FOUND!")
             return
         

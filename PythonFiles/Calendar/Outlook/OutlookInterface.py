@@ -24,8 +24,8 @@ token_path = directory_manager.getCurrentFileDirectory(__file__)
 # https://learn.microsoft.com/en-us/graph/api/calendar-post-events?view=graph-rest-1.0&tabs=http
 class OutlookEvent():
     def __init__(self, 
-                 name:str, location:str,  dtstart:str, rrule:str, description: str,
-                 dtend:str, tzstart:str, tzend:str, isonline=False) -> None:
+                name:str, location:str,  dtstart:str, rrule:str, description: str,
+                dtend:str, tzstart:str, tzend:str, isonline=False) -> None:
         
         self.name = name
         self.location = location

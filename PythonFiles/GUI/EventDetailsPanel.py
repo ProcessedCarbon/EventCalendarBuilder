@@ -4,7 +4,9 @@ from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR
 import GUI.PopupManager as popup_mgr
+from tkinter import messagebox
 import pytz
+import logging
 
 class EventDetailsPanel:
     outlook_supported_tzs = None
@@ -26,7 +28,7 @@ class EventDetailsPanel:
     def GUI(self):
         tmp_frame = GUIInterface.current_frame
         self.details_frame = GUIInterface.CreateFrame(self.parent, 
-                                                      fg_color=GUIInterface.color_palette['CTkFrame']['border_color'][0])
+                                                    fg_color=GUIInterface.color_palette['CTkFrame']['border_color'][0])
 
         # Find grid in parent to place this event panel
         row = GUIInterface.getParamValFromKwarg("row", self.grid_params, default=0)
@@ -58,42 +60,42 @@ class EventDetailsPanel:
         remove_btn.grid(row=0, column=1, pady=10, sticky='e')
 
         e_frame, e_entry = self.CreateEntryField(detail_entry_width, 
-                                                 entryname="Event", 
-                                                 placeholder_text='Title')
+                                                entryname="Event", 
+                                                placeholder_text='Title')
         e_frame.grid(row=1, column=1,sticky='nsew', pady=self.gap)
 
         desp_frame, desp_entry = self.CreateEntryField(detail_entry_width, 
-                                                       entryname="Description", 
-                                                       placeholder_text='Description')
+                                                    entryname="Description", 
+                                                    placeholder_text='Description')
         desp_frame.grid(row=2, column=1, sticky='nsew',pady=self.gap)
 
         l_frame, l_entry = self.CreateEntryField(detail_entry_width, 
-                                                 entryname="Location", 
-                                                 placeholder_text='Location')
+                                                entryname="Location", 
+                                                placeholder_text='Location')
         l_frame.grid(row=3, column=1, sticky='nsew',pady=self.gap)
 
         s_d_frame, s_d_entry = self.CreateEntryField(detail_entry_width, 
-                                                 entryname="Start Date", 
-                                                 entry_state='disabled', 
-                                                 placeholder_text='YYYY-MM-DD')
+                                                entryname="Start Date", 
+                                                entry_state='disabled', 
+                                                placeholder_text='YYYY-MM-DD')
         s_d_entry.bind('<1>', lambda event, entry=s_d_entry: self.PickDate(entry))
         s_d_frame.grid(row=4, column=1,sticky='nsew',pady=self.gap)
 
         e_d_frame, e_d_entry = self.CreateEntryField(detail_entry_width, 
-                                                 entryname="End Date", 
-                                                 entry_state='disabled', 
-                                                 placeholder_text='YYYY-MM-DD')
+                                                entryname="End Date", 
+                                                entry_state='disabled', 
+                                                placeholder_text='YYYY-MM-DD')
         e_d_entry.bind('<1>', lambda event, entry=e_d_entry: self.PickDate(entry))
         e_d_frame.grid(row=5, column=1,sticky='nsew',pady=self.gap)
 
         st_frame, st_entry = self.CreateEntryField(detail_entry_width, 
-                                                   entryname="Start Time", 
-                                                   placeholder_text="HH:MM:SS")
+                                                entryname="Start Time", 
+                                                placeholder_text="HH:MM:SS")
         st_frame.grid(row=6, column=1,sticky='nsew',pady=self.gap)
 
         et_frame, et_entry = self.CreateEntryField(detail_entry_width,
-                                                   entryname="End Time", 
-                                                   placeholder_text="HH:MM:SS")
+                                                entryname="End Time", 
+                                                placeholder_text="HH:MM:SS")
         et_frame.grid(row=7, column=1,sticky='nsew',pady=self.gap)
         
         schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule')
@@ -112,7 +114,7 @@ class EventDetailsPanel:
         tz_frame.grid(row=0, column=1, sticky='nsew',pady=self.gap)
 
         calendars_frame, calendar_label, calendar_box = self.CreateDropdownField(values=[DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR], 
-                                                                                 entryname="Calendar")
+                                                                                entryname="Calendar")
         calendars_frame.grid(row=1, column=0, sticky='nsew',pady=self.gap)
 
         recur_option, recur_label, recur_box = self.CreateDropdownField(values=["None", "Daily", 'Weekly', 'Monthly'], 
@@ -162,9 +164,9 @@ class EventDetailsPanel:
     def CreateEntryField(self, width:int, entryname:str, entry_state='normal', placeholder_text=None):
         key = self.ConvertEntryNameToKey(entryname)
         e_frame, e_label, e_entry = GUIInterface.CreateEntryWithLabel(label= entryname + ":",
-                                                                      entry_width=width, 
-                                                                      entry_state=entry_state,
-                                                                      placeholder_text=placeholder_text)
+                                                                    entry_width=width, 
+                                                                    entry_state=entry_state,
+                                                                    placeholder_text=placeholder_text)
         self.details_entries[key] = e_entry
         return e_frame, e_entry
 
@@ -194,7 +196,7 @@ class EventDetailsPanel:
         GUIInterface.UpdateEntry(entry, date)
         window.destroy()
 
-    def ScheduleEvent(self):        
+    def ScheduleEvent(self):       
         # update event object before scheduling
         self.UpdateEventWithDetails()
 
@@ -203,19 +205,19 @@ class EventDetailsPanel:
 
         # Handle missing or incorrect input for time fields
         if input['Event'] == '':
-            popup_mgr.BasicPopup(msg=f'Missing Event Name field!')
+            messagebox.showerror(title='Missing input', message='Missing Event Name field!')
             return
         elif input['Start_Time'] == "":
-            popup_mgr.BasicPopup(msg=f'Missing Start Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
+            messagebox.showerror(title='Missing input', message=f'Missing Start Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif input['End_Time'] == "":
-            popup_mgr.BasicPopup(msg=f'Missing End Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
+            messagebox.showerror(title='Missing input', message=f'Missing End Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
-            popup_mgr.BasicPopup(msg=f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
+            messagebox.showerror(title='Missing input', message=f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
-            popup_mgr.BasicPopup(msg=f'Incorrect End Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
+            messagebox.showerror(title='Missing input', message=f'Incorrect End Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
             return
         
         # If no isses then create ics file
@@ -239,10 +241,10 @@ class EventDetailsPanel:
         elif calendar == OUTLOOK_CALENDAR: EventsManager.ScheduleOutlookCalendar(input, schedule_cb=self.ScheduleActions)
 
     def ScheduleActions(self, id, platform=DEFAULT_CALENDAR):
-        #print(f'SCHEDULE ACTIONS RAN FOR ID {id}')
+        logging.info(f'SCHEDULE ACTIONS RAN FOR ID {id}')
         if platform != DEFAULT_CALENDAR:
             self.event.setPlatform(platform)
             self.event.setId(id)
             EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-            popup_mgr.BasicPopup(msg='Successfully schedule event', pop_up_name='Success')
+        messagebox.showinfo(title='Success', message='Successfully schedule event!')
         self.remove_cb(self.key)

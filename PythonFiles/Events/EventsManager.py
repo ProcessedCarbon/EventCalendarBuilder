@@ -7,24 +7,25 @@ import os
 import Managers.DirectoryManager as directory_manager
 from Managers.DateTimeManager import DateTimeManager
 from Managers.TextProcessing import TextProcessingManager
+from Calendar.CalendarConstants import DEFAULT_CALENDAR
 from sys import platform
-import GUI.PopupManager as popup_mgr
+from tkinter import messagebox
 import Calendar.Outlook.OutlookInterface as outlook_interface
 import pytz
 import logging
 
 class Event:
     def __init__(self, 
-                 id:str, 
-                 name:str, 
-                 location:str, 
-                 s_date:str, 
-                 e_date:str,
-                 start_time:str, 
-                 end_time:str,
-                 platform='Default',
-                 recurring='None',
-                 description='') -> None:
+                id:str, 
+                name:str, 
+                location:str, 
+                s_date:str, 
+                e_date:str,
+                start_time:str, 
+                end_time:str,
+                platform=DEFAULT_CALENDAR,
+                recurring='None',
+                description='') -> None:
         
         self.id = id
         self.name = name
@@ -124,7 +125,7 @@ class EventsManager:
     events_db = []
 
     try: local_events_dir.mkdir(parents=True, exist_ok=False)
-    except: print(f"[{__name__}]EVENTS DIR ALREADY EXISTS")
+    except: logging.info(f"[{__name__}]EVENTS DIR ALREADY EXISTS")
 
     def CreateEventObj(name:str, 
                     location:str, 
@@ -132,21 +133,21 @@ class EventsManager:
                     e_date:str,                       
                     start_time:str, 
                     end_time:str,
-                    platform='Default',
+                    platform=DEFAULT_CALENDAR,
                     id='None',
                     recurring='None',
                     description=''):
         
         return Event(id=id,
-                     name=name,
-                     location=location,
-                     s_date=s_date,
-                     e_date=e_date,
-                     start_time=start_time,
-                     end_time=end_time,
-                     platform=platform,
-                     recurring=recurring,
-                     description=description)
+                    name=name,
+                    location=location,
+                    s_date=s_date,
+                    e_date=e_date,
+                    start_time=start_time,
+                    end_time=end_time,
+                    platform=platform,
+                    recurring=recurring,
+                    description=description)
     
     def ClearEvents():
         EventsManager.events = []
@@ -211,7 +212,6 @@ class EventsManager:
     
     def RemoveFromEventDB(id:str, target=None)->bool:
         if target == None:
-            #print(f"[{__name__}] MISSING DB TARGET")
             logging.warning(f"[{__name__}] MISSING DB TARGET")
             return False
         
@@ -223,7 +223,6 @@ class EventsManager:
                 EventsManager.WriteEventDBToJSON()
                 return True
             
-        #print(f"[{__name__}] REMOVE TARGET NOT FOUND!")
         logging.warning(f"[{__name__}] REMOVE TARGET NOT FOUND!")
         return False
     
@@ -244,8 +243,11 @@ class EventsManager:
                 for d in date_time:
                     time = date_time[d]
                     date = TextProcessingManager.ProcessDate(date_text=str(d))
-                    if len(time) > 0: n_time = TextProcessingManager.ProcessTime(time_text=str(time))
-                    else: n_time = [DateTimeManager.getCurrentTime()]
+
+                    if len(time) > 0: 
+                        n_time = TextProcessingManager.ProcessTime(time_text=str(time))
+                    else: 
+                        n_time = [DateTimeManager.getCurrentTime()]
 
                     events[i]["DATE_TIME"].pop(d)
                     if isinstance(date, list) and len(date) > 1: 
@@ -302,7 +304,6 @@ class EventsManager:
                                                             e_date=start_date,
                                                             start_time=start_time,
                                                             end_time=end_time)
-                    #print(vars(n_event))
                     EventsManager.AddEventToEventDB(n_event, EventsManager.events)
                     event_count += 1
             else:  
@@ -328,50 +329,37 @@ class EventsManager:
                                                     start_time=start_time,
                                                     end_time=end_time,
                                                     recurring=recurring)
-                #print(vars(n_event))
                 EventsManager.AddEventToEventDB(n_event, EventsManager.events)
                 event_count += 1
         return EventsManager.events
     
     # Right now can only handle 1 event only 
     def ScheduleDefault(event, schedule_cb):
-        # Mac
-        if platform == 'darwin':
-            filename = EventsManager.CreateICSFileFromInput(event)
-            if filename == None:
-                #print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR MAC')
-                logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR MAC')
-                return
-            file = CalendarInterface.getICSFilePath(filename)
+        filename = EventsManager.CreateICSFileFromInput(event)
+        if filename == None:
+            logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR DEFAULT')
+            return
+        file = CalendarInterface.getICSFilePath(filename)
+
+        # Default run process is Windows
+        def schedule_offline():
+            os.startfile(file)
+            schedule_cb(id=0, platform=DEFAULT_CALENDAR)
+
+        run_process = schedule_offline
+        
+        # Change to Mac
+        if platform == 'darwin':        
             def schedule_mac(): 
                 subprocess.run(['open', file])
-                #self.ScheduleActions(id=uuid4(), platform='Default')
                 schedule_cb(id=0, platform=DEFAULT_CALENDAR)
-            popup_mgr.PopupWithBtn(pop_up_name='Warning',
-                                   subtitle_1='Warning',
-                                   subtitle_2='No checks for other events are done for this.\nAre you sure you want to schedule?',
-                                   button_cb=schedule_mac)
-        # Windows
-        else:
-             def schedule_offline():
-                filename = EventsManager.CreateICSFileFromInput(event)
-                if filename == None:
-                    #print(f'[{__name__}] FAILED TO CREATE ICS FILE FOR WINDOWS')
-                    logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR WINDOWS')
-                    return
-                file = CalendarInterface.getICSFilePath(filename)
-                os.startfile(file)
-                schedule_cb(id=0, platform=DEFAULT_CALENDAR)
+            run_process = schedule_mac
 
-             popup_mgr.PopupWithTwoBtns(pop_up_name='Default Windows Scheduling',
-                                        subtitle_1='Warning!',
-                                        subtitle_2='Choose schedulling type\nNote: Locally schedule events would not be save in this app.',
-                                        button_cb_2=lambda:EventsManager.ScheduleOutlookCalendar(event, schedule_cb),
-                                        button_cb_1=schedule_offline,
-                                        b1_text="Local",
-                                        b2_text='Outlook')
+        res = messagebox.askokcancel(title='Warning', message='No checks for other events are done for this.\nAre you sure you want to schedule?')
+        if res: 
+            run_process()
             
-    def ScheduleGoogleCalendar(event, schedule_cb)->[str, list]:
+    def ScheduleGoogleCalendar(event, schedule_cb):
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
@@ -382,27 +370,31 @@ class EventsManager:
         existing_events = GoogleCalendarInterface.getEvents(time_min=google_event.getStartDate(), 
                                                             time_max=google_event.getUNTILDate())
         overlapped_events = []
-        if len(existing_events) > 0: overlapped_events = GoogleCalendarInterface.EventOverlaps(google_event, existing_events)
+        if len(existing_events) > 0: 
+            overlapped_events = GoogleCalendarInterface.EventOverlaps(google_event, existing_events)
 
         # Method to scheudle google event
         def schedule_google_calendar_event(): 
             id = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
-            if id == '': popup_mgr.BasicPopup('Failed to schedule event for reasons')
-            else: schedule_cb(id=id, platform='Google')#self.ScheduleActions(id=id, platform='Google')
+            if id == '': 
+                messagebox.showerror(title='Failed', message='Failed to schedule event for reasons')
+            else: 
+                schedule_cb(id=id, platform='Google')
 
         # Handle clash of events
         if len(overlapped_events) > 0:
             names = [x.getEvent() for x in overlapped_events]
             base_text = ''
-            for t in names: base_text += (t + '\n')
-            popup_mgr.PopupWithBtn(pop_up_name='Event clash',
-                                   subtitle_1='Are you sure you want to schedule this event?',
-                                   subtitle_2='It clashes with the following events:',
-                                   textbox_content=base_text, 
-                                   button_cb=schedule_google_calendar_event)
-        else: schedule_google_calendar_event()
+            for t in names: 
+                base_text += (t + '\n')
 
-    def ScheduleOutlookCalendar(event, schedule_cb)->str:
+            res = messagebox.askokcancel(title='Event clash', message=f'Are you sure you want to schedule this event?\nIt clashes with the following events:\n{base_text}')
+            if res:
+                schedule_google_calendar_event()
+        else: 
+            schedule_google_calendar_event()
+
+    def ScheduleOutlookCalendar(event, schedule_cb):
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
@@ -413,33 +405,38 @@ class EventsManager:
         '$filter': f"start/dateTime ge {outlook_event['start']['dateTime']} and end/dateTime le {outlook_event['end']['dateTime']}"
         }
         cal_events ={}
-        try: cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
-        except: pass
+        try: 
+            cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
+        except: 
+            pass
 
         # Response format
         #(True, {'@odata.context': "", 'value': []})
         if cal_events == {}: 
-            popup_mgr.BasicPopup('Failed to schedule event for [OUTLOOK] due to failed authentication')
+            messagebox.showerror(title='Failed', message='Failed to schedule event for [OUTLOOK] due to failed authentication')
             return ''
 
         def schedule_outlook_calendar_event():
             response = outlook_interface.send_flask_req(req='create_event', 
                                                         json_data={'event': outlook_event})
             details = response[1]
-            if 'id' not in details: popup_mgr.BasicPopup('Failed to schedule event for reasons')
-            else: schedule_cb(id=details['id'], platform='Outlook')
+            if 'id' not in details: 
+                messagebox.showerror(title='Failed', message='Failed to schedule event for reasons')
+            else: 
+                schedule_cb(id=details['id'], platform='Outlook')
 
         # Cannot pass an entire dictionary as a param 
         if len(cal_events) > 0:
             names = [x['subject'] for x in cal_events]
             base_text = ''
-            for t in names: base_text += (t + '\n')
-            popup_mgr.PopupWithBtn(pop_up_name='Event clash',
-                                   subtitle_1='Are you sure you want to schedule this event?',
-                                   subtitle_2='It clashes with the following events:',
-                                   textbox_content=base_text, 
-                                   button_cb=schedule_outlook_calendar_event)
-        else: schedule_outlook_calendar_event()
+            for t in names: 
+                base_text += (t + '\n')
+
+            res = messagebox.askokcancel(title='Event clash', message=f'Are you sure you want to schedule this event?\nIt clashes with the following events:\n{base_text}')
+            if res:
+                schedule_outlook_calendar_event()
+        else: 
+            schedule_outlook_calendar_event()
 
     # Creates ICS files to be parsed 
     # 1 ICS = should have 1 VEVENT
@@ -459,7 +456,7 @@ class EventsManager:
         hours, remainder = divmod(time_difference.seconds, 3600)
 
         rrule = {'freq': event["Repeated"].lower(),
-                 'until': ics_e,
+                'until': ics_e,
                 } if event['Repeated'] != 'None' else {}
         
         # Create ICS File

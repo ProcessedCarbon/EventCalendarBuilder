@@ -2,7 +2,7 @@ from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
-import GUI.PopupManager as popup_mgr
+from tkinter import messagebox
 
 from math import ceil
 
@@ -59,21 +59,19 @@ class SchedulePage(Page):
         GUIInterface.CreateGrid(self.details_panel_frame, rows=([1] * detail_rows), cols=[1])
         for index, event in enumerate(events):
             if self.panels == self.max_panels:
-                popup_mgr.BasicPopup(msg=f'Max event panels of {self.max_panels} reached.',
-                                     pop_up_name='Max Event Reached!')
+                messagebox.showwarning(title='Max Event Reached!', message=f'Max event panels of {self.max_panels} reached.')
                 break
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
-                                             event=event['object'],
-                                             remove_cb=self.RemovePanel,
-                                             key=index,
-                                             row=index, 
-                                             column=0, 
-                                             sticky='nsew')
+                                            event=event['object'],
+                                            remove_cb=self.RemovePanel,
+                                            key=index,
+                                            row=index, 
+                                            column=0, 
+                                            sticky='nsew')
             self.details_panels[index] = detail_panel
             self.panels += 1
 
     def ResetDetails(self):
-        #print(f"Details panels: {self.details_panels}")
         for panel in self.details_panels:
             self.details_panels[panel].Reset()
             self.details_panels[panel].Destroy()
@@ -88,7 +86,7 @@ class SchedulePage(Page):
             self.details_panels[key].Destroy()
             del self.details_panels[key]
             self.details_panel_frame.update()
-            #print(f"[{__name__}] SUCCESSFUL REMOVAL OF PANEL {key}")
+            logging.info(f"[{__name__}] SUCCESSFUL REMOVAL OF PANEL {key}")
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
@@ -97,8 +95,7 @@ class SchedulePage(Page):
     def CreateEventButton(self):
         try:
             if self.panels == self.max_panels:
-                popup_mgr.BasicPopup(msg=f'Max event panels of {self.max_panels} reached.',
-                                     pop_up_name='Max Event Reached!')
+                messagebox.showwarning(title='Max Event Reached!', message=f'Max event panels of {self.max_panels} reached.')
                 return
             
             empty_event = EventsManager.CreateEventObj(id=self.panels,
@@ -108,6 +105,7 @@ class SchedulePage(Page):
                                                         e_date='',
                                                         start_time='',
                                                         end_time='')
+
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                             event=empty_event,
                                             remove_cb=self.RemovePanel,
@@ -115,8 +113,9 @@ class SchedulePage(Page):
                                             row=self.panels, 
                                             column=0, 
                                             sticky='nsew')
+            
             self.details_panels[self.panels] = detail_panel
             self.panels += 1
             self.details_panel_frame.update()
         except Exception as e:
-            print(f"[{__name__}]: {e}")
+            logging.error(f"[{__name__}]: {e}")

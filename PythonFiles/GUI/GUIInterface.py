@@ -23,12 +23,12 @@ class GUIInterface:
         bg_color =      GUIInterface.getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         frame = CTkFrame(frame_target,
-                         width=width,
-                         height=height,
-                         border_width=border_width,
-                         fg_color=fg_color,
-                         border_color=border_color,
-                         bg_color=bg_color)
+                        width=width,
+                        height=height,
+                        border_width=border_width,
+                        fg_color=fg_color,
+                        border_color=border_color,
+                        bg_color=bg_color)
         
         GUIInterface.current_frame = frame
         return frame
@@ -52,22 +52,22 @@ class GUIInterface:
         bg_color = GUIInterface.getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         scrollable_frame = CTkScrollableFrame(frame_target,
-                                              width=width,
-                                              height=height,
-                                              corner_radius=corner_radius,
-                                              border_width=border_width,
-                                              fg_color=fg_color,
-                                              border_color=border_color,
-                                              scrollbar_fg_color=scrollbar_fg_color,
-                                              scrollbar_button_color=scrollbar_button_color,
-                                              scrollbar_button_hover_color=scrollbar_button_hover_color,
-                                              label_fg_color=label_fg_color,
-                                              label_text_color=label_text_color,
-                                              label_text=label_text,
-                                              label_font=label_font,
-                                              label_anchor=label_anchor,
-                                              orientation=orientation,
-                                              bg_color=bg_color)
+                                            width=width,
+                                            height=height,
+                                            corner_radius=corner_radius,
+                                            border_width=border_width,
+                                            fg_color=fg_color,
+                                            border_color=border_color,
+                                            scrollbar_fg_color=scrollbar_fg_color,
+                                            scrollbar_button_color=scrollbar_button_color,
+                                            scrollbar_button_hover_color=scrollbar_button_hover_color,
+                                            label_fg_color=label_fg_color,
+                                            label_text_color=label_text_color,
+                                            label_text=label_text,
+                                            label_font=label_font,
+                                            label_anchor=label_anchor,
+                                            orientation=orientation,
+                                            bg_color=bg_color)
         return scrollable_frame
 
     def CreateButton(on_click=None, **kwargs)->CTkButton:
@@ -92,25 +92,25 @@ class GUIInterface:
 
 
         myButton = CTkButton(GUIInterface.current_frame, 
-                             text=text, 
-                             command=on_click, 
-                             corner_radius=corner_radius,
-                             width=width,
-                             height=height,
-                             border_width=border_width,
-                             fg_color=fg_color,
-                             border_color=border_color,
-                             hover_color=hover_color,
-                             text_color=text_color,
-                             text_color_disabled=text_color_disabled,
-                             font=font,
-                             textvariable=textvariable,
-                             image=image,
-                             state=state,
-                             hover=hover,
-                             compound=compound,
-                             anchor=anchor,
-                             border_spacing=border_spacing)
+                            text=text, 
+                            command=on_click, 
+                            corner_radius=corner_radius,
+                            width=width,
+                            height=height,
+                            border_width=border_width,
+                            fg_color=fg_color,
+                            border_color=border_color,
+                            hover_color=hover_color,
+                            text_color=text_color,
+                            text_color_disabled=text_color_disabled,
+                            font=font,
+                            textvariable=textvariable,
+                            image=image,
+                            state=state,
+                            hover=hover,
+                            compound=compound,
+                            anchor=anchor,
+                            border_spacing=border_spacing)
         return myButton
         
     def CreateLabel(text:str, **kwargs)->CTkLabel:
@@ -128,19 +128,19 @@ class GUIInterface:
         pady =              GUIInterface.getParamValFromKwarg('pady', kwargs, default=1)
 
         myLabel = CTkLabel(GUIInterface.current_frame, 
-                           text=text,
-                           width=width,
-                           height=height,
-                           fg_color=fg_color,
-                           text_color=text_color,
-                           font=font,
-                           textvariable=textvariable,
-                           corner_radius=corner_radius,
-                           anchor=anchor,
-                           compound=compound,
-                           justify=justify,
-                           padx=padx,
-                           pady=pady)
+                        text=text,
+                        width=width,
+                        height=height,
+                        fg_color=fg_color,
+                        text_color=text_color,
+                        font=font,
+                        textvariable=textvariable,
+                        corner_radius=corner_radius,
+                        anchor=anchor,
+                        compound=compound,
+                        justify=justify,
+                        padx=padx,
+                        pady=pady)
         return myLabel
 
     def CreateEntry(**kwargs)->CTkEntry:
@@ -157,16 +157,16 @@ class GUIInterface:
         bg_color =                  GUIInterface.getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         textInput = CTkEntry(GUIInterface.current_frame, 
-                             width=width,
-                             height=height,
-                             fg_color=fg_color,
-                             text_color=text_color,
-                             font=font,
-                             textvariable=textvariable,
-                             corner_radius=corner_radius,
-                             placeholder_text_color=placeholder_text_color,
-                             placeholder_text=placeholder_text,
-                             state=state)
+                            width=width,
+                            height=height,
+                            fg_color=fg_color,
+                            text_color=text_color,
+                            font=font,
+                            textvariable=textvariable,
+                            corner_radius=corner_radius,
+                            placeholder_text_color=placeholder_text_color,
+                            placeholder_text=placeholder_text,
+                            state=state)
         return textInput
     
     def CreateTextbox(**kwargs)->CTkTextbox:
@@ -186,20 +186,20 @@ class GUIInterface:
         wrap =                          GUIInterface.getParamValFromKwarg('wrap', kwargs, default='char')
 
         text = CTkTextbox(GUIInterface.current_frame, 
-                          height=height, 
-                          width=width,
-                          fg_color=fg_color,
-                          text_color=text_color,
-                          font=font,
-                          corner_radius=corner_radius,
-                          state=state,
-                          border_width=border_width,
-                          border_spacing=border_spacing,
-                          border_color=border_color,
-                          scrollbar_button_color=scrollbar_button_color,
-                          scrollbar_button_hover_color=scrollbar_button_hover_color,
-                          activate_scrollbars=activate_scrollbars,
-                          wrap=wrap)
+                        height=height, 
+                        width=width,
+                        fg_color=fg_color,
+                        text_color=text_color,
+                        font=font,
+                        corner_radius=corner_radius,
+                        state=state,
+                        border_width=border_width,
+                        border_spacing=border_spacing,
+                        border_color=border_color,
+                        scrollbar_button_color=scrollbar_button_color,
+                        scrollbar_button_hover_color=scrollbar_button_hover_color,
+                        activate_scrollbars=activate_scrollbars,
+                        wrap=wrap)
         return text
     
     def CreateComboBox(values:list[str], **kwargs)->CTkComboBox:
@@ -225,27 +225,27 @@ class GUIInterface:
         justify =                       GUIInterface.getParamValFromKwarg('justify', kwargs, default='left')
 
         combobox = CTkComboBox(GUIInterface.current_frame, 
-                               values=values, 
-                               state=state,
-                               width=width,
-                               height=height,
-                               fg_color=fg_color,
-                               text_color=text_color,
-                               text_color_disabled=text_color_disabled,
-                               font=font,
-                               corner_radius=corner_radius,
-                               border_width=border_width,
-                               border_color=border_color,
-                               button_color=button_color,
-                               button_hover_color=button_hover_color,
-                               dropdown_fg_color=dropdown_fg_color,
-                               dropdown_hover_color=dropdown_hover_color,
-                               dropdown_text_color=dropdown_text_color,
-                               dropdown_font=dropdown_font,
-                               hover=hover,
-                               command=command,
-                               variable=variable,
-                               justify=justify)
+                            values=values, 
+                            state=state,
+                            width=width,
+                            height=height,
+                            fg_color=fg_color,
+                            text_color=text_color,
+                            text_color_disabled=text_color_disabled,
+                            font=font,
+                            corner_radius=corner_radius,
+                            border_width=border_width,
+                            border_color=border_color,
+                            button_color=button_color,
+                            button_hover_color=button_hover_color,
+                            dropdown_fg_color=dropdown_fg_color,
+                            dropdown_hover_color=dropdown_hover_color,
+                            dropdown_text_color=dropdown_text_color,
+                            dropdown_font=dropdown_font,
+                            hover=hover,
+                            command=command,
+                            variable=variable,
+                            justify=justify)
         combobox.set(values[0])
         return combobox
 
@@ -264,8 +264,8 @@ class GUIInterface:
 
         tmp_frame = GUIInterface.current_frame
         entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame, 
-                                               border_width=0,
-                                               fg_color='transparent')
+                                            border_width=0,
+                                            fg_color='transparent')
 
         entry_frame.columnconfigure(0, weight=1)
         entry_frame.columnconfigure(1, weight=3)
@@ -276,9 +276,9 @@ class GUIInterface:
 
         # Entry
         entry = GUIInterface.CreateEntry(width=entry_width, 
-                                         textvariable=default_text, 
-                                         state=entry_state,
-                                         placeholder_text=placeholder_text)
+                                        textvariable=default_text, 
+                                        state=entry_state,
+                                        placeholder_text=placeholder_text)
         
         entry.grid(row=0, column=1, sticky='e')
 
@@ -289,8 +289,8 @@ class GUIInterface:
     def CreateOptionMenuWithLabel(label:str, dropdown:list[str])->list[CTkFrame,CTkLabel,CTkComboBox]:    
         tmp_frame = GUIInterface.current_frame
         combo_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame,
-                                               border_width=0,
-                                               fg_color='transparent')
+                                            border_width=0,
+                                            fg_color='transparent')
 
         combo_frame.columnconfigure(0, weight=1)
         combo_frame.columnconfigure(1, weight=3)
@@ -309,6 +309,7 @@ class GUIInterface:
 
     def CreateNewWindow(window_name:str, size='250x250'):
         window = Toplevel(GUIInterface.root)
+        window.resizable(False, False)
         window.columnconfigure(0, weight=1)
         window.rowconfigure(0, weight=1)
         window.title(window_name)
@@ -320,8 +321,7 @@ class GUIInterface:
         
         window.protocol("WM_DELETE_WINDOW", onCloseCallBack)
         window.bind("<FocusOut>", lambda event : onCloseCallBack)
-
-        return window
+        return window, onCloseCallBack
     
     def centerWindow(window):
         '''
@@ -397,12 +397,11 @@ class GUIInterface:
 
 
         return CTkFont(family=family,
-                       size=size,
-                       weight=weight,
-                       slant=slant,
-                       underline=underline,
-                       overstrike=overstrike
-                       )
+                    size=size,
+                    weight=weight,
+                    slant=slant,
+                    underline=underline,
+                    overstrike=overstrike)
 
     def getWindowInfo(window)->[int,int]:
         window.update()
@@ -449,7 +448,7 @@ class GUIInterface:
 
     def setColorPalette(theme=''):
         try: GUIInterface.color_palette = dir_manager.ReadJSON(dir_path=GUIInterface.default_theme_path, 
-                                                              file_name=theme)
+                                                            file_name=theme)
         except: pass
 
     def MainLoop(self):
@@ -457,4 +456,3 @@ class GUIInterface:
 
     def getParamValFromKwarg(param_name:str, kwargs:dict, default=None):
         return kwargs[param_name] if param_name in kwargs else default
-        
