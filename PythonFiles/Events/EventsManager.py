@@ -1,18 +1,18 @@
 import subprocess
-from Calendar.CalendarInterface import CalendarInterface
-from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR
-from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 from pathlib import Path
 import os
+import pytz
+import logging
+from sys import platform
+from tkinter import messagebox
+
+from Calendar.CalendarInterface import CalendarInterface
+from Calendar.CalendarConstants import DEFAULT_CALENDAR
+from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
+import Calendar.Outlook.OutlookInterface as outlook_interface
 import Managers.DirectoryManager as directory_manager
 from Managers.DateTimeManager import DateTimeManager
 from Managers.TextProcessing import TextProcessingManager
-from Calendar.CalendarConstants import DEFAULT_CALENDAR
-from sys import platform
-from tkinter import messagebox
-import Calendar.Outlook.OutlookInterface as outlook_interface
-import pytz
-import logging
 
 class Event:
     def __init__(self, 

@@ -1,12 +1,12 @@
+from tkinter import messagebox
+from sys import platform
+
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, OUTLOOK_CALENDAR, GOOGLE_CALENDAR
-from tkinter import messagebox
-
-from sys import platform
 
 class EventCard:
     def __init__(self, parent, row, col, event_details:dict, gap:int, remove_cb, index:int) -> None:

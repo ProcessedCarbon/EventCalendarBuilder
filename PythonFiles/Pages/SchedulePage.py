@@ -1,10 +1,10 @@
 from Pages.Page import *
+from tkinter import messagebox
+from math import ceil
+
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager
-from tkinter import messagebox
-
-from math import ceil
 
 class SchedulePage(Page):
     def __init__(self):
@@ -25,17 +25,15 @@ class SchedulePage(Page):
         button.grid(row=0, column=0, sticky='nw')
 
         # Title
-        title = GUIInterface.CreateLabel(text="Schedule", font=("Bold",20))
+        title = GUIInterface.CreateLabel(text="Schedule", font=("Bold", 20))
         title.grid(row=0, column=1, sticky='n')
 
         # Details
         self.details_panel_frame = GUIInterface.CreateScrollableFrame(self.page)
         self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
-        details_panel_frame_r = [1]
-        details_panel_frame_c = [1]
         GUIInterface.CreateGrid(self.details_panel_frame, 
-                                rows=details_panel_frame_r,
-                                cols=details_panel_frame_c)
+                                rows=[1],
+                                cols=[1])
 
         # Create Event Button
         create_event = GUIInterface.CreateButton(on_click=self.CreateEventButton, text='Create')

@@ -1,12 +1,13 @@
+import logging
+
 from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
-import logging
 
 class AppToolbar:
     def __init__(self) -> None:
         self.events_toolbar_frame = GUIInterface.CreateScrollableFrame(GUIInterface.root, 
-                                                                       corner_radius=0,
-                                                                       fg_color=GUIInterface.color_palette['CTkProgressBar']['fg_color'])
+                                                                        corner_radius=0,
+                                                                        fg_color=GUIInterface.color_palette['CTkProgressBar']['fg_color'])
         
         rows = [1,1,1,1,1,1,1]
         cols=[1]
@@ -36,7 +37,7 @@ class AppToolbar:
         self.scaling_label = GUIInterface.CreateLabel(text="UI Scaling:", anchor="w")
         self.scaling_label.grid(row=5, column=0, padx=20, pady=(10, 0))
         self.scaling_optionemenu = GUIInterface.CreateOptionMenu(values=["80%", "90%", "100%", "110%", "120%"],
-                                                               command=GUIInterface.ChangeGUIScaling)
+                                                                command=GUIInterface.ChangeGUIScaling)
         self.scaling_optionemenu.set('100%')
         self.scaling_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 20))
 
@@ -45,12 +46,10 @@ class AppToolbar:
     def ChangeToPage(self, page:int)->bool:
         n = len(PageManager.pages)
         if n == 0:
-            #print(f"[{__name__}] NO PAGES AVAILABLE!")
             logging.error(f"[{__name__}] NO PAGES AVAILABLE!")
             return False
 
         if page > n:
-            #print(f"[{__name__}] PAGE DOES NOT EXISTS!")
             logging.error(f"[{__name__}] PAGE DOES NOT EXISTS!")
             return False
         

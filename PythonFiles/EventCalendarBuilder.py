@@ -9,7 +9,6 @@ from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
-
 from Events.EventsManager import EventsManager
 
 '''
@@ -54,6 +53,10 @@ if __name__ == "__main__":
     if os.path.exists(LOG_PATH):
         os.remove(LOG_PATH)
     logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-    if ALLOW_GOOGLE: GoogleCalendarInterface.ConnectToGoogleCalendar()
-    if ALLOW_OUTLOOK: outlook_interface.start_flask()
+
+    if ALLOW_GOOGLE: 
+        GoogleCalendarInterface.ConnectToGoogleCalendar()
+    if ALLOW_OUTLOOK: 
+        outlook_interface.start_flask()
+
     client_app()

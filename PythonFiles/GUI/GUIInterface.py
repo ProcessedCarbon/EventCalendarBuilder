@@ -1,5 +1,6 @@
 from tkinter import *
 from customtkinter import *
+
 import Managers.DirectoryManager as dir_manager
 
 class GUIInterface:

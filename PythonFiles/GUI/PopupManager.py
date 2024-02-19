@@ -1,5 +1,6 @@
-from GUI.GUIInterface import GUIInterface
 from tkcalendar import *
+
+from GUI.GUIInterface import GUIInterface
 
 def CreateDateWindow(size='450x450'):
     tmp = GUIInterface.current_frame

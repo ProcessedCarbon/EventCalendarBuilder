@@ -1,12 +1,13 @@
+from tkinter import messagebox
+import pytz
+import logging
+
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR
 import GUI.PopupManager as popup_mgr
-from tkinter import messagebox
-import pytz
-import logging
 
 class EventDetailsPanel:
     outlook_supported_tzs = None
