@@ -1,7 +1,8 @@
-from GUI.GUIInterface import GUIInterface
-from Calendar.CalendarInterface import CalendarInterface
 import os, signal
 import logging
+
+from GUI.GUIInterface import GUIInterface
+from Calendar.CalendarInterface import CalendarInterface
 
 class MainAppWindow:
     aspect = 0.85

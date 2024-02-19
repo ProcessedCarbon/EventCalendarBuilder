@@ -1,6 +1,7 @@
+import logging
+
 from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
-import logging
 
 class Page:
     def __init__(self):

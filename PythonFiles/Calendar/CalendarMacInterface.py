@@ -1,7 +1,7 @@
 import subprocess
 from Managers.TextProcessing import TextProcessingManager
 
-mac_calendar_events = []
+MAC_CALENDAR_EVENTS = []
 
 def getMacCalendarEvents():
         retrieve_applescript = """
@@ -60,12 +60,9 @@ def RemoveMacCalendarEvents(event_summary)->bool:
             """
         
         process = subprocess.Popen(['osascript', '-'], 
-                                   stdin=subprocess.PIPE, 
-                                   stdout=subprocess.PIPE, 
-                                   stderr=subprocess.PIPE, 
-                                   text=True)
+                                    stdin=subprocess.PIPE, 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.PIPE, 
+                                    text=True)
         
         stdout, stderr = process.communicate(applescript)
-
-        # if stderr: print(f"Error: {stderr}")
-        # else: print(f"Result: {stdout}")

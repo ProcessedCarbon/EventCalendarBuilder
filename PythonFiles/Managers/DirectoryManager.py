@@ -6,7 +6,6 @@ import logging
 
 # No need to close file after 'with open()' is used
 # Auto closes after with code is exceuted
-
 def MakeDirectory(dir_path:Path):
     try:
         dir_path.mkdir(parents=True, exist_ok=False)

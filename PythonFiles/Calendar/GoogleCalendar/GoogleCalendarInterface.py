@@ -1,10 +1,5 @@
 import os.path
 import datetime as dt
-from Calendar.GoogleCalendar.GoogleEvent import GoogleEvent
-from Calendar.CalendarInterface import CalendarInterface
-from Managers.DateTimeManager import DateTimeManager
-import Managers.DirectoryManager as directory_manager
-
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -12,15 +7,17 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import logging
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
-# GoogleCalendarAPI_path = "./GoogleCalendarAPI/"
-# token_path = GoogleCalendarAPI_path + "token.json"
-# credentials_path = GoogleCalendarAPI_path + "credentials.json"
+from Calendar.GoogleCalendar.GoogleEvent import GoogleEvent
+from Calendar.CalendarInterface import CalendarInterface
+from Managers.DateTimeManager import DateTimeManager
+import Managers.DirectoryManager as directory_manager
 
-main_path = directory_manager.getCurrentFileDirectory(__file__)
-misc_path = directory_manager.getFilePath(main_path, 'GoogleCalendarAPI')
-token_path = directory_manager.getFilePath(misc_path, 'token.json')
-credentials_path = directory_manager.getFilePath(misc_path, 'credentials.json')
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+
+MAIN_PATH = directory_manager.getCurrentFileDirectory(__file__)
+MISC_PATH = directory_manager.getFilePath(MAIN_PATH, 'GoogleCalendarAPI')
+TOKEN_PATH = directory_manager.getFilePath(MISC_PATH, 'token.json')
+CREDS_PATH = directory_manager.getFilePath(MISC_PATH, 'credentials.json')
 
 class GoogleCalendarInterface:
     creds = None
@@ -29,17 +26,17 @@ class GoogleCalendarInterface:
     def ConnectToGoogleCalendar():
         logging.info("ESTABLISHING CONNECTION TO GOOGLE CALENDARS......")
         if os.path.exists(r'token_path'):
-            GoogleCalendarInterface.creds = Credentials.from_authorized_user_file(token_path)
+            GoogleCalendarInterface.creds = Credentials.from_authorized_user_file(TOKEN_PATH)
         
         if not GoogleCalendarInterface.creds or not GoogleCalendarInterface.creds.valid:
             if GoogleCalendarInterface.creds and GoogleCalendarInterface.creds.expired and GoogleCalendarInterface.creds.refresh_token:
                 GoogleCalendarInterface.creds.refresh(Request())
 
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
+                flow = InstalledAppFlow.from_client_secrets_file(CREDS_PATH, SCOPES)
                 GoogleCalendarInterface.creds = flow.run_local_server(port = 0)
 
-            with open(token_path, "w") as token:
+            with open(TOKEN_PATH, "w") as token:
                 token.write(GoogleCalendarInterface.creds.to_json())
         
         try:
@@ -126,8 +123,7 @@ class GoogleCalendarInterface:
                             tzstart=tzstart,
                             tzend=tzend,
                             rrule=rrule,
-                            description=description
-                           )
+                            description=description)
 
     # Only expecting 1 event per ics
     def Parse_ICS(ics:str):
@@ -151,8 +147,8 @@ class GoogleCalendarInterface:
                                                                 tzstart=tzstart,
                                                                 tzend=tzend,
                                                                 rrule=str(rule) if rule != '' else [],
-                                                                description=component.get('description')
-                                                                )
+                                                                description=component.get('description'))
+            
         return None
     
     def getEvents(calendar_id='primary', time_min=None, time_max=None)->list[GoogleEvent]:
@@ -168,6 +164,7 @@ class GoogleCalendarInterface:
                                                                             rrule=x['recurrence'] if 'recurrence' in x else '',
                                                                             description=x['description'] if 'description' in x else ''
                                                                         ) for x in existing]
+        
         return existing_google_events  
 
     def EventOverlaps(new_event:GoogleEvent, existing_events:list[GoogleEvent])->bool:
@@ -182,7 +179,6 @@ class GoogleCalendarInterface:
             event_end = event.getEndDate().replace("T", " ")
 
             if DateTimeManager.hasDateTimeClash(new_event_start, new_event_end, event_start, event_end):
-                #print(f'Event to schedule {new_event.getEvent().upper()} has clash with {event.getEvent().upper()}!')
                 overlapped_events.append(event)
         return overlapped_events #False
     

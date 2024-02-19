@@ -2,13 +2,11 @@ import spacy
 import Managers.DirectoryManager as directory_manager
 import logging
 
-parent_dir = directory_manager.getCurrentFileDirectory(__file__)
-model_path = directory_manager.getFilePath(parent_dir, 'model/model-best')
-
-#model_path = "model/model-best"
+PARENT_DIR = directory_manager.getCurrentFileDirectory(__file__)
+MODEL_PATH = directory_manager.getFilePath(PARENT_DIR, 'model/model-best')
 
 class NERInterface:
-    nlp = spacy.load(model_path) #load model   
+    nlp = spacy.load(MODEL_PATH) #load model   
 
     # Extracts entities from given text
     def GetEntitiesFromText(text:str):

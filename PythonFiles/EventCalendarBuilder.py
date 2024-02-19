@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 os.chdir(Path(os.path.dirname(os.path.realpath(__file__))).parent.absolute())
+import logging
 
 '''
 MANAGERS AND INTERFACES
@@ -25,7 +26,6 @@ from Pages.ManageEventPage import ManageEventPage
 # Toolbar
 from GUI.AppToolbar import AppToolbar
 
-import logging
 LOG_PATH = Path('./app.log')
 ALLOW_GOOGLE = False
 ALLOW_OUTLOOK = False

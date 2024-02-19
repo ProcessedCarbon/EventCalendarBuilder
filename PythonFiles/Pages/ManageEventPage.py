@@ -1,8 +1,8 @@
+import logging
+
 from Pages.Page import Page
 from GUI.GUIInterface import GUIInterface
 from Events.EventsManager import EventsManager
-import logging
-
 from GUI.EventCard import EventCard
 
 class ManageEventPage(Page):
@@ -25,13 +25,11 @@ class ManageEventPage(Page):
         self.content_frame = GUIInterface.CreateScrollableFrame(self.page)
         self.content_frame.grid(row=1, column=1, sticky='nsew')
 
-        #self.UpdateGUI()
-
         # Clears the content and local events json of content_frame
         # Yet to remove the events scheduled on their respective calendar platform
         clear_events_json_btn = GUIInterface.CreateButton(on_click=self.Clear, 
-                                                          text='Clear',
-                                                          width=self.page.winfo_width() * 0.1)  
+                                                        text='Clear',
+                                                        width=self.page.winfo_width() * 0.1)  
         clear_events_json_btn.grid(row=2, column=1)   
     
     def OnEntry(self):
@@ -69,7 +67,7 @@ class ManageEventPage(Page):
             else: 
                 #print(f"FAILED TO REMOVE PANEL {key}")
                 logging.info(f"FAILED TO REMOVE PANEL {key}")
-     
+
     def Clear(self):
         EventsManager.ClearEventsJSON() # clear events json
         for c in self.cards: self.cards[c].Destroy() # remove card GUIs

@@ -1,11 +1,12 @@
 import icalendar
 from icalendar import Calendar, Event, vCalAddress, vText
 from pathlib import Path
+from datetime import timedelta
+from uuid import uuid4
+import logging
+
 import Managers.DirectoryManager as directory_manager
 from Managers.TextProcessing import TextProcessingManager
-from datetime import timedelta
-import uuid
-import logging
 
 class CalendarInterface:
     _cal = Calendar()
@@ -49,7 +50,7 @@ class CalendarInterface:
         event['organizer'] = organizer
         event['location'] = vText(e_location)
         
-        event['uid'] = uuid.uuid4()
+        event['uid'] = uuid4()
         event.add('priority', e_priority)
         
         # Add the event to the calendar

@@ -1,6 +1,6 @@
 import requests
 from flask import Flask, request, jsonify
-import uuid
+from uuid import uuid4
 import webbrowser
 from Calendar.CalendarInterface import CalendarInterface
 import Managers.DirectoryManager as directory_manager
@@ -8,17 +8,17 @@ import threading
 import logging
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-app = Flask(__name__)
-app.secret_key = 'EventCalendarBuilder'  # Change this
-local_host = 8000
+APP = Flask(__name__)
+APP.secret_key = 'EventCalendarBuilder'  # Change this
+LOCAL_HOST = 8000
 
 CLIENT_ID = "99b8766f-5d52-490c-8237-187338d09615"
 CLIENT_SECRET = "_xm8Q~VKXbbgvNF8mT5BUAMr5I_XyE3Q18aRNczT"
-REDIRECT_URI=f'http://localhost:{local_host}/callback'
+REDIRECT_URI=f'http://localhost:{LOCAL_HOST}/callback'
 AUTHORITY_URL = 'https://login.microsoftonline.com/common'
 SCOPES = "openid User.Read Calendars.ReadWrite"
 
-token_path = directory_manager.getCurrentFileDirectory(__file__)
+TOKEN_PATH = directory_manager.getCurrentFileDirectory(__file__)
 
 # Format:
 # https://learn.microsoft.com/en-us/graph/api/calendar-post-events?view=graph-rest-1.0&tabs=http
@@ -119,21 +119,21 @@ class OutlookEvent():
             }
         }
 
-@app.route('/')
+@APP.route('/')
 def login():
     # Generate the full authorization endpoint on Microsoft's identity platform
-    authorization_url = f"{AUTHORITY_URL}/oauth2/v2.0/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&response_mode=query&scope={SCOPES}&state={uuid.uuid4()}"
+    authorization_url = f"{AUTHORITY_URL}/oauth2/v2.0/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&response_mode=query&scope={SCOPES}&state={uuid4()}"
 
     # Open the browser for authentication
     webbrowser.open(authorization_url)
 
     return "Authentication started. Please check your browser."
 
-@app.route('/callback')
+@APP.route('/callback')
 def callback():
     code = request.args.get('code')
     if not code:
-        directory_manager.WriteJSON(token_path, 'api_token_access.json', '')
+        directory_manager.WriteJSON(TOKEN_PATH, 'api_token_access.json', '')
         return "Failed Authentication."
 
     token_url = f"{AUTHORITY_URL}/oauth2/v2.0/token"
@@ -146,12 +146,12 @@ def callback():
         'redirect_uri': REDIRECT_URI
     }
     token_r = requests.post(token_url, data=token_data)
-    directory_manager.WriteJSON(token_path, 'api_token_access.json', token_r.json())
+    directory_manager.WriteJSON(TOKEN_PATH, 'api_token_access.json', token_r.json())
     return 'Authentication Successful can close browser'
 
-@app.route('/create_event')
+@APP.route('/create_event')
 def create_event():   
-    token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
     token = token_access['access_token']
 
     if not token: return jsonify(status="error", message="Not authenticated!"), 401
@@ -166,9 +166,9 @@ def create_event():
     response = requests.post("https://graph.microsoft.com/v1.0/me/events", headers=headers, json=event)
     return response.json()
 
-@app.route('/delete_event')
+@APP.route('/delete_event')
 def delete_event():   
-    token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
     token = token_access['access_token']
 
     if not token:
@@ -186,9 +186,9 @@ def delete_event():
     logging.info(f'DELETE RESPONSE STATUS CODE: {response.status_code}')
     return {}
 
-@app.route('/get_events')
+@APP.route('/get_events')
 def get_events():   
-    token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
     token = token_access['access_token']
 
     if not token:
@@ -204,9 +204,9 @@ def get_events():
     logging.info(f'GET EVENTS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
-@app.route('/get_mail_settings')
+@APP.route('/get_mail_settings')
 def get_mail_settings():
-    token_access = directory_manager.ReadJSON(token_path, 'api_token_access.json')
+    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
     token = token_access['access_token']
     headers = {
         'Authorization': f'{token_access["token_type"]} {token}',
@@ -239,7 +239,7 @@ def parse_ics(ics)->OutlookEvent:
 # Require this to go from Flask -> Outlook
 # send_flask_req will always return true if any sort of response is received
 def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:
-    response = requests.get(f"http://localhost:{local_host}/{req}", json=json_data, params=param_data)
+    response = requests.get(f"http://localhost:{LOCAL_HOST}/{req}", json=json_data, params=param_data)
     #print(f'Response Content:\n{response.json()}')
     '''
     HTTP status codes in the 200-299 range indicate success, with 200 being the standard response for a successful HTTP request.
@@ -253,8 +253,8 @@ def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:
 
 def run():
     login()
-    app.wsgi_app = ProxyFix(app.wsgi_app)
-    app.run(host='localhost', port=local_host, use_reloader = False)
+    APP.wsgi_app = ProxyFix(APP.wsgi_app)
+    APP.run(host='localhost', port=LOCAL_HOST, use_reloader = False)
 
 def start_flask():
     logging.info('ESTABLISHING CONNECTION TO OUTLOOK API THROUGH FLASK')

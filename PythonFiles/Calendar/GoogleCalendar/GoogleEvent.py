@@ -1,14 +1,14 @@
 class GoogleEvent:
     def __init__(self, event: str, 
-                 location: str, 
-                 start_datetime: str, 
-                 end_datetime: str, 
-                 tzstart: str, 
-                 tzend:str, 
-                 rrule:str,
-                 colorId=1,
-                 description=''
-                 ):
+                location: str, 
+                start_datetime: str, 
+                end_datetime: str, 
+                tzstart: str, 
+                tzend:str, 
+                rrule:str,
+                colorId=1,
+                description=''
+                ):
         
         self.event = {
             "summary" : event,
@@ -77,5 +77,4 @@ class GoogleEvent:
             _until = _until.replace(_until[8:10], r_date[6:8])
             return _until
         else:
-            #print('NO UNTIL DATE IN RRULE')
             return self.getEndDate()

@@ -1,7 +1,7 @@
-from Pages.Page import *
 from tkinter import messagebox
 from math import ceil
 
+from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from Events.EventsManager import EventsManager

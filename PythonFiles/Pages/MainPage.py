@@ -1,10 +1,11 @@
+from tkinter import messagebox
+import logging
+
 from Pages.Page import PageManager, Page
 from NER.NERInterface import NERInterface
 from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
 from GUI.GUIInterface import GUIInterface
-from tkinter import messagebox
-import logging
 
 class MainPage(Page):
         def __init__(self): 
