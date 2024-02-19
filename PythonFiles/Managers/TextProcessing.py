@@ -1,8 +1,9 @@
 import string
 import re
-from Managers.DateTimeManager import DateTimeManager
 import EdittedPackages.wordninja as wordninja
 import logging
+
+from Managers.DateTimeManager import DateTimeManager
 
 class TextProcessingManager:
     _accepted_chars = ["-", " to "]
@@ -18,7 +19,7 @@ class TextProcessingManager:
 
         return: list of split strings
         """
-        new_string = TextProcessingManager.RemoveEnDashU2013(string)
+        new_string = string.replace(u'\u2013', "-")
         pattern = r'|'.join(delims)
         return re.split(pattern, new_string)
     
@@ -61,10 +62,6 @@ class TextProcessingManager:
     def SplitWordAndRemoveEmptySlots(text):
         splitted = wordninja.split(text)
         return [x for x in splitted if x != '']
-
-    # Removes the special char of dash not from UTF8
-    def RemoveEnDashU2013(text:str):
-        return text.replace(u'\u2013', "-")
 
     # Converts any time given to a 12H format
     def ConvertToTimedFormat(time_text: str):
@@ -135,9 +132,8 @@ class TextProcessingManager:
             # Len == 2 > Has both day and month
             # Len == 3 > Has all day, month and year
             date_struct = TextProcessingManager.GetDateStruct(day=remove_empty[0], 
-                                             month=len(remove_empty) > 1 and remove_empty[1] or 0,
-                                             year=len(remove_empty) > 2 and remove_empty[2] or 0
-                                            )
+                                                                month=len(remove_empty) > 1 and remove_empty[1] or 0,
+                                                                year=len(remove_empty) > 2 and remove_empty[2] or 0)
             # Get reference month and year from a substring that has one
             founded_month = date_struct['month'] != None and date_struct['month'] or None
             founded_year = date_struct['year'] != None and date_struct['year'] or None
@@ -236,8 +232,8 @@ class TextProcessingManager:
             return {
                 "year" : int(params[0]),
                 "month" : int(params[1]),
-                "day" : int(params[2])
-            }
+                "day" : int(params[2])}
+        
         return None
 
     def ProcessTimeToICSFormat(time:list[str])->dict:
@@ -248,8 +244,8 @@ class TextProcessingManager:
                 res.append({
                     "hour" : int(params[0]),
                     "min" : int(params[1]),
-                    "second" : int(params[2]),
-                })
+                    "second" : int(params[2]),})
+                
         return res if len(res) > 0 else None
 
     def ProcessICS(s_date:dict, e_date:dict, time:list[dict]):
@@ -272,9 +268,9 @@ class TextProcessingManager:
         e_s = int(e_time["second"])
         
         s_ics_datetime = DateTimeManager.getDateTime(hour=s_h,min=s_m,sec=s_s,
-                                                     day=s_day,month=s_month,year=s_year)
+                                                    day=s_day,month=s_month,year=s_year)
         e_ics_datetime = DateTimeManager.getDateTime(hour=e_h,min=e_m,sec=e_s,
-                                                     day=e_day,month=e_month,year=e_year)
+                                                    day=e_day,month=e_month,year=e_year)
         return s_ics_datetime, e_ics_datetime
     
     # Tries and match a string to the regex, returns None if no match is found
