@@ -1,0 +1,35 @@
+2024-01-21 15:04:15,971 - DEBUG - Generated new state bubOTdrXxPRaau7dB4RPREsZ6qR8B4.
+2024-01-21 15:04:21,651 - INFO - "GET /?state=bubOTdrXxPRaau7dB4RPREsZ6qR8B4&code=4/0AfJohXl34PQxammz8KrerPWl9ttzPDUVnCQDaFOWj5I2Bj9Dx4d3eUB93nU17z7corpvfQ&scope=https://www.googleapis.com/auth/calendar HTTP/1.1" 200 65
+2024-01-21 15:04:21,651 - DEBUG - Encoding `client_id` "382777877538-rtt0tmm8hua0pkrbqb9tia9jumtlukua.apps.googleusercontent.com" with `client_secret` as Basic auth credentials.
+2024-01-21 15:04:21,652 - DEBUG - Requesting url https://oauth2.googleapis.com/token using method POST.
+2024-01-21 15:04:21,652 - DEBUG - Supplying headers {'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'} and data {'grant_type': 'authorization_code', 'code': '4/0AfJohXl34PQxammz8KrerPWl9ttzPDUVnCQDaFOWj5I2Bj9Dx4d3eUB93nU17z7corpvfQ', 'redirect_uri': 'http://localhost:64075/'}
+2024-01-21 15:04:21,652 - DEBUG - Passing through key word arguments {'timeout': None, 'auth': <requests.auth.HTTPBasicAuth object at 0x000001B40D102950>, 'verify': True, 'proxies': None, 'cert': None}.
+2024-01-21 15:04:21,653 - DEBUG - Starting new HTTPS connection (1): oauth2.googleapis.com:443
+2024-01-21 15:04:21,983 - DEBUG - https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+2024-01-21 15:04:21,983 - DEBUG - Request to fetch token completed with status 200.
+2024-01-21 15:04:21,983 - DEBUG - Request url was https://oauth2.googleapis.com/token
+2024-01-21 15:04:21,983 - DEBUG - Request headers were {'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': 'application/json', 'Connection': 'keep-alive', 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', 'Content-Length': '157', 'Authorization': 'Basic MzgyNzc3ODc3NTM4LXJ0dDB0bW04aHVhMHBrcmJxYjl0aWE5anVtdGx1a3VhLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tOkdPQ1NQWC1zcGVPTUJoRjdTYkFPeU52dGRKQ2RQaGZkdGRr'}
+2024-01-21 15:04:21,984 - DEBUG - Request body was grant_type=authorization_code&code=4%2F0AfJohXl34PQxammz8KrerPWl9ttzPDUVnCQDaFOWj5I2Bj9Dx4d3eUB93nU17z7corpvfQ&redirect_uri=http%3A%2F%2Flocalhost%3A64075%2F
+2024-01-21 15:04:21,984 - DEBUG - Response headers were {'Expires': 'Mon, 01 Jan 1990 00:00:00 GMT', 'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate', 'Date': 'Sun, 21 Jan 2024 07:04:22 GMT', 'Pragma': 'no-cache', 'Content-Type': 'application/json; charset=utf-8', 'Vary': 'Origin, X-Origin, Referer', 'Content-Encoding': 'gzip', 'Server': 'scaffolding on HTTPServer2', 'X-XSS-Protection': '0', 'X-Frame-Options': 'SAMEORIGIN', 'X-Content-Type-Options': 'nosniff', 'Alt-Svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000', 'Transfer-Encoding': 'chunked'} and content {
+  "access_token": "ya29.a0AfB_byAohWqRFh7_FQwV9ashd-m2E6FhY9Pun0kDxEv9zLrzKLOxiecyOv5Dyh8NFeY4PFkHtNsFVQu7jRGBAdQOPsADk6h47QiYbROmsTbHJCuwF3Bkc3RsjuhOVotgD7K7MAvvbA9MnhkxEnkYzFjcC0SN1PuKwIrnaCgYKAVYSARASFQHGX2Miqj5vJv4pE4bbuP_oxXetNw0171",
+  "expires_in": 3599,
+  "refresh_token": "1//0gQnu44mYrnPUCgYIARAAGBASNwF-L9IrHmY3xAaW9hyTgoqHnuEVwr92YjCifw-alLc6x2xRYFNvewCoGdm-EwQERkS6MY2FuLI",
+  "scope": "https://www.googleapis.com/auth/calendar",
+  "token_type": "Bearer"
+}.
+2024-01-21 15:04:21,984 - DEBUG - Invoking 0 token response hooks.
+2024-01-21 15:04:21,984 - DEBUG - Obtained token {'access_token': 'ya29.a0AfB_byAohWqRFh7_FQwV9ashd-m2E6FhY9Pun0kDxEv9zLrzKLOxiecyOv5Dyh8NFeY4PFkHtNsFVQu7jRGBAdQOPsADk6h47QiYbROmsTbHJCuwF3Bkc3RsjuhOVotgD7K7MAvvbA9MnhkxEnkYzFjcC0SN1PuKwIrnaCgYKAVYSARASFQHGX2Miqj5vJv4pE4bbuP_oxXetNw0171', 'expires_in': 3599, 'refresh_token': '1//0gQnu44mYrnPUCgYIARAAGBASNwF-L9IrHmY3xAaW9hyTgoqHnuEVwr92YjCifw-alLc6x2xRYFNvewCoGdm-EwQERkS6MY2FuLI', 'scope': ['https://www.googleapis.com/auth/calendar'], 'token_type': 'Bearer', 'expires_at': 1705824260.9846232}.
+2024-01-21 15:04:21,989 - INFO - file_cache is only supported with oauth2client<4.0.0
+2024-01-21 15:04:21,990 - INFO - [Calendar.GoogleCalendar.GoogleCalendarInterface] CONNECTION SUCCESSFUL
+2024-01-21 15:04:22,006 - WARNING - [Managers.DirectoryManager] JSON FILE IS HAS EMPTY JSON STRUCT!
+2024-01-21 15:04:22,006 - INFO - [Events.EventsManager]NO LOCALLLY SCHEDULED EVENTS
+2024-01-21 15:04:22,016 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:8000
+2024-01-21 15:04:22,016 - INFO - [33mPress CTRL+C to quit[0m
+2024-01-21 15:04:27,313 - DEBUG - Starting new HTTPS connection (1): login.microsoftonline.com:443
+2024-01-21 15:04:28,417 - DEBUG - https://login.microsoftonline.com:443 "POST /common/oauth2/v2.0/token HTTP/1.1" 200 2418
+2024-01-21 15:04:28,419 - INFO - 127.0.0.1 - - [21/Jan/2024 15:04:28] "GET /callback?code=M.C105_BAY.2.3f854469-6efb-0de3-9adf-b40a53c49339&state=4708dbe4-6b7c-4c8c-8735-fa8e5945d25b HTTP/1.1" 200 -
+2024-01-21 15:04:28,480 - INFO - 127.0.0.1 - - [21/Jan/2024 15:04:28] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2024-01-21 15:04:37,192 - INFO - App Closing
+2024-01-21 15:04:37,192 - INFO - Removing ICS files
+2024-01-21 15:04:37,192 - INFO - DELETE ALL FILES IN C:\Users\grego\OneDrive\Documents\GitHub\EventCalendarBuilder\PythonFiles\Calendar\CalendarFiles SUCCESSFULLY!
