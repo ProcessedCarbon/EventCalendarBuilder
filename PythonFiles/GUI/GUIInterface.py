@@ -447,9 +447,11 @@ class GUIInterface:
         except: set_default_color_theme('blue')
 
     def setColorPalette(theme=''):
-        try: GUIInterface.color_palette = dir_manager.ReadJSON(dir_path=GUIInterface.default_theme_path, 
+        try: 
+            GUIInterface.color_palette = dir_manager.ReadJSON(dir_path=GUIInterface.default_theme_path, 
                                                             file_name=theme)
-        except: pass
+        except: 
+            pass
 
     def MainLoop(self):
         self.root.mainloop()

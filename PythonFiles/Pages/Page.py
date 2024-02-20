@@ -6,7 +6,6 @@ from Pages.PageManager import PageManager
 class Page:
     def __init__(self):
         if GUIInterface.root == None:
-            #print(f"[{__name__}] MISSING PAGES, PAGE NOT FOUND!")
             logging.error(f"[{__name__}] MISSING PAGES, PAGE NOT FOUND!")
             return
 

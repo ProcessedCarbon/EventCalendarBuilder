@@ -42,6 +42,9 @@ class MainPage(Page):
                 go_to_schedule_btn.grid(row=1, column=1)
 
                 GUIInterface.current_frame = tmp
+        
+        def OnEntry(self):
+                self.main_page_textbox.focus_set() # sets keyboard events to this textbox
 
         def OnExit(self):
                 if self.main_page_textbox != None:
