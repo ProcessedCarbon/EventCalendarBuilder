@@ -124,8 +124,11 @@ class EventsManager:
     # Only contains events that are scheduled by app
     events_db = []
 
-    try: local_events_dir.mkdir(parents=True, exist_ok=False)
-    except: logging.info(f"[{__name__}]EVENTS DIR ALREADY EXISTS")
+    try: 
+        logging.info(f"[{__name__}] CREATING EVENTS DIR ALREADY EXISTS")
+        local_events_dir.mkdir(parents=True, exist_ok=False)
+    except: 
+        logging.info(f"[{__name__}] EVENTS DIR ALREADY EXISTS")
 
     def CreateEventObj(name:str, 
                     location:str, 
@@ -159,7 +162,6 @@ class EventsManager:
         # Get event data from JSON
         data = directory_manager.ReadJSON(EventsManager.local_events_dir, EventsManager.event_json)
         if data == None:
-            #print(f"[{__name__}]NO LOCALLLY SCHEDULED EVENTS")
             logging.info(f"[{__name__}]NO LOCALLLY SCHEDULED EVENTS")
             return
         
@@ -201,7 +203,6 @@ class EventsManager:
         Works with the assumption that event db is updated
         '''
         if target == None:
-            #print(f"[{__name__}] MISSING DB TARGET")
             logging.warning(f"[{__name__}] MISSING DB TARGET")
             return
 

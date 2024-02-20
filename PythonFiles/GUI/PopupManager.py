@@ -40,7 +40,6 @@ def CreateDateWindow(size='450x450'):
 
     # Prevent clicking and focus of main window
     window.grab_set()
-    window.focus_force()
     GUIInterface.centerWindow(window)
 
     GUIInterface.current_frame = tmp

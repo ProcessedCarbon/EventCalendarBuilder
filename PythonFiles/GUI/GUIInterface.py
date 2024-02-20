@@ -155,7 +155,6 @@ class GUIInterface:
         placeholder_text_color =    GUIInterface.getParamValFromKwarg('placeholder_text_color', kwargs, default='grey')
         placeholder_text =          GUIInterface.getParamValFromKwarg('placeholder_text', kwargs)
         state =                     GUIInterface.getParamValFromKwarg('state', kwargs, default='normal')
-        bg_color =                  GUIInterface.getParamValFromKwarg('bg_color', kwargs, default='transparent')
 
         textInput = CTkEntry(GUIInterface.current_frame, 
                             width=width,

@@ -191,11 +191,12 @@ class EventDetailsPanel:
     
     def PickDate(self, entry):
         date_window, cal, submit_btn = popup_mgr.CreateDateWindow()
-        submit_btn.configure(command=lambda:self.GrabDate(entry, cal.get_date(), date_window))
 
-    def GrabDate(self, entry, date:str, window):
-        GUIInterface.UpdateEntry(entry, date)
-        window.destroy()
+        def GrabDate(entry, date:str, window):
+            GUIInterface.UpdateEntry(entry, date)
+            window.destroy()
+
+        submit_btn.configure(command=lambda: GrabDate(entry, cal.get_date(), date_window))
 
     def ScheduleEvent(self):       
         # update event object before scheduling
