@@ -38,7 +38,7 @@ class MainPage(Page):
                 button.grid(row=1, column=0)
 
                 # Go to schedule
-                go_to_schedule_btn = GUIInterface.CreateButton(text='To Schedule', on_click=lambda:PageManager.SwitchPages(1))
+                go_to_schedule_btn = GUIInterface.CreateButton(text='Go To Schedule', on_click=lambda:PageManager.SwitchPages(1))
                 go_to_schedule_btn.grid(row=1, column=1)
 
                 GUIInterface.current_frame = tmp
