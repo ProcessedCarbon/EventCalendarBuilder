@@ -10,7 +10,7 @@ def MakeDirectory(dir_path:Path):
     try:
         dir_path.mkdir(parents=True, exist_ok=False)
     except Exception as e:
-            print(f'[{__name__}]: {e}')
+        logging.error(f'[{__name__}]: {e}')
 
 def WriteFile(dir_path:Path, file_name:str, content, write_type:['w', 'wb']='w')->bool:
     try:

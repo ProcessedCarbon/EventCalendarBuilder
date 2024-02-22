@@ -23,8 +23,8 @@ class MainPage(Page):
 
                 tmp = GUIInterface.current_frame
                 self.button_frame = GUIInterface.CreateFrame(GUIInterface.current_frame, 
-                                                        fg_color=self.page_color,
-                                                        border_color=self.page_color)
+                                                                fg_color=self.page_color,
+                                                                border_color=self.page_color)
 
                 self.button_frame.columnconfigure(0, weight=1)
                 self.button_frame.columnconfigure(1, weight=1)
@@ -68,5 +68,5 @@ class MainPage(Page):
                 t.strip("\n").strip()
                 events = NERInterface.GetEntitiesFromText(text=t)
                 p_events = EventsManager.ProcessEvents(events)
-                added_events = EventsManager.AddEvents(events=p_events)
+                EventsManager.AddEvents(events=p_events)
                 return True

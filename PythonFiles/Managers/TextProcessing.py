@@ -82,7 +82,6 @@ class TextProcessingManager:
         
         # Check return None if time includes seconds, if not check if first digit of hour is single
         if len(string_obj) > 6:
-            #print(f"[{__name__}] INVALID PARAM GIVEN!")
             logging.error(f"[{__name__}] INVALID PARAM GIVEN!")
             return None
         
@@ -110,7 +109,6 @@ class TextProcessingManager:
         """
 
         if date_text == "None" or "" or len(date_text) <= 0:
-            #print(f"[{__name__}] INVALID PARAM GIVEN!")
             logging.error(f"[{__name__}] INVALID PARAM GIVEN!")
             return []
 
@@ -164,7 +162,6 @@ class TextProcessingManager:
         return: list of formatted times suitable for google calendars
         """
         if time_text == "None" or time_text=="" or len(time_text) <= 0:
-            #print(f"[{__name__}] INVALID PARAM GIVEN!")
             logging.error(f"[{__name__}] INVALID PARAM GIVEN!")
             return []
 

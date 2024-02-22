@@ -3,7 +3,7 @@ import pytz
 import logging
 
 from GUI.GUIInterface import GUIInterface
-from Events.EventsManager import Event
+from Events.Event import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR
@@ -138,7 +138,6 @@ class EventDetailsPanel:
         self.event.setEnd_Time(details['End_Time'])
 
     def UpdateInputFields(self):
-        #print(self.details_entries)
         GUIInterface.UpdateEntry(self.details_entries["Event"], self.event.getName())
         GUIInterface.UpdateEntry(self.details_entries["Location"], self.event.getLocation())
         GUIInterface.UpdateEntry(self.details_entries["Start_Date"], self.event.get_S_Date())

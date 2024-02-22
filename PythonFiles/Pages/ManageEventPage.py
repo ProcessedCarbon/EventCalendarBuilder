@@ -52,20 +52,16 @@ class ManageEventPage(Page):
                                 gap=self.card_gap,
                                 index=index,
                                 remove_cb=self.RemoveCard)
-                #self.cards.append(card)
                 self.cards[index] = card
     
     def RemoveCard(self, key):
-        #print(self.cards)
         if key in self.cards:
             success = self.cards[key].Destroy()
             if success:
                 del self.cards[key]
                 self.content_frame.update()
-                #print(f"SUCCESSFUL REMOVAL OF PANEL {key}")
                 logging.info(f"SUCCESSFUL REMOVAL OF PANEL {key}")
             else: 
-                #print(f"FAILED TO REMOVE PANEL {key}")
                 logging.info(f"FAILED TO REMOVE PANEL {key}")
 
     def Clear(self):

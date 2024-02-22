@@ -80,15 +80,15 @@ class CalendarInterface:
 
         e = directory_manager.ReadFile(dir_to_open, f'{file_name}.ics', 'rb')
         ecal = icalendar.Calendar.from_ical(e)
-        for component in ecal.walk():
-            if component.name == "VEVENT":
-                print(component.get("name"))
-                print(component.get("description"))
-                print(component.get("organizer"))
-                print(component.get("location"))
-                print(component.decoded("dtstart"))
-                print(component.decoded("dtend"))
-                if 'rrule' in component: print(component.decoded('rrule'))
+        # for component in ecal.walk():
+        #     if component.name == "VEVENT":
+        #         print(component.get("name"))
+        #         print(component.get("description"))
+        #         print(component.get("organizer"))
+        #         print(component.get("location"))
+        #         print(component.decoded("dtstart"))
+        #         print(component.decoded("dtend"))
+        #         if 'rrule' in component: print(component.decoded('rrule'))
         return ecal
     
     def getICSFilePath(file_name=None)->Path:

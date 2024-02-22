@@ -55,7 +55,7 @@ class GoogleCalendarInterface:
         """
 
         if GoogleCalendarInterface.service == None:
-            print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return
 
         now = dt.datetime.now().isoformat() + "Z"
@@ -69,12 +69,8 @@ class GoogleCalendarInterface:
         events = events_result.get('items', [])
 
         if not events:
-            print("NO UPCOMING EVENTS FOUND")
+            logging.info("NO UPCOMING EVENTS FOUND")
             return
-            
-        for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            #print(start, event['summary'])
 
         return events
 
@@ -87,18 +83,15 @@ class GoogleCalendarInterface:
         """
         
         if GoogleCalendarInterface.service == None:
-            #print(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             logging.error(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return '', []
         
         if type(googleEvent) is not GoogleEvent:
-            #print(f"[{__name__}] INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             logging.error(f"[{__name__}] INVALID EVENT OF GIVEN {type(googleEvent)}, LOOKING FOR - {GoogleEvent}")
             return '', []
     
         new_event = GoogleCalendarInterface.service.events().insert(calendarId = "primary", body=googleEvent.event).execute()
-        #print(f'{new_event}\n')
-        #print(f"Event created {new_event.get('htmlLink')}")
+        logging.info(f"New event {new_event} created at {new_event.get('htmlLink')}")
         return new_event['id']
 
     # Creates event datatype
@@ -126,7 +119,7 @@ class GoogleCalendarInterface:
                             description=description)
 
     # Only expecting 1 event per ics
-    def Parse_ICS(ics:str):
+    def Parse_ICS(ics:str)->GoogleEvent:
         if GoogleCalendarInterface.service == None:
             logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return
@@ -163,7 +156,7 @@ class GoogleCalendarInterface:
                                                                             tzend=x['end']['timeZone'],
                                                                             rrule=x['recurrence'] if 'recurrence' in x else '',
                                                                             description=x['description'] if 'description' in x else ''
-                                                                        ) for x in existing]
+                                                                            ) for x in existing]
         
         return existing_google_events  
 
