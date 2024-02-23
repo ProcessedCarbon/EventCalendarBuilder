@@ -10,6 +10,9 @@ from Managers.TextProcessing import TextProcessingManager
 
 class CalendarInterface:
     _cal = Calendar()
+    _cal.add('prodid', '-//My calendar product//example.com//')
+    _cal.add('version', '2.0')
+
     _default_ics_file = 'to_schedule'
 
     # Directories
@@ -17,12 +20,6 @@ class CalendarInterface:
     _main_dir = directory_manager.getFilePath(parent_dir, 'CalendarFiles')
 
     directory_manager.MakeDirectory(_main_dir)
-
-    def __init__(self):
-        # Some properties are required to be compliant
-        CalendarInterface._cal.add('prodid', '-//My calendar product//example.com//')
-        CalendarInterface._cal.add('version', '2.0')
-        pass
         
     def CreateICSEvent(e_name, e_description, s_datetime, e_datetime,duration,
                     e_organizer_addr="", e_organizer_name="", e_organizer_role="",
@@ -61,7 +58,8 @@ class CalendarInterface:
         if success: 
             CalendarInterface._cal.subcomponents.remove(event)
             return f_name
-        else: return None
+        else: 
+            return None
 
     def WriteToFile(file_name=None)->bool:
         try:
@@ -80,15 +78,6 @@ class CalendarInterface:
 
         e = directory_manager.ReadFile(dir_to_open, f'{file_name}.ics', 'rb')
         ecal = icalendar.Calendar.from_ical(e)
-        # for component in ecal.walk():
-        #     if component.name == "VEVENT":
-        #         print(component.get("name"))
-        #         print(component.get("description"))
-        #         print(component.get("organizer"))
-        #         print(component.get("location"))
-        #         print(component.decoded("dtstart"))
-        #         print(component.decoded("dtend"))
-        #         if 'rrule' in component: print(component.decoded('rrule'))
         return ecal
     
     def getICSFilePath(file_name=None)->Path:
@@ -99,5 +88,4 @@ class CalendarInterface:
     
     def DeleteICSFilesInDir(dir: Path) ->bool:
         opt = directory_manager.DeleteFilesInDir(dir, 'ics')
-        return opt
-    
+        return opt    

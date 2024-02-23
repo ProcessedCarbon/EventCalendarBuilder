@@ -10,7 +10,6 @@ from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOO
 import GUI.PopupManager as popup_mgr
 
 class EventDetailsPanel:
-    outlook_supported_tzs = None
     def __init__(self, parent, event:Event, remove_cb, key:int, gap:int=10, **grid_params):
         self.gap = gap
         self.parent = parent
@@ -198,8 +197,7 @@ class EventDetailsPanel:
         submit_btn.configure(command=lambda: GrabDate(entry, cal.get_date(), date_window))
 
     def ScheduleEvent(self):       
-        # update event object before scheduling
-        self.UpdateEventWithDetails()
+        self.UpdateEventWithDetails() # update event object before scheduling
 
         # Get input
         input = self.getCurrentInputFieldsInfo()

@@ -7,7 +7,6 @@ from Managers.DateTimeManager import DateTimeManager
 
 class TextProcessingManager:
     _accepted_chars = ["-", " to "]
-    _special_chars = string.punctuation
 
     # Splits string based on a list of delimiters
     def MultipleDelimSplitString(string, delims):
@@ -41,7 +40,7 @@ class TextProcessingManager:
             }
     
     # Checks each special char in string and removes ones that are not in special_char_to_keep
-    def RemoveUncessarySpecialChars(string, special_char_to_keep):
+    def RemoveUncessarySpecialChars(text, special_char_to_keep):
         """
         Returns the new string where all uneeded characters are removed or the original string 
         if no characters are removed. 
@@ -51,12 +50,12 @@ class TextProcessingManager:
 
         return: structured date
         """
-        for c in string:
-                if c in TextProcessingManager._special_chars:
+        for c in text:
+                if c in string.punctuation:
                     if c not in special_char_to_keep:
-                        string = string.replace(c, '')
+                        text = text.replace(c, '')
 
-        return string
+        return text
 
     # Split word into a list and removes the empty elements
     def SplitWordAndRemoveEmptySlots(text):
@@ -112,7 +111,7 @@ class TextProcessingManager:
             logging.error(f"[{__name__}] INVALID PARAM GIVEN!")
             return []
 
-        date_to_use = TextProcessingManager.RemoveUncessarySpecialChars(string=date_text, special_char_to_keep=TextProcessingManager._accepted_chars)
+        date_to_use = TextProcessingManager.RemoveUncessarySpecialChars(text=date_text, special_char_to_keep=TextProcessingManager._accepted_chars)
         splitted_date = TextProcessingManager.MultipleDelimSplitString(string=date_to_use, delims=TextProcessingManager._accepted_chars)
 
         # Find year
@@ -169,7 +168,7 @@ class TextProcessingManager:
         new_accepted_chars = TextProcessingManager._accepted_chars + DateTimeManager._period
 
         # Remove uncessary special chars and delim string
-        time_to_use = TextProcessingManager.RemoveUncessarySpecialChars(string=time_text, special_char_to_keep=new_accepted_chars)
+        time_to_use = TextProcessingManager.RemoveUncessarySpecialChars(text=time_text, special_char_to_keep=new_accepted_chars)
         splitted_time = TextProcessingManager.MultipleDelimSplitString(string=time_to_use, delims=TextProcessingManager._accepted_chars)
 
         list_of_correct_time_format = []
