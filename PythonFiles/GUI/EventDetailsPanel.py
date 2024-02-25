@@ -155,9 +155,6 @@ class EventDetailsPanel:
         GUIInterface.UpdateEntry(self.details_entries["Start_Time"], "")
         GUIInterface.UpdateEntry(self.details_entries["End_Time"], "")
         GUIInterface.UpdateEntry(self.details_entries["Description"], "")
-
-    def Destroy(self):
-        self.details_frame.destroy()
     
     # Create GUI
     def CreateEntryField(self, width:int, entryname:str, entry_state='normal', placeholder_text=None):
@@ -175,17 +172,11 @@ class EventDetailsPanel:
         self.details_entries[key] = dropdown_box
         return dropdown_frame, dropdown_label, dropdown_box
     
-    def ConvertEntryNameToKey(self, name:str):
-        return name.replace(" ", "_")
-    
     def getCurrentInputFieldsInfo(self)->dict:
         details = {}
         for detail in self.details_entries:
             details[detail] = self.details_entries[detail].get()
         return details
-    
-    def getEvent(self):
-        return self.event
     
     def PickDate(self, entry):
         date_window, cal, submit_btn = popup_mgr.CreateDateWindow()
@@ -247,3 +238,12 @@ class EventDetailsPanel:
             EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
         messagebox.showinfo(title='Success', message='Successfully schedule event!')
         self.remove_cb(self.key)
+
+    def getEvent(self):
+        return self.event
+    
+    def ConvertEntryNameToKey(self, name:str):
+        return name.replace(" ", "_")
+    
+    def Destroy(self):
+        self.details_frame.destroy()

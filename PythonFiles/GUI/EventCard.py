@@ -133,7 +133,7 @@ class EventCard:
 
     def RemoveFromCalender(self)->bool:
         try:
-            if self.platform == DEFAULT_CALENDAR:
+            if self.platform == DEFAULT_CALENDAR: # Should not occur as Default calendar methods are not saved locally
                 if platform == 'darwin': 
                     cal_mac.RemoveMacCalendarEvents(self.name)
                 else: 

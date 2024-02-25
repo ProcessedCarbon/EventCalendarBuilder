@@ -9,9 +9,7 @@ class AppToolbar:
                                                                         corner_radius=0,
                                                                         fg_color=GUIInterface.color_palette['CTkProgressBar']['fg_color'])
         
-        rows = [1,1,1,1,1,1,1]
-        cols=[1]
-        GUIInterface.CreateGrid(self.events_toolbar_frame, rows, cols)
+        GUIInterface.CreateGrid(self.events_toolbar_frame, rows=[1,1,1,1,1,1,1], cols=[1])
 
         self.events_toolbar_frame.grid(row=0, column=0, sticky='nswe')
 
