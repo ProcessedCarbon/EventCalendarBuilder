@@ -2,16 +2,16 @@ import os, signal
 import logging
 
 from GUI.GUIInterface import GUIInterface
+from GUI.GUI_Constants import MAIN_WINDOW_ASPECT
 from Calendar.CalendarInterface import CalendarInterface
 
 class MainAppWindow:
-    aspect = 0.85
     main_frame = None
 
     monitor_width = GUIInterface.monitor_width
     monitor_height =  GUIInterface.monitor_height
-    app_width = int(monitor_width * aspect)
-    app_height = int(monitor_height * aspect)
+    app_width = int(monitor_width * MAIN_WINDOW_ASPECT)
+    app_height = int(monitor_height * MAIN_WINDOW_ASPECT)
 
     def Setup():
         GUIInterface.root.geometry(f'{MainAppWindow.app_width}x{MainAppWindow.app_height}')

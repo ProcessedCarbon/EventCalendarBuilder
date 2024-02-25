@@ -3,6 +3,7 @@ import pytz
 import logging
 
 from GUI.GUIInterface import GUIInterface
+from GUI.GUI_Constants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS
 from Events.Event import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
@@ -19,7 +20,6 @@ class EventDetailsPanel:
         self.filled = False
         self.details_frame = None
         self.event = event
-        self.rows = 12
         self.key = key
         self.remove_cb = remove_cb
 
@@ -42,7 +42,7 @@ class EventDetailsPanel:
                                 ipadx=self.gap)
         
         # Rows
-        for i in range(self.rows):
+        for i in range(EVENT_DETAILS_PANEL_ROWS):
             self.details_frame.rowconfigure(i, weight=1)
         
         # Columns
@@ -195,19 +195,19 @@ class EventDetailsPanel:
 
         # Handle missing or incorrect input for time fields
         if input['Event'] == '':
-            messagebox.showerror(title='Missing input', message='Missing Event Name field!')
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message='Missing Event Name field!')
             return
         elif input['Start_Time'] == "":
-            messagebox.showerror(title='Missing input', message=f'Missing Start Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing Start Time field for {input["Event"]}')
             return
         elif input['End_Time'] == "":
-            messagebox.showerror(title='Missing input', message=f'Missing End Time field for {input["Event"].upper()}[{input["Start_Date"]}]')
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing End Time field for {input["Event"]}')
             return
         elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
-            messagebox.showerror(title='Missing input', message=f'Incorrect Start Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect Start Time provided for {input["Event"]} with {input["Start_Time"]}')
             return
         elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
-            messagebox.showerror(title='Missing input', message=f'Incorrect End Time provided for {input["Event"].upper()}[{input["Start_Date"]}]')
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect End Time provided for {input["Event"]} with {input["End_Time"]}')
             return
         
         # If no isses then create ics file
@@ -226,9 +226,12 @@ class EventDetailsPanel:
 
         # Scheduling
         calendar = input['Calendar']
-        if calendar == DEFAULT_CALENDAR: EventsManager.ScheduleDefault(input, schedule_cb=self.ScheduleActions)
-        elif calendar == GOOGLE_CALENDAR: EventsManager.ScheduleGoogleCalendar(input, schedule_cb=self.ScheduleActions)
-        elif calendar == OUTLOOK_CALENDAR: EventsManager.ScheduleOutlookCalendar(input, schedule_cb=self.ScheduleActions)
+        if calendar == DEFAULT_CALENDAR: 
+            EventsManager.ScheduleDefault(input, schedule_cb=self.ScheduleActions)
+        elif calendar == GOOGLE_CALENDAR: 
+            EventsManager.ScheduleGoogleCalendar(input, schedule_cb=self.ScheduleActions)
+        elif calendar == OUTLOOK_CALENDAR: 
+            EventsManager.ScheduleOutlookCalendar(input, schedule_cb=self.ScheduleActions)
 
     def ScheduleActions(self, id, platform=DEFAULT_CALENDAR):
         logging.info(f'SCHEDULE ACTIONS RAN FOR ID {id}')
