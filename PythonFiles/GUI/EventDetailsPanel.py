@@ -1,8 +1,10 @@
 from tkinter import messagebox
 import pytz
 import logging
+from customtkinter import *
 
 from GUI.GUIInterface import GUIInterface
+from GUI.GUI_Constants import SUCCESS_TITLE
 from GUI.GUI_Constants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS
 from Events.Event import Event
 from Events.EventsManager import EventsManager
@@ -11,7 +13,7 @@ from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOO
 import GUI.PopupManager as popup_mgr
 
 class EventDetailsPanel:
-    def __init__(self, parent, event:Event, remove_cb, key:int, gap:int=10, **grid_params):
+    def __init__(self, parent, event:Event, remove_cb, dup_cb, key:int, gap:int=10, **grid_params):
         self.gap = gap
         self.parent = parent
         self.grid_params = grid_params
@@ -22,6 +24,7 @@ class EventDetailsPanel:
         self.event = event
         self.key = key
         self.remove_cb = remove_cb
+        self.dup_cb = dup_cb
 
         self.GUI()
         
@@ -58,6 +61,9 @@ class EventDetailsPanel:
         # GUI
         remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(self.key), text='X', width=50)
         remove_btn.grid(row=0, column=1, pady=10, sticky='e')
+
+        dup_btn = GUIInterface.CreateButton(on_click=lambda:self.dup_cb(self.event), text='+', width=40)
+        dup_btn.grid(row=0, column=2, pady=10, padx=10, sticky='e')
 
         e_frame, e_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="Event", 
@@ -239,7 +245,7 @@ class EventDetailsPanel:
             self.event.setPlatform(platform)
             self.event.setId(id)
             EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-        messagebox.showinfo(title='Success', message='Successfully schedule event!')
+        messagebox.showinfo(title=SUCCESS_TITLE, message='Successfully schedule event!')
         self.remove_cb(self.key)
 
     def getEvent(self):

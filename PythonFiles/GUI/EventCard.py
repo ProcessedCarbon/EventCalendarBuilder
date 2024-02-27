@@ -2,6 +2,7 @@ from tkinter import messagebox
 from sys import platform
 
 from GUI.GUIInterface import GUIInterface
+from GUI.GUI_Constants import SUCCESS_TITLE
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
@@ -145,7 +146,7 @@ class EventCard:
             elif self.platform == OUTLOOK_CALENDAR:
                 removed, response = outlook_interface.send_flask_req('delete_event', json_data={'event_id':self.id})
 
-            messagebox.showinfo(title='Success', message=f'Successfully removed {self.name} from {self.platform} Calendar')
+            messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully removed {self.name} from {self.platform} Calendar')
             return True            
         except:
             messagebox.showinfo(title='Failed', message=f'Failed removal of {self.name}')

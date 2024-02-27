@@ -1,5 +1,6 @@
 from tkinter import messagebox
 from math import ceil
+from customtkinter import *
 
 from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
@@ -13,6 +14,7 @@ class SchedulePage(Page):
         self.details_panels_frame = None
         self.max_panels = 10
         self.panels = 0
+        GUIInterface.root.bind("<Button-1>",self.on_click)
         super().__init__()
 
     def OnStart(self):
@@ -62,6 +64,7 @@ class SchedulePage(Page):
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                             event=event['object'],
                                             remove_cb=self.RemovePanel,
+                                            dup_cb=self.on_click,
                                             key=index,
                                             row=index, 
                                             column=0, 
@@ -85,6 +88,37 @@ class SchedulePage(Page):
             del self.details_panels[key]
             self.details_panel_frame.update()
             logging.info(f"[{__name__}] SUCCESSFUL REMOVAL OF PANEL {key}")
+
+    def changeOrder(self, widget1,widget2,initial):
+        target=widget1.grid_info()
+        widget1.grid(row=initial['row'],column=initial['column'])
+        widget2.grid(row=target['row'],column=target['column'])
+
+    def on_click(self, event):
+        widget=event.widget
+        print(widget) 
+        if isinstance(widget,CTkCanvas):
+            start=(event.x,event.y)
+            grid_info=widget.grid_info()
+            widget.bind("<B1-Motion>",lambda event:self.drag_motion(event,widget,start))
+            widget.bind("<ButtonRelease-1>",lambda event:self.drag_release(event,widget,grid_info))
+        else:
+            GUIInterface.root.unbind("<ButtonRelease-1>")
+
+    def drag_motion(self, event,widget,start):
+        x = widget.winfo_x()+event.x-start[0]
+        y = widget.winfo_y()+event.y-start[1] 
+        widget.lift()
+        widget.place(x=x,y=y)
+
+    def drag_release(self, event,widget,grid_info):
+        widget.lower()
+        x,y=GUIInterface.root.winfo_pointerxy()
+        target_widget=GUIInterface.root.winfo_containing(x,y)
+        if isinstance(target_widget,CTkFrame):
+            self.changeOrder(target_widget,widget,grid_info)
+        else:
+            widget.grid(row=grid_info['row'],column=grid_info['column'])
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
