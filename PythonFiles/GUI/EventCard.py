@@ -2,7 +2,7 @@ from tkinter import messagebox
 from sys import platform
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUI_Constants import SUCCESS_TITLE
+from GUI.GUIConstants import SUCCESS_TITLE
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface

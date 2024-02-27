@@ -2,7 +2,7 @@ import os, signal
 import logging
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUI_Constants import MAIN_WINDOW_ASPECT
+from GUI.GUIConstants import MAIN_WINDOW_ASPECT
 from Calendar.CalendarInterface import CalendarInterface
 
 class MainAppWindow:

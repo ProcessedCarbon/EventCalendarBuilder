@@ -23,6 +23,7 @@ class Event:
         self.platform = platform
         self.recurring = recurring
         self.description = description
+        self.copy = 0
     
     def getId(self)->str:
         return self.id
@@ -68,6 +69,9 @@ class Event:
             'description': self.description,
         }
     
+    def getCopy(self)->int:
+        return self.copy
+    
     def setId(self, id:str):
         self.id = id
 
@@ -97,3 +101,6 @@ class Event:
     
     def setDescription(self, desc: str):
         self.description = desc
+
+    def setCopy(self, num: int):
+        self.copy = num

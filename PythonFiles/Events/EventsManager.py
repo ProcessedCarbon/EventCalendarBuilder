@@ -5,6 +5,7 @@ import pytz
 import logging
 from sys import platform
 from tkinter import messagebox
+from uuid import uuid4
 
 from Calendar.CalendarInterface import CalendarInterface
 from Calendar.CalendarConstants import DEFAULT_CALENDAR
@@ -197,7 +198,7 @@ class EventsManager:
                     start_time = event['DATE_TIME'][k][0]
                     end_time = event['DATE_TIME'][k][1]
 
-                    n_event = EventsManager.CreateEventObj(id=event_count,
+                    n_event = EventsManager.CreateEventObj(id=uuid4(),
                                                             name=event['EVENT'],
                                                             location=event["LOC"],
                                                             s_date=start_date,
@@ -221,7 +222,7 @@ class EventsManager:
                         recurring = 'Daily'
                 end_time = event['DATE_TIME'][keys[1]][1]
                 
-                n_event = EventsManager.CreateEventObj(id=event_count,
+                n_event = EventsManager.CreateEventObj(id=uuid4(),
                                                     name=event['EVENT'],
                                                     location=event["LOC"],
                                                     s_date=start_date,

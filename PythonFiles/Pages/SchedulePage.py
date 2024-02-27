@@ -1,10 +1,12 @@
 from tkinter import messagebox
 from math import ceil
-from customtkinter import *
+from uuid import uuid4
+import copy
 
 from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
+from GUI.GUIConstants import MAX_EVENT_TITLE, EVENT_DETAILS_PANEL_ROW_GAP
 from Events.EventsManager import EventsManager
 
 class SchedulePage(Page):
@@ -14,7 +16,6 @@ class SchedulePage(Page):
         self.details_panels_frame = None
         self.max_panels = 10
         self.panels = 0
-        GUIInterface.root.bind("<Button-1>",self.on_click)
         super().__init__()
 
     def OnStart(self):
@@ -43,6 +44,7 @@ class SchedulePage(Page):
 
     def OnExit(self):
         self.ResetDetails()
+        EventsManager.ClearEvents()
 
     def OnEntry(self):
         if len(self.details_panels) > 0: self.ResetDetails()
@@ -50,8 +52,6 @@ class SchedulePage(Page):
         num_events = len(EventsManager.events)
         if num_events > 0:
             self.PopulateDetails(EventsManager.events)
-            self.Update()
-            EventsManager.ClearEvents()
 
     def PopulateDetails(self, events:list[dict]):
         n = len(events)
@@ -64,19 +64,20 @@ class SchedulePage(Page):
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                             event=event['object'],
                                             remove_cb=self.RemovePanel,
-                                            dup_cb=self.on_click,
+                                            dup_cb=self.DuplicatePanel,
                                             key=index,
-                                            row=index, 
-                                            column=0, 
-                                            sticky='nsew')
+                                            row=index)
             self.details_panels[index] = detail_panel
             self.panels += 1
+        
+        self.Update()
 
     def ResetDetails(self):
         for panel in self.details_panels:
             self.details_panels[panel].Reset()
             self.details_panels[panel].Destroy()
         self.details_panels={}
+        self.panels = 0
     
     def Update(self):
         for panel in self.details_panels:
@@ -89,36 +90,41 @@ class SchedulePage(Page):
             self.details_panel_frame.update()
             logging.info(f"[{__name__}] SUCCESSFUL REMOVAL OF PANEL {key}")
 
-    def changeOrder(self, widget1,widget2,initial):
-        target=widget1.grid_info()
-        widget1.grid(row=initial['row'],column=initial['column'])
-        widget2.grid(row=target['row'],column=target['column'])
+    def DuplicatePanel(self, key):
+        
+        for panel in self.details_panels:
+            self.details_panels[panel].UpdateEventWithDetails()
 
-    def on_click(self, event):
-        widget=event.widget
-        print(widget) 
-        if isinstance(widget,CTkCanvas):
-            start=(event.x,event.y)
-            grid_info=widget.grid_info()
-            widget.bind("<B1-Motion>",lambda event:self.drag_motion(event,widget,start))
-            widget.bind("<ButtonRelease-1>",lambda event:self.drag_release(event,widget,grid_info))
-        else:
-            GUIInterface.root.unbind("<ButtonRelease-1>")
+        for index, e in enumerate(EventsManager.events):
+            event = e['object']
+            if event.getId() == key:
+                # Create a copy
+                dup = e.copy()
+                dup['object'] = copy.copy(e['object'])
 
-    def drag_motion(self, event,widget,start):
-        x = widget.winfo_x()+event.x-start[0]
-        y = widget.winfo_y()+event.y-start[1] 
-        widget.lift()
-        widget.place(x=x,y=y)
+                # Update params
+                dup['object'].copy += 1
+                e['object'].copy += 1 # update original as well
+                dup['id'] = uuid4()
+                if dup['name'].endswith(']'):
+                    dup['name'] = dup['name'][:-4]
+                dup['name'] = dup['name'] + f' [{dup["object"].getCopy()}]'
+                dup['object'].setName(dup['name'])
+                dup['object'].setId(dup['id'])
 
-    def drag_release(self, event,widget,grid_info):
-        widget.lower()
-        x,y=GUIInterface.root.winfo_pointerxy()
-        target_widget=GUIInterface.root.winfo_containing(x,y)
-        if isinstance(target_widget,CTkFrame):
-            self.changeOrder(target_widget,widget,grid_info)
-        else:
-            widget.grid(row=grid_info['row'],column=grid_info['column'])
+                # Insert in list
+                first_slice = EventsManager.events[:index+1]
+                second_slice = EventsManager.events[index+1:]
+                first_slice.append(dup)
+                first_slice.extend(second_slice)
+
+                # Update list
+                EventsManager.ClearEvents()
+                EventsManager.events = first_slice
+
+                # Re-create GUI
+                self.ResetDetails()
+                self.PopulateDetails(EventsManager.events)
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
@@ -127,7 +133,7 @@ class SchedulePage(Page):
     def CreateEventButton(self):
         try:
             if self.panels == self.max_panels:
-                messagebox.showwarning(title='Max Event Reached!', message=f'Max event panels of {self.max_panels} reached.')
+                messagebox.showwarning(title=MAX_EVENT_TITLE, message=f'Max event panels of {self.max_panels} reached.')
                 return
             
             empty_event = EventsManager.CreateEventObj(id=self.panels,
