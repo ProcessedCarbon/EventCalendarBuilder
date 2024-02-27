@@ -4,7 +4,7 @@ import logging
 from customtkinter import *
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER
+from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER, MISSING_EVENT_NAME_INPUT_MSG, SCHEDULE_SUCCESS_MSG
 from Events.Event import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
@@ -199,7 +199,7 @@ class EventDetailsPanel:
 
         # Handle missing or incorrect input for time fields
         if input['Event'] == '':
-            messagebox.showerror(title=MISSING_INPUT_TITLE, message='Missing Event Name field!')
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=MISSING_EVENT_NAME_INPUT_MSG)
             return
         elif input['Start_Time'] == "":
             messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing Start Time field for {input["Event"]}')
@@ -243,7 +243,7 @@ class EventDetailsPanel:
             self.event.setPlatform(platform)
             self.event.setId(id)
             EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
-        messagebox.showinfo(title=SUCCESS_TITLE, message='Successfully schedule event!')
+        messagebox.showinfo(title=SUCCESS_TITLE, message=SCHEDULE_SUCCESS_MSG)
         self.remove_cb(self.key)
 
     def getEvent(self):

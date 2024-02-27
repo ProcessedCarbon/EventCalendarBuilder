@@ -2,7 +2,7 @@ from tkinter import messagebox
 from sys import platform
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER
+from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER, FAILED_TITLE
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
@@ -152,5 +152,5 @@ class EventCard:
             messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully removed {self.name} from {self.platform} Calendar')
             return True            
         except:
-            messagebox.showinfo(title='Failed', message=f'Failed removal of {self.name}')
+            messagebox.showinfo(title=FAILED_TITLE, message=f'Failed removal of {self.name}')
             return False

@@ -1,6 +1,16 @@
+# Message box titles
 MISSING_INPUT_TITLE = 'Missing Input!'
 SUCCESS_TITLE = 'Success!'
+FAILED_TITLE = 'Failed!'
 MAX_EVENT_TITLE = 'Max Event Reached!'
+WARNING_TITLE='Warning!'
+
+# Message box message
+NO_CHECKS_MSG = 'No checks for other events are done for this.\nAre you sure you want to schedule?'
+FAILED_SCHEDULE_MSG = 'Failed to schedule event for reasons'
+MISSING_EVENT_NAME_INPUT_MSG ='Missing Event Name field!'
+SCHEDULE_SUCCESS_MSG ='Successfully schedule event!'
+NO_TEXT_FOUND_MSG = 'No text found!\nPlease input text'
 
 # Main Window
 MAIN_WINDOW_ASPECT = 0.85

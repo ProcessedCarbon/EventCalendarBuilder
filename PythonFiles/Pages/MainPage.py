@@ -6,7 +6,7 @@ from NER.NERInterface import NERInterface
 from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import TEXT_BOX_MODIFIER
+from GUI.GUIConstants import TEXT_BOX_MODIFIER, WARNING_TITLE, NO_TEXT_FOUND_MSG
 
 class MainPage(Page):
         def __init__(self): 
@@ -55,7 +55,6 @@ class MainPage(Page):
 
         def Submit(self, textbox):
                 success = self.ReadAndProcessText(textbox)
-
                 if success:
                         PageManager.SwitchPages(1) 
 
@@ -63,7 +62,7 @@ class MainPage(Page):
                 t = GUIInterface.RetrieveCurrentInputFromTextbox(textbox)
 
                 if t == "" or t == " " or t == "\n":
-                        messagebox.showinfo(title='No text!', message='No text found!\nPlease input text')
+                        messagebox.showinfo(title=WARNING_TITLE, message=NO_TEXT_FOUND_MSG)
                         return False
 
                 t.strip("\n").strip()

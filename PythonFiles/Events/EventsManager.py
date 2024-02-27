@@ -15,6 +15,7 @@ import Managers.DirectoryManager as directory_manager
 from Managers.DateTimeManager import DateTimeManager
 from Managers.TextProcessing import TextProcessingManager
 from Events.Event import Event
+from GUI.GUIConstants import WARNING_TITLE, NO_CHECKS_MSG, FAILED_TITLE, FAILED_SCHEDULE_MSG
 
 class EventsManager:
     # Directories
@@ -255,7 +256,7 @@ class EventsManager:
                 schedule_cb(id=0, platform=DEFAULT_CALENDAR)
             run_process = schedule_mac
 
-        res = messagebox.askokcancel(title='Warning', message='No checks for other events are done for this.\nAre you sure you want to schedule?')
+        res = messagebox.askokcancel(title=WARNING_TITLE, message=NO_CHECKS_MSG)
         if res: 
             run_process()
             
@@ -277,7 +278,7 @@ class EventsManager:
         def schedule_google_calendar_event(): 
             id = GoogleCalendarInterface.ScheduleCalendarEvent(googleEvent=google_event)
             if id == '': 
-                messagebox.showerror(title='Failed', message='Failed to schedule event for reasons')
+                messagebox.showerror(title=FAILED_TITLE, message=FAILED_SCHEDULE_MSG)
             else: 
                 schedule_cb(id=id, platform='Google')
 
@@ -288,7 +289,7 @@ class EventsManager:
             for t in names: 
                 base_text += (t + '\n')
 
-            res = messagebox.askokcancel(title='Event clash', message=f'Are you sure you want to schedule this event?\nIt clashes with the following events:\n{base_text}')
+            res = messagebox.askokcancel(title=WARNING_TITLE, message=f'Are you sure you want to schedule this event?\nIt clashes with the following events:\n{base_text}')
             if res:
                 schedule_google_calendar_event()
         else: 
@@ -313,7 +314,7 @@ class EventsManager:
         # Response format
         #(True, {'@odata.context': "", 'value': []})
         if cal_events == {}: 
-            messagebox.showerror(title='Failed', message='Failed to schedule event for [OUTLOOK] due to failed authentication')
+            messagebox.showerror(title=FAILED_TITLE, message='Failed to schedule event for [OUTLOOK] due to failed authentication')
             return ''
 
         def schedule_outlook_calendar_event():
@@ -321,7 +322,7 @@ class EventsManager:
                                                         json_data={'event': outlook_event})
             details = response[1]
             if 'id' not in details: 
-                messagebox.showerror(title='Failed', message='Failed to schedule event for reasons')
+                messagebox.showerror(title=FAILED_TITLE, message=FAILED_SCHEDULE_MSG)
             else: 
                 schedule_cb(id=details['id'], platform='Outlook')
 
@@ -332,7 +333,7 @@ class EventsManager:
             for t in names: 
                 base_text += (t + '\n')
 
-            res = messagebox.askokcancel(title='Event clash', message=f'Are you sure you want to schedule this event?\nIt clashes with the following events:\n{base_text}')
+            res = messagebox.askokcancel(title=WARNING_TITLE, message=f'Are you sure you want to schedule this event?\nIt clashes with the following events:\n{base_text}')
             if res:
                 schedule_outlook_calendar_event()
         else: 

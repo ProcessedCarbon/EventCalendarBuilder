@@ -6,7 +6,7 @@ import copy
 from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
-from GUI.GUIConstants import MAX_EVENT_TITLE, EVENT_ROW_GAP
+from GUI.GUIConstants import MAX_EVENT_TITLE
 from Events.EventsManager import EventsManager
 
 class SchedulePage(Page):
@@ -57,7 +57,7 @@ class SchedulePage(Page):
         GUIInterface.CreateGrid(self.details_panel_frame, rows=([1] * detail_rows), cols=[1])
         for index, event in enumerate(events):
             if self.panels == self.max_panels:
-                messagebox.showwarning(title='Max Event Reached!', message=f'Max event panels of {self.max_panels} reached.')
+                messagebox.showwarning(title=MAX_EVENT_TITLE, message=f'Max event panels of {self.max_panels} reached.')
                 break
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                             event=event['object'],
