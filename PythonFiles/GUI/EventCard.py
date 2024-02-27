@@ -2,7 +2,7 @@ from tkinter import messagebox
 from sys import platform
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import SUCCESS_TITLE, EVENT_DETAILS_PANEL_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER
+from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
@@ -27,8 +27,8 @@ class EventCard:
         self.card_frame.grid(row=row, 
                                 column=0, 
                                 sticky='nsew', 
-                                padx=EVENT_DETAILS_PANEL_ROW_GAP, 
-                                pady=EVENT_DETAILS_PANEL_ROW_GAP,)
+                                padx=EVENT_ROW_GAP, 
+                                pady=EVENT_ROW_GAP,)
         GUIInterface.CreateGrid(self.card_frame, rows=[1] * len(event_details), cols=[1])
         self.card_frame.update() # needs to be grid and updated before other GUI as following UI needs the updated frame params
 

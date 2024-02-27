@@ -6,7 +6,7 @@ import copy
 from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
-from GUI.GUIConstants import MAX_EVENT_TITLE, EVENT_DETAILS_PANEL_ROW_GAP
+from GUI.GUIConstants import MAX_EVENT_TITLE, EVENT_ROW_GAP
 from Events.EventsManager import EventsManager
 
 class SchedulePage(Page):

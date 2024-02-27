@@ -6,6 +6,7 @@ from NER.NERInterface import NERInterface
 from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
 from GUI.GUIInterface import GUIInterface
+from GUI.GUIConstants import TEXT_BOX_MODIFIER
 
 class MainPage(Page):
         def __init__(self): 
@@ -18,8 +19,7 @@ class MainPage(Page):
                 self.PageGrid(rows=rows, cols=cols)
 
                 # Text box
-                self.main_page_textbox = GUIInterface.CreateTextbox(width=MainAppWindow.app_width * 0.5, height=MainAppWindow.app_height * 0.5)
-                self.main_page_textbox.grid(row=1, column=1, sticky='nsew')
+                self.main_page_textbox = GUIInterface.CreateTextbox(width=MainAppWindow.app_width * TEXT_BOX_MODIFIER, height=MainAppWindow.app_height * TEXT_BOX_MODIFIER)
 
                 tmp = GUIInterface.current_frame
                 self.button_frame = GUIInterface.CreateFrame(GUIInterface.current_frame, 
@@ -31,15 +31,16 @@ class MainPage(Page):
                 self.button_frame.rowconfigure(0, weight=1)
                 self.button_frame.rowconfigure(1, weight=1)
                 self.button_frame.rowconfigure(2, weight=1)
+
+                # Buttons
+                self.submit_button = GUIInterface.CreateButton(text="Submit", on_click=lambda:self.Submit(self.main_page_textbox))
+                self.go_to_schedule_btn = GUIInterface.CreateButton(text='Go To Schedule', on_click=lambda:PageManager.SwitchPages(1))
+
+                # Grid GUI
+                self.main_page_textbox.grid(row=1, column=1, sticky='nsew')
                 self.button_frame.grid(row=2, column=1, sticky='nsew')
-
-                # Button
-                button = GUIInterface.CreateButton(text="Submit", on_click=lambda:self.Submit(self.main_page_textbox))
-                button.grid(row=1, column=0)
-
-                # Go to schedule
-                go_to_schedule_btn = GUIInterface.CreateButton(text='Go To Schedule', on_click=lambda:PageManager.SwitchPages(1))
-                go_to_schedule_btn.grid(row=1, column=1)
+                self.submit_button.grid(row=1, column=0)
+                self.go_to_schedule_btn.grid(row=1, column=1)
 
                 GUIInterface.current_frame = tmp
         

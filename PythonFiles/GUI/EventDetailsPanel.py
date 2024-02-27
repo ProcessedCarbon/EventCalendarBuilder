@@ -4,7 +4,7 @@ import logging
 from customtkinter import *
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_DETAILS_PANEL_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER
+from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER
 from Events.Event import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
@@ -34,9 +34,9 @@ class EventDetailsPanel:
         self.details_frame.grid(row=self.row, 
                                 column=0, 
                                 sticky='nsew', 
-                                padx=EVENT_DETAILS_PANEL_ROW_GAP, 
-                                pady=EVENT_DETAILS_PANEL_ROW_GAP,
-                                ipadx=EVENT_DETAILS_PANEL_ROW_GAP)
+                                padx=EVENT_ROW_GAP, 
+                                pady=EVENT_ROW_GAP,
+                                ipadx=EVENT_ROW_GAP)
         
         # Rows
         for i in range(EVENT_DETAILS_PANEL_ROWS):
