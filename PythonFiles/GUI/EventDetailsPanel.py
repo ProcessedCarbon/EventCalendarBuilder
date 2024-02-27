@@ -4,7 +4,7 @@ import logging
 from customtkinter import *
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_DETAILS_PANEL_ROW_GAP
+from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_DETAILS_PANEL_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER
 from Events.Event import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
@@ -50,7 +50,7 @@ class EventDetailsPanel:
         self.details_frame.update() # update values from resized UI
 
         # GUI Attributes
-        detail_entry_width = self.details_frame.winfo_width() * 0.7
+        detail_entry_width = self.details_frame.winfo_width() * EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER
 
         # GUI
         remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(self.key), text='X', width=50)

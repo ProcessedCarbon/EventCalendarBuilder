@@ -25,21 +25,19 @@ class SchedulePage(Page):
 
         # Back Button
         button = GUIInterface.CreateButton(text="<", on_click=lambda:self.BackButton(0), width=50)
-        button.grid(row=0, column=0, sticky='nw')
-
-        # Title
-        title = GUIInterface.CreateLabel(text="Schedule", font=("Bold", 20))
-        title.grid(row=0, column=1, sticky='n')
 
         # Details
         self.details_panel_frame = GUIInterface.CreateScrollableFrame(self.page)
-        self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
         GUIInterface.CreateGrid(self.details_panel_frame, 
                                 rows=[1],
                                 cols=[1])
 
         # Create Event Button
         create_event = GUIInterface.CreateButton(on_click=self.CreateEventButton, text='Create')
+
+        # Grid elements
+        button.grid(row=0, column=0, sticky='nw')
+        self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
         create_event.grid(row=2, column=1)
 
     def OnExit(self):
