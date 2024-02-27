@@ -47,80 +47,84 @@ class EventDetailsPanel:
         self.details_frame.columnconfigure(1, weight=10)
         self.details_frame.columnconfigure(2, weight=1)
 
-        self.details_frame.update() # update values from resized UI
+        self.details_frame.update() # needs to be grid and updated before other GUI as following UI needs the updated frame params
 
         # GUI Attributes
         detail_entry_width = self.details_frame.winfo_width() * EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER
 
-        # GUI
+        # Buttons
         remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(self.key), text='X', width=50)
-        remove_btn.grid(row=0, column=1, pady=10, sticky='e')
-
         dup_btn = GUIInterface.CreateButton(on_click=lambda:self.dup_cb(self.event.getId()), text='+', width=40)
-        dup_btn.grid(row=0, column=2, pady=10, padx=10, sticky='e')
+        schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule')
 
+        # Input
         e_frame, e_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="Event", 
                                                 placeholder_text='Title')
-        e_frame.grid(row=1, column=1,sticky='nsew', pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         desp_frame, desp_entry = self.CreateEntryField(detail_entry_width, 
                                                     entryname="Description", 
                                                     placeholder_text='Description')
-        desp_frame.grid(row=2, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         l_frame, l_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="Location", 
                                                 placeholder_text='Location')
-        l_frame.grid(row=3, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         s_d_frame, s_d_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="Start Date", 
                                                 entry_state='disabled', 
                                                 placeholder_text='YYYY-MM-DD')
         s_d_entry.bind('<1>', lambda event, entry=s_d_entry: self.PickDate(entry))
-        s_d_frame.grid(row=4, column=1,sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         e_d_frame, e_d_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="End Date", 
                                                 entry_state='disabled', 
                                                 placeholder_text='YYYY-MM-DD')
         e_d_entry.bind('<1>', lambda event, entry=e_d_entry: self.PickDate(entry))
-        e_d_frame.grid(row=5, column=1,sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         st_frame, st_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="Start Time", 
                                                 placeholder_text="HH:MM:SS")
-        st_frame.grid(row=6, column=1,sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         et_frame, et_entry = self.CreateEntryField(detail_entry_width,
                                                 entryname="End Time", 
                                                 placeholder_text="HH:MM:SS")
-        et_frame.grid(row=7, column=1,sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
         
-        schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule')
-        schedule_btn.grid(row=10, column=1, pady=10)
-
         # DROP DOWN GROUPS
         drop_down_frame = GUIInterface.CreateFrame(self.details_frame, border_width=0, fg_color='transparent')
         drop_down_frame.columnconfigure(0, weight=1)
         drop_down_frame.columnconfigure(1, weight=1)
         drop_down_frame.rowconfigure(0, weight=1)
         drop_down_frame.rowconfigure(1, weight=1)
-        drop_down_frame.grid(row=9, column=1, sticky='nsew', pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         tz_frame, tz_label, tz_box = self.CreateDropdownField(values=pytz.all_timezones, entryname="Timezone")
         tz_box.set('Asia/Singapore')
-        tz_frame.grid(row=0, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         calendars_frame, calendar_label, calendar_box = self.CreateDropdownField(values=[DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR], 
                                                                                 entryname="Calendar")
-        calendars_frame.grid(row=1, column=0, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         recur_option, recur_label, recur_box = self.CreateDropdownField(values=["None", "Daily", 'Weekly', 'Monthly'], 
                                                                         entryname="Repeated")
-        recur_option.grid(row=1, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
         recur_box.set(self.event.getRecurring())
+
+        # Grid GUI
+        remove_btn.grid(row=0, column=1, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, sticky='e')
+        dup_btn.grid(row=0, column=2, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, padx=(0, EVENT_DETAILS_PANEL_DETAIL_GAP), sticky='e')
+        schedule_btn.grid(row=10, column=1, pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+
+        e_frame.grid(row=1, column=1,sticky='nsew', pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        desp_frame.grid(row=2, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        l_frame.grid(row=3, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        s_d_frame.grid(row=4, column=1,sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        e_d_frame.grid(row=5, column=1,sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        st_frame.grid(row=6, column=1,sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        et_frame.grid(row=7, column=1,sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        drop_down_frame.grid(row=9, column=1, sticky='nsew', pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        
+        # Under drop down frame
+        tz_frame.grid(row=0, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        calendars_frame.grid(row=1, column=0, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        recur_option.grid(row=1, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         GUIInterface.current_frame = tmp_frame
 

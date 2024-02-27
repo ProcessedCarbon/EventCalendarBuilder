@@ -30,7 +30,7 @@ class EventCard:
                                 padx=EVENT_DETAILS_PANEL_ROW_GAP, 
                                 pady=EVENT_DETAILS_PANEL_ROW_GAP,)
         GUIInterface.CreateGrid(self.card_frame, rows=[1] * len(event_details), cols=[1])
-        self.card_frame.update()
+        self.card_frame.update() # needs to be grid and updated before other GUI as following UI needs the updated frame params
 
         # Details Attributes
         attribute_width= self.card_frame.winfo_width() * EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER
@@ -41,83 +41,87 @@ class EventCard:
                                                                     entry_width=attribute_width, 
                                                                     entry_state='disabled')
         n_entry.configure(fg_color=frame_color, border_color = frame_color, text_color=text_color)
-        GUIInterface.UpdateEntry(n_entry, str(event_details['name']))
-        n_frame.grid(row=0, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # desc
         desc_frame, desc_label, desc_entry = GUIInterface.CreateEntryWithLabel(label= "Description" + ":",
                                                                     entry_width=attribute_width, 
                                                                     entry_state='disabled')
         desc_entry.configure(fg_color=frame_color, border_color = frame_color, text_color=text_color)
-        GUIInterface.UpdateEntry(desc_entry, str(event_details['description']))
-        desc_frame.grid(row=1, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # location
         l_frame, l_label, l_entry = GUIInterface.CreateEntryWithLabel(label= "Location" + ":",
                                                                     entry_width=attribute_width, 
                                                                     entry_state='disabled')
         
-        GUIInterface.UpdateEntry(l_entry, str(event_details['location']))
         l_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        l_frame.grid(row=2, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # start date
         s_d_frame, s_d_label, s_d_entry = GUIInterface.CreateEntryWithLabel(label= "Start Date" + ":",
                                                                     entry_width=attribute_width, 
                                                                     entry_state='disabled')
         
-        GUIInterface.UpdateEntry(s_d_entry, str(event_details['s_date']))
         s_d_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        s_d_frame.grid(row=3, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # end date
         e_d_frame, e_d_label, e_d_entry = GUIInterface.CreateEntryWithLabel(label= "End Date" + ":",
                                                                     entry_width=attribute_width, 
                                                                     entry_state='disabled')
         
-        GUIInterface.UpdateEntry(e_d_entry, str(event_details['e_date']))
         e_d_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        e_d_frame.grid(row=4, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # start time
         st_frame, st_label, st_entry = GUIInterface.CreateEntryWithLabel(label= "Start" + ":",
                                                                         entry_width=attribute_width, 
                                                                         entry_state='disabled')
         
-        GUIInterface.UpdateEntry(st_entry, str(event_details['start_time']))
         st_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        st_frame.grid(row=5, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # end time
         et_frame, et_label, et_entry = GUIInterface.CreateEntryWithLabel(label= "End" + ":",
                                                                         entry_width=attribute_width, 
                                                                         entry_state='disabled')
         
-        GUIInterface.UpdateEntry(et_entry, str(event_details['end_time']))
         et_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        et_frame.grid(row=6, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # platform
         p_frame, p_label, p_entry = GUIInterface.CreateEntryWithLabel(label= "Platform" + ":",
                                                                         entry_width=attribute_width, 
                                                                         entry_state='disabled')
         
-        GUIInterface.UpdateEntry(p_entry, str(event_details['platform']))
         p_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        p_frame.grid(row=7, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # recurrence
         r_frame, r_label, r_entry = GUIInterface.CreateEntryWithLabel(label= "Recurrence" + ":",
                                                                         entry_width=attribute_width, 
                                                                         entry_state='disabled')
         
-        GUIInterface.UpdateEntry(r_entry, str(event_details['recurring']))
         r_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
-        r_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # Remove event button
         remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(index), 
                                             text='Remove')
+        
+        # Update entries
+        GUIInterface.UpdateEntry(n_entry, str(event_details['name']))
+        GUIInterface.UpdateEntry(desc_entry, str(event_details['description']))
+        GUIInterface.UpdateEntry(l_entry, str(event_details['location']))
+        GUIInterface.UpdateEntry(s_d_entry, str(event_details['s_date']))
+        GUIInterface.UpdateEntry(e_d_entry, str(event_details['e_date']))
+        GUIInterface.UpdateEntry(st_entry, str(event_details['start_time']))
+        GUIInterface.UpdateEntry(et_entry, str(event_details['end_time']))
+        GUIInterface.UpdateEntry(p_entry, str(event_details['platform']))
+        GUIInterface.UpdateEntry(r_entry, str(event_details['recurring']))
+
+        # Grid GUI
+        n_frame.grid(row=0, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        desc_frame.grid(row=1, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        l_frame.grid(row=2, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        s_d_frame.grid(row=3, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        e_d_frame.grid(row=4, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        st_frame.grid(row=5, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        et_frame.grid(row=6, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        p_frame.grid(row=7, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        r_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         remove_btn.grid(row=9, column=0)
 
         GUIInterface.current_frame = tmp_frame
