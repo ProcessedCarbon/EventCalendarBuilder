@@ -3,6 +3,7 @@ import os
 import glob
 import json
 import logging
+import email
 
 # No need to close file after 'with open()' is used
 # Auto closes after with code is exceuted
@@ -87,6 +88,30 @@ def ReadJSON(dir_path:Path, file_name:str):
             return None
     return data
 
+def ReadEMLFile(eml_file_path):
+    # Open the .eml file
+    with open(eml_file_path, 'r') as eml_file:
+        # Parse the email message
+        msg = email.message_from_file(eml_file)
+        
+        # Get the subject
+        subject = msg['Subject']
+        
+        # Get the sender
+        sender = msg['From']
+        
+        # Get the recipients
+        recipients = msg['To']
+        
+        # Get the date
+        date = msg['Date']
+        
+        # Get the plain text part of the email
+        content =""
+        for part in msg.walk():
+            if part.get_content_type() == 'text/plain':
+                content += part.get_payload()
+        return content, subject, sender, recipients, date
 
 def getFilePath(dir_path:Path, file_name:str)->Path:
     return Path(os.path.join(dir_path, file_name))
