@@ -6,7 +6,7 @@ import copy
 from Pages.Page import *
 from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
-from GUI.GUIConstants import MAX_EVENT_TITLE
+from GUI.GUIConstants import MAX_EVENT_TITLE, SUCCESS_TITLE, FAILED_SCHEDULE_MSG
 from Events.EventsManager import EventsManager
 
 class SchedulePage(Page):
@@ -89,40 +89,42 @@ class SchedulePage(Page):
             logging.info(f"[{__name__}] SUCCESSFUL REMOVAL OF PANEL {key}")
 
     def DuplicatePanel(self, key):
-        
-        for panel in self.details_panels:
-            self.details_panels[panel].UpdateEventWithDetails()
+        try:
+            for panel in self.details_panels:
+                self.details_panels[panel].UpdateEventWithDetails()
 
-        for index, e in enumerate(EventsManager.events):
-            event = e['object']
-            if event.getId() == key:
-                # Create a copy
-                dup = e.copy()
-                dup['object'] = copy.copy(e['object'])
+            for index, e in enumerate(EventsManager.events):
+                if e['object'].getId() == key:
+                    # Create a copy
+                    dup = e.copy()
+                    dup['object'] = copy.copy(e['object'])
 
-                # Update params
-                dup['object'].copy += 1
-                e['object'].copy += 1 # update original as well
-                dup['id'] = uuid4()
-                if dup['name'].endswith(']'):
-                    dup['name'] = dup['name'][:-4]
-                dup['name'] = dup['name'] + f' [{dup["object"].getCopy()}]'
-                dup['object'].setName(dup['name'])
-                dup['object'].setId(dup['id'])
+                    # Update params
+                    dup['object'].copy += 1
+                    e['object'].copy += 1 # update original as well
+                    dup['id'] = uuid4()
+                    if dup['name'].endswith(']'):
+                        dup['name'] = dup['name'][:-4]
+                    dup['name'] = dup['name'] + f' [{dup["object"].getCopy()}]'
+                    dup['object'].setName(dup['name'])
+                    dup['object'].setId(dup['id'])
 
-                # Insert in list
-                first_slice = EventsManager.events[:index+1]
-                second_slice = EventsManager.events[index+1:]
-                first_slice.append(dup)
-                first_slice.extend(second_slice)
+                    # Insert in list
+                    first_slice = EventsManager.events[:index+1]
+                    second_slice = EventsManager.events[index+1:]
+                    first_slice.append(dup)
+                    first_slice.extend(second_slice)
 
-                # Update list
-                EventsManager.ClearEvents()
-                EventsManager.events = first_slice
+                    # Update list
+                    EventsManager.ClearEvents()
+                    EventsManager.events = first_slice
 
-                # Re-create GUI
-                self.ResetDetails()
-                self.PopulateDetails(EventsManager.events)
+                    # Re-create GUI
+                    self.ResetDetails()
+                    self.PopulateDetails(EventsManager.events)
+                    messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully duplicated event\n{e["object"].getName()} as {dup["object"].getName()}')
+        except Exception as e:
+            messagebox.showinfo(title=FAILED_SCHEDULE_MSG, message=f'Failed duplicated event\n{e["object"].getName()} due to\n {e}')
 
     def BackButton(self, page:int=0):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
