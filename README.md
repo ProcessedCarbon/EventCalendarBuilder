@@ -10,8 +10,8 @@
 1.  Start the application
 2.  Upon starting the application you are required to give permissions for both Google and Outlook. (Please check your browser tabs)
 3.  Do not close these tabs/ browsers, follow through the process of either allowing/ not allowing the permissions.
-        3.1. In the event that you accidently close the browser, open up your task manager and end task for EventCalendarBuilder and restart the application.
-        3.2. If you are running in vscode, simple stop and restart again.
+    1. In the event that you accidently close the browser, open up your task manager and end task for EventCalendarBuilder and restart the application.
+    2. If you are running in vscode, simple stop and restart again.
 4.  Insert text into text-box and press submit. (This will trigger the algorithm and model to recognise and extract events from the text)
 5.  This will bring you to the Schedule Page where each extracted event and their details are displayed in each card.
 6.  You can edit these cards and their details to the desired configurations you wish your events to have.
