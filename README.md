@@ -22,3 +22,7 @@
 11. You can also instead directly go to the Schedule Page without any text input by clicking on the 'Go To Schedule' button.
 12. You are also allowed the creation of new events to schedule under the schedule page by clicking on the 'Create' button.
 13. On the left-side you have the app toolbar where you may change the various aspects of the application
+
+### Note-worthy
+1. A altered wordninja library is used under EdittedPackages/wordninja
+2. Spacy transformer code has been manually editted to use 'torch.utils._pytree.register_pytree_node' instead of 'torch.utils._pytree._register_pytree_node' in transformer/utils/generic.py
