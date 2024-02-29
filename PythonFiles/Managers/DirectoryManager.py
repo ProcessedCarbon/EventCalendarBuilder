@@ -89,29 +89,32 @@ def ReadJSON(dir_path:Path, file_name:str):
     return data
 
 def ReadEMLFile(eml_file_path):
-    # Open the .eml file
-    with open(eml_file_path, 'r') as eml_file:
-        # Parse the email message
-        msg = email.message_from_file(eml_file)
-        
-        # Get the subject
-        subject = msg['Subject']
-        
-        # Get the sender
-        sender = msg['From']
-        
-        # Get the recipients
-        recipients = msg['To']
-        
-        # Get the date
-        date = msg['Date']
-        
-        # Get the plain text part of the email
-        content =""
-        for part in msg.walk():
-            if part.get_content_type() == 'text/plain':
-                content += part.get_payload()
-        return content, subject, sender, recipients, date
+    try:
+        # Open the .eml file
+        with open(eml_file_path, 'r') as eml_file:
+            # Parse the email message
+            msg = email.message_from_file(eml_file)
+            
+            # Get the subject
+            subject = msg['Subject']
+            
+            # Get the sender
+            sender = msg['From']
+            
+            # Get the recipients
+            recipients = msg['To']
+            
+            # Get the date
+            date = msg['Date']
+            
+            # Get the plain text part of the email
+            content =""
+            for part in msg.walk():
+                if part.get_content_type() == 'text/plain':
+                    content += part.get_payload()
+            return content, subject, sender, recipients, date
+    except Exception as e:
+        logging.error(f"[{__name__}]FAILED TO READ EML FILE WITH {str(e)}")
 
 def getFilePath(dir_path:Path, file_name:str)->Path:
     return Path(os.path.join(dir_path, file_name))

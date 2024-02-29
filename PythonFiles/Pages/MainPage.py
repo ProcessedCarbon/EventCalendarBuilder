@@ -39,7 +39,7 @@ class MainPage(Page):
                 # Buttons
                 self.submit_button = GUIInterface.CreateButton(text="Submit", on_click=lambda:self.Submit(self.main_page_textbox))
                 self.go_to_schedule_btn = GUIInterface.CreateButton(text='Go To Schedule', on_click=lambda:PageManager.SwitchPages(1))
-                self.upload_file_btn = GUIInterface.CreateButton(text='Upload EML File', on_click=self.OnUpload)
+                self.upload_file_btn = GUIInterface.CreateButton(text='Upload File', on_click=self.OnUpload)
 
                 # Grid GUI
                 self.main_page_textbox.grid(row=1, column=1, sticky='nsew')
