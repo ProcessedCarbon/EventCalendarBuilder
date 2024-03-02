@@ -9,7 +9,6 @@ import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, OUTLOOK_CALENDAR, GOOGLE_CALENDAR
-from Managers.TextProcessing import TextProcessingManager
 from Calendar.CalendarInterface import CalendarInterface
 
 class EventCard:
