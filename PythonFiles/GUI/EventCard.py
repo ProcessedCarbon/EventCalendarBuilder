@@ -38,64 +38,71 @@ class EventCard:
         # Details
         # title
         self.n_frame,  self.n_label, self.n_entry = GUIInterface.CreateEntryWithLabel(label= "Name:",
-                                                                    entry_width=attribute_width, 
-                                                                    entry_state='disabled')
+                                                                                        entry_width=attribute_width, 
+                                                                                        entry_state='disabled')
         self.n_entry.configure(fg_color=frame_color, border_color = frame_color, text_color=text_color)
 
         # desc
         self.desc_frame, self.desc_label, self.desc_entry = GUIInterface.CreateEntryWithLabel(label= "Description:",
-                                                                    entry_width=attribute_width, 
-                                                                    entry_state='normal')
+                                                                                            entry_width=attribute_width, 
+                                                                                            entry_state='normal')
         self.desc_entry.configure(fg_color=frame_color, border_color = frame_color, text_color=text_color)
 
         # location
         self.l_frame, self.l_label, self.l_entry = GUIInterface.CreateEntryWithLabel(label= "Location:",
-                                                                    entry_width=attribute_width, 
-                                                                    entry_state='disabled')
+                                                                                    entry_width=attribute_width, 
+                                                                                    entry_state='disabled')
         
         self.l_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
 
         # start date
         self.s_d_frame, self.s_d_label, self.s_d_entry = GUIInterface.CreateEntryWithLabel(label= "Start Date:",
-                                                                    entry_width=attribute_width, 
-                                                                    entry_state='disabled')
+                                                                                            entry_width=attribute_width, 
+                                                                                            entry_state='disabled')
         
         self.s_d_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
 
         # end date
         self.e_d_frame, self.e_d_label, self.e_d_entry = GUIInterface.CreateEntryWithLabel(label= "End Date:",
-                                                                    entry_width=attribute_width, 
-                                                                    entry_state='disabled')
+                                                                                            entry_width=attribute_width, 
+                                                                                            entry_state='disabled')
         
         self.e_d_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
 
         # start time
-        self.st_frame, self.st_label, self.st_entry = GUIInterface.CreateEntryWithLabel(label= "Start:",
-                                                                        entry_width=attribute_width, 
-                                                                        entry_state='disabled')
+        self.st_frame, self.st_label, self.st_entry = GUIInterface.CreateEntryWithLabel(label= "Start Time:",
+                                                                                        entry_width=attribute_width, 
+                                                                                        entry_state='disabled')
         
         self.st_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
 
         # end time
-        self.et_frame, self.et_label, self.et_entry = GUIInterface.CreateEntryWithLabel(label= "End:",
-                                                                        entry_width=attribute_width, 
-                                                                        entry_state='disabled')
+        self.et_frame, self.et_label, self.et_entry = GUIInterface.CreateEntryWithLabel(label= "End Time:",
+                                                                                        entry_width=attribute_width, 
+                                                                                        entry_state='disabled')
         
         self.et_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
 
         # platform
         self.p_frame, self.p_label, self.p_entry = GUIInterface.CreateEntryWithLabel(label= "Platform:",
-                                                                        entry_width=attribute_width, 
-                                                                        entry_state='disabled')
+                                                                                    entry_width=attribute_width, 
+                                                                                    entry_state='disabled')
         
         self.p_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
 
         # recurrence
-        self.r_frame, self.r_label, self.r_entry = GUIInterface.CreateEntryWithLabel(label= "Recurrence:",
-                                                                        entry_width=attribute_width, 
-                                                                        entry_state='disabled')
+        self.r_frame, self.r_label, self.r_entry = GUIInterface.CreateEntryWithLabel(label= "Repeated:",
+                                                                                    entry_width=attribute_width, 
+                                                                                    entry_state='disabled')
         
         self.r_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
+
+        # timezone
+        self.tz_frame, self.tz_label, self.tz_entry = GUIInterface.CreateEntryWithLabel(label= "Timezone:",
+                                                                                        entry_width=attribute_width, 
+                                                                                        entry_state='disabled')
+        
+        self.tz_entry.configure(fg_color=frame_color, border_color = frame_color,text_color=text_color)
 
         # Buttons
         self.remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(index), 
@@ -116,8 +123,9 @@ class EventCard:
         self.et_frame.grid(row=6, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         self.p_frame.grid(row=7, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         self.r_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.remove_btn.grid(row=9, column=0)
-        self.update_btn.grid(row=9, column=1)
+        self.tz_frame.grid(row=9, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.remove_btn.grid(row=10, column=0)
+        self.update_btn.grid(row=10, column=1)
 
         GUIInterface.current_frame = tmp_frame
 
@@ -140,6 +148,7 @@ class EventCard:
         GUIInterface.UpdateEntry(self.et_entry, self.event_details['end_time'])
         GUIInterface.UpdateEntry(self.p_entry, self.event_details['platform'])
         GUIInterface.UpdateEntry(self.r_entry, self.event_details['recurring'])
+        GUIInterface.UpdateEntry(self.tz_entry, self.event_details['timezone'])
     
     def UpdateEventDetails(self):
         self.event_details['name'] = self.n_entry.get()
@@ -176,16 +185,16 @@ class EventCard:
         try:
             self.UpdateEventDetails()
             input = {
-                'Event':self.event_details['name'],
-                'Description':self.event_details['description'],
-                'Location':self.event_details['location'],
-                'Start_Date':self.event_details['s_date'],
-                'End_Date':self.event_details['e_date'],
-                'Start_Time':self.event_details['start_time'],
-                'End_Time':self.event_details['end_time'],
-                'Timezone':'Asia/Singapore',
-                'Repeated':'None',
-                'Platform':self.event_details['platform'],
+                'Event': self.event_details['name'],
+                'Description': self.event_details['description'],
+                'Location': self.event_details['location'],
+                'Start_Date': self.event_details['s_date'],
+                'End_Date': self.event_details['e_date'],
+                'Start_Time': self.event_details['start_time'],
+                'End_Time': self.event_details['end_time'],
+                'Timezone': 'Asia/Singapore',
+                'Repeated': self.event_details['recurring'],
+                'Platform': self.event_details['platform'],
             }
 
             # If no isses then create ics file
