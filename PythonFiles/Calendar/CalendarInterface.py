@@ -88,4 +88,17 @@ class CalendarInterface:
     
     def DeleteICSFilesInDir(dir: Path) ->bool:
         opt = directory_manager.DeleteFilesInDir(dir, 'ics')
-        return opt    
+        return opt
+
+    def AppendStartTime(input:dict):
+        time_slots = []
+        time_slots.append(input['Start_Time'])
+        time_slots.append(input['End_Time'])
+
+        ics_s_date = TextProcessingManager.ProcessDateToICSFormat(input['Start_Date'])
+        ics_e_date = TextProcessingManager.ProcessDateToICSFormat(input['End_Date'])
+        ics_time = TextProcessingManager.ProcessTimeToICSFormat(time_slots)
+        ics_s, ics_e = TextProcessingManager.ProcessICS(ics_s_date, ics_e_date, ics_time)
+
+        input['Start_Time_ICS'] = ics_s
+        input['End_Time_ICS'] = ics_e

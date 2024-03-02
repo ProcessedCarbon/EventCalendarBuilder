@@ -10,6 +10,7 @@ from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterf
 import Calendar.Outlook.OutlookInterface as outlook_interface
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, OUTLOOK_CALENDAR, GOOGLE_CALENDAR
 from Managers.TextProcessing import TextProcessingManager
+from Calendar.CalendarInterface import CalendarInterface
 
 class EventCard:
     def __init__(self, parent, row, event_details:dict, remove_cb, index:int) -> None:
@@ -190,17 +191,7 @@ class EventCard:
 
             # If no isses then create ics file
             # Process datetime to ics calendar format
-            time_slots = []
-            time_slots.append(input['Start_Time'])
-            time_slots.append(input['End_Time'])
-
-            ics_s_date = TextProcessingManager.ProcessDateToICSFormat(input['Start_Date'])
-            ics_e_date = TextProcessingManager.ProcessDateToICSFormat(input['End_Date'])
-            ics_time = TextProcessingManager.ProcessTimeToICSFormat(time_slots)
-            ics_s, ics_e = TextProcessingManager.ProcessICS(ics_s_date, ics_e_date, ics_time)
-
-            input['Start_Time_ICS'] = ics_s
-            input['End_Time_ICS'] = ics_e
+            CalendarInterface.AppendStartTime(input=input)
                 
             if self.event_details['platform'] == DEFAULT_CALENDAR: # Should not occur as Default calendar methods are not saved locally
                 messagebox.showinfo(title=WARNING_TITLE, message=f'Update of event not supported for {DEFAULT_CALENDAR} Calendar events')
