@@ -97,15 +97,15 @@ class EventDetailsPanel:
         drop_down_frame.rowconfigure(0, weight=1)
         drop_down_frame.rowconfigure(1, weight=1)
 
-        tz_frame, tz_label, tz_box = self.CreateDropdownField(values=pytz.all_timezones, entryname="Timezone")
-        tz_box.set('Asia/Singapore')
+        self.tz_frame, self.tz_label, self.tz_box = self.CreateDropdownField(values=pytz.all_timezones, entryname="Timezone")
+        self.tz_box.set('Asia/Singapore')
 
-        calendars_frame, calendar_label, calendar_box = self.CreateDropdownField(values=[DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR], 
+        self.calendars_frame, self.calendar_label, self.calendar_box = self.CreateDropdownField(values=[DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR], 
                                                                                 entryname="Calendar")
 
-        recur_option, recur_label, recur_box = self.CreateDropdownField(values=["None", "Daily", 'Weekly', 'Monthly'], 
+        self.recur_option, self.recur_label, self.recur_box = self.CreateDropdownField(values=["None", "Daily", 'Weekly', 'Monthly'], 
                                                                         entryname="Repeated")
-        recur_box.set(self.event.getRecurring())
+        self.recur_box.set(self.event.getRecurring())
 
         # Grid GUI
         remove_btn.grid(row=0, column=1, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, sticky='e')
@@ -122,9 +122,9 @@ class EventDetailsPanel:
         drop_down_frame.grid(row=9, column=1, sticky='nsew', pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
         
         # Under drop down frame
-        tz_frame.grid(row=0, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
-        calendars_frame.grid(row=1, column=0, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
-        recur_option.grid(row=1, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        self.tz_frame.grid(row=0, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        self.calendars_frame.grid(row=1, column=0, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        self.recur_option.grid(row=1, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         GUIInterface.current_frame = tmp_frame
 
@@ -134,12 +134,13 @@ class EventDetailsPanel:
         self.event.setName(details['Event'])
         self.event.setLocation(details['Location'])
         self.event.setDescription(details['Description'])
-        print(self.event.description)
 
         self.event.set_S_Date(details['Start_Date'])
         self.event.set_E_Date(details['End_Date'])
         self.event.setStart_Time(details['Start_Time'])
         self.event.setEnd_Time(details['End_Time'])
+        self.event.setTimezone(tz=self.tz_box.get())
+        self.event.setRecurring(recur=self.recur_box.get())
 
     def UpdateInputFields(self):
         GUIInterface.UpdateEntry(self.details_entries["Event"], self.event.getName())
@@ -242,7 +243,7 @@ class EventDetailsPanel:
         if platform != DEFAULT_CALENDAR:
             self.event.setPlatform(platform)
             self.event.setId(id)
-            EventsManager.AddEventToEventDB(self.event, EventsManager.events_db)
+            EventsManager.AddEventToEventDB(self.event, EventsManager.events_db, store_object=False)
         messagebox.showinfo(title=SUCCESS_TITLE, message=SCHEDULE_SUCCESS_MSG)
         self.remove_cb(self.key)
 

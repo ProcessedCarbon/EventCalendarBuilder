@@ -31,28 +31,6 @@ class EventsManager:
 
     directory_manager.MakeDirectory(local_events_dir)
     
-    def CreateEventObj(name:str, 
-                    location:str, 
-                    s_date:str, 
-                    e_date:str,                       
-                    start_time:str, 
-                    end_time:str,
-                    platform=DEFAULT_CALENDAR,
-                    id='None',
-                    recurring='None',
-                    description=''):
-        
-        return Event(id=id,
-                    name=name,
-                    location=location,
-                    s_date=s_date,
-                    e_date=e_date,
-                    start_time=start_time,
-                    end_time=end_time,
-                    platform=platform,
-                    recurring=recurring,
-                    description=description)
-    
     def ClearEvents():
         EventsManager.events = []
     
@@ -67,16 +45,16 @@ class EventsManager:
             return
         
         for d in data:
-            event = EventsManager.CreateEventObj(id=d['id'],
-                                                name=d['name'],
-                                                location=d['location'],
-                                                s_date=d['s_date'],
-                                                e_date=d['e_date'],
-                                                start_time=d['start_time'],
-                                                end_time=d['end_time'],
-                                                platform=d['platform'],
-                                                recurring=d['recurring'])
-            EventsManager.AddEventToEventDB(event=event, target=EventsManager.events_db)
+            event = Event(id=d['id'],
+                        name=d['name'],
+                        location=d['location'],
+                        s_date=d['s_date'],
+                        e_date=d['e_date'],
+                        start_time=d['start_time'],
+                        end_time=d['end_time'],
+                        platform=d['platform'],
+                        recurring=d['recurring'])
+            EventsManager.AddEventToEventDB(event=event, target=EventsManager.events_db, store_object=False)
 
     # Send only those that are schedule
     def WriteEventDBToJSON():
@@ -98,7 +76,7 @@ class EventsManager:
         except Exception as e:
             logging.error(f'[{__name__}]: {e}')
 
-    def AddEventToEventDB(event:Event, target=None):
+    def AddEventToEventDB(event:Event, target=None, store_object=True):
         '''
         Takes in an event object and adds it to the target list in this class
         Works with the assumption that event db is updated
@@ -108,7 +86,10 @@ class EventsManager:
             return
 
         event_dict = event.getEventDict()
-        event_dict['object'] = event
+
+        if store_object:
+            event_dict['object'] = event
+
         target.append(event_dict)
         EventsManager.WriteEventDBToJSON()
     
@@ -126,6 +107,22 @@ class EventsManager:
                 return True
             
         logging.warning(f"[{__name__}] REMOVE TARGET NOT FOUND!")
+        return False
+
+    def UpdateFromEventDB(id:str, update:dict, target=None)->bool:
+        if target == None:
+            logging.warning(f"[{__name__}] MISSING DB TARGET")
+            return False
+        
+        logging.info(f'target_id: {id}')
+        for index, e in enumerate(target):
+            if e['id'] == id:
+                logging.info(f'found: {e["id"]}')
+                target[index] = update
+                EventsManager.WriteEventDBToJSON()
+                return True
+            
+        logging.warning(f"[{__name__}] UPDATE TARGET NOT FOUND!")
         return False
     
     def ClearEventsJSON():
@@ -199,13 +196,13 @@ class EventsManager:
                     start_time = event['DATE_TIME'][k][0]
                     end_time = event['DATE_TIME'][k][1]
 
-                    n_event = EventsManager.CreateEventObj(id=uuid4(),
-                                                            name=event['EVENT'],
-                                                            location=event["LOC"],
-                                                            s_date=start_date,
-                                                            e_date=start_date,
-                                                            start_time=start_time,
-                                                            end_time=end_time)
+                    n_event = Event(id=uuid4(),
+                                    name=event['EVENT'],
+                                    location=event["LOC"],
+                                    s_date=start_date,
+                                    e_date=start_date,
+                                    start_time=start_time,
+                                    end_time=end_time)
                     EventsManager.AddEventToEventDB(n_event, EventsManager.events)
                     event_count += 1
             else:  
@@ -223,14 +220,14 @@ class EventsManager:
                         recurring = 'Daily'
                 end_time = event['DATE_TIME'][keys[1]][1]
                 
-                n_event = EventsManager.CreateEventObj(id=uuid4(),
-                                                    name=event['EVENT'],
-                                                    location=event["LOC"],
-                                                    s_date=start_date,
-                                                    e_date=end_date,
-                                                    start_time=start_time,
-                                                    end_time=end_time,
-                                                    recurring=recurring)
+                n_event = Event(id=uuid4(),
+                                name=event['EVENT'],
+                                location=event["LOC"],
+                                s_date=start_date,
+                                e_date=end_date,
+                                start_time=start_time,
+                                end_time=end_time,
+                                recurring=recurring)
                 EventsManager.AddEventToEventDB(n_event, EventsManager.events)
                 event_count += 1
     

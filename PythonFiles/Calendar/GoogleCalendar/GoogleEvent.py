@@ -6,7 +6,6 @@ class GoogleEvent:
                 tzstart: str, 
                 tzend:str, 
                 rrule:str,
-                colorId=1,
                 description=''
                 ):
         
@@ -14,7 +13,7 @@ class GoogleEvent:
             "summary" : event,
             "location" : location,
             "description" : description,
-            "colorId" : colorId,
+            "colorId" : 1,
             "start" : {
                 "dateTime" : start_datetime,
                 "timeZone" : tzstart
@@ -48,6 +47,9 @@ class GoogleEvent:
     
     def getEndTz(self)->str:
         return self.event['end']['timeZone']
+    
+    def getDescription(self)->str:
+        return self.event['description']
     
     #['RRULE:FREQ=DAILY;UNTIL=20230215T220000Z']
     def getRRULE(self)->str:

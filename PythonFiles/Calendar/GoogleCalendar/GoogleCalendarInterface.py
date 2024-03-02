@@ -95,7 +95,7 @@ class GoogleCalendarInterface:
         return new_event['id']
 
     # Creates event datatype
-    def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, rrule:str, colorId=1, description=''):
+    def CreateGoogleEvent(title:str, location:str,  dtstart:str, dtend:str, tzstart:str, tzend:str, rrule:str, description=''):
         """
         Returns the google calendar event format with the given entities in placed to be used to parsed to create a new event on google calendars
         https://developers.google.com/calendar/api/v3/reference/events
@@ -112,7 +112,6 @@ class GoogleCalendarInterface:
                             location=str(location), 
                             start_datetime=dtstart,
                             end_datetime=dtend,
-                            colorId=colorId,
                             tzstart=tzstart,
                             tzend=tzend,
                             rrule=rrule,
@@ -133,30 +132,29 @@ class GoogleCalendarInterface:
                 tzend = str(component.get('dtstart').dt.tzinfo)
                 rule='RRULE:' + component.get('rrule').to_ical().decode(errors="ignore")+'Z' if component.get('rrule') is not None else ''
 
-                return GoogleCalendarInterface.CreateGoogleEvent(title=component.get('name'),
-                                                                location=component.get("location"),
-                                                                dtstart=start_datetime,
-                                                                dtend=end_datetime,
-                                                                tzstart=tzstart,
-                                                                tzend=tzend,
-                                                                rrule=str(rule) if rule != '' else [],
-                                                                description=component.get('description'))
+                return GoogleEvent(event=component.get('name'),
+                                    location=component.get("location"),
+                                    start_datetime=start_datetime,
+                                    end_datetime=end_datetime,
+                                    tzstart=tzstart,
+                                    tzend=tzend,
+                                    rrule=str(rule) if rule != '' else [],
+                                    description=component.get('description'))
             
         return None
     
     def getEvents(calendar_id='primary', time_min=None, time_max=None)->list[GoogleEvent]:
         """Get events from a specific calendar within a time range."""
         existing = GoogleCalendarInterface.service.events().list(calendarId=calendar_id, timeMin=time_min, timeMax=time_max).execute().get('items', [])
-        existing_google_events = [GoogleCalendarInterface.CreateGoogleEvent(
-                                                                            title=x['summary'],
-                                                                            location=x['location'] if "location" in x else "", # Done this way as might be empty
-                                                                            dtstart=x['start']['dateTime'],
-                                                                            tzstart=x['start']['timeZone'],
-                                                                            dtend=x['end']['dateTime'],
-                                                                            tzend=x['end']['timeZone'],
-                                                                            rrule=x['recurrence'] if 'recurrence' in x else '',
-                                                                            description=x['description'] if 'description' in x else ''
-                                                                            ) for x in existing]
+        existing_google_events = [GoogleEvent(event=x['summary'],
+                                            location=x['location'] if "location" in x else "", # Done this way as might be empty
+                                            start_datetime=x['start']['dateTime'],
+                                            tzstart=x['start']['timeZone'],
+                                            end_datetime=x['end']['dateTime'],
+                                            tzend=x['end']['timeZone'],
+                                            rrule=x['recurrence'] if 'recurrence' in x else '',
+                                            description=x['description'] if 'description' in x else ''
+                                            ) for x in existing]
         
         return existing_google_events  
 
@@ -175,7 +173,7 @@ class GoogleCalendarInterface:
                 overlapped_events.append(event)
         return overlapped_events #False
     
-    def DeleteEvent(id:str)->[bool,str]:
+    def DeleteEvent(id:str):
         if GoogleCalendarInterface.service == None:
             logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return False,''
@@ -189,3 +187,18 @@ class GoogleCalendarInterface:
             if 'reason' in error_details['reason'] and error_details['reason'] != '':
                 return False, error_details['reason']
             else: return False, 'Unknown Reason, Proceeding to Deletion'
+    
+    def UpdateEvent(id:str, update: dict):
+        if GoogleCalendarInterface.service == None:
+            logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            return False,''
+        
+        try:
+            GoogleCalendarInterface.service.events().update(calendarId='primary', eventId=id, body=update).execute()
+            logging.info(f"[{__name__}] EVENT UPDATED SUCCESSFULLY")
+            return True,''
+        except HttpError as e:
+            error_details = e.error_details[0]
+            if 'reason' in error_details['reason'] and error_details['reason'] != '':
+                return False, error_details['reason']
+            else: return False, 'Unknown Reason, Update cancelled'

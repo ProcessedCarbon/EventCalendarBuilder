@@ -6,9 +6,7 @@ from Events.EventsManager import EventsManager
 from GUI.EventCard import EventCard
 
 class ManageEventPage(Page):
-    def __init__(self, max_col=3, card_gap=10):   
-        self.max_col = max_col  
-        self.card_gap = card_gap 
+    def __init__(self):   
         self.cards = {} 
         super().__init__()
 
@@ -49,9 +47,7 @@ class ManageEventPage(Page):
                 # Create Card under the scrollable content frame
                 card = EventCard(self.content_frame, 
                                 row=index, 
-                                col=0, 
                                 event_details=data, 
-                                gap=self.card_gap,
                                 index=index,
                                 remove_cb=self.RemoveCard)
                 self.cards[index] = card

@@ -104,17 +104,25 @@ def get_events():
     logging.info(f'GET EVENTS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
-@APP.route('/get_mail_settings')
-def get_mail_settings():
+@APP.route('/update_event')
+def update_event():   
     token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
     token = token_access['access_token']
+
+    if not token:
+        return jsonify(status="error", message="Not authenticated!"), 401
+    
+    event_id = request.json['event_id']
+    event = request.json['event']
+
     headers = {
         'Authorization': f'{token_access["token_type"]} {token}',
         'Content-Type': 'application/json'
     }
-    response = requests.get('https://graph.microsoft.com/v1.0/me/mailboxsettings', headers=headers)
-    logging.info(f'GET MAIL-SETTINGS RESPONSE STATUS CODE: {response.status_code}')
-    return response.json()
+
+    response = requests.patch(f"https://graph.microsoft.com/v1.0/me/events/{event_id}", headers=headers, json=event)
+    logging.info(f'UPDATE RESPONSE STATUS CODE: {response.status_code}')
+    return {}
 
 # Only expecting 1 event per .ics file
 def parse_ics(ics)->OutlookEvent:
@@ -131,8 +139,7 @@ def parse_ics(ics)->OutlookEvent:
                                 tzstart='UTC',
                                 tzend='UTC',
                                 rrule=rule,
-                                description=component.get('description')
-                                )
+                                description=component.get('description'))
     return None
 
 # Require this to go from Flask -> Outlook
