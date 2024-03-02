@@ -41,6 +41,7 @@ class SchedulePage(Page):
         create_event.grid(row=2, column=1)
 
     def OnExit(self):
+        CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
         self.ResetDetails()
         EventsManager.ClearEvents()
 
@@ -127,7 +128,6 @@ class SchedulePage(Page):
             messagebox.showinfo(title=FAILED_SCHEDULE_MSG, message=f'Failed duplicated event\n{e["object"].getName()} due to\n {e}')
 
     def BackButton(self, page:int=0):
-        CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
         PageManager.SwitchPages(page)
 
     def CreateEventButton(self):

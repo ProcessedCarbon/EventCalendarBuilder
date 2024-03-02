@@ -2,6 +2,7 @@ import logging
 
 from Pages.Page import Page
 from GUI.GUIInterface import GUIInterface
+from Calendar.CalendarInterface import CalendarInterface
 from Events.EventsManager import EventsManager
 from GUI.EventCard import EventCard
 
@@ -34,6 +35,9 @@ class ManageEventPage(Page):
 
     def OnEntry(self):
         self.UpdateGUI()
+    
+    def OnExit(self):
+        CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
 
     def UpdateGUI(self):
         # Create GUI only if there is data
