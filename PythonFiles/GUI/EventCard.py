@@ -180,10 +180,10 @@ class EventCard:
             elif self.event_details['platform'] == OUTLOOK_CALENDAR:
                 removed, response = outlook_interface.send_flask_req('delete_event', json_data={'event_id':self.event_details['id']})
 
-            messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully removed {self.event_details['name']} from {self.event_details['platform']} Calendar')
+            messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully removed {self.event_details["name"]} from {self.event_details["platform"]} Calendar')
             return True            
         except:
-            messagebox.showinfo(title=FAILED_TITLE, message=f'Failed removal of {self.event_details['name']}')
+            messagebox.showinfo(title=FAILED_TITLE, message=f'Failed removal of {self.event_details["name"]}')
             return False
         
     def UpdateOnCalendar(self):
@@ -238,6 +238,6 @@ class EventCard:
             EventsManager.UpdateFromEventDB(id=self.event_details['id'], update=self.event_details, target=EventsManager.events_db)
             self.UpdateEntries()
 
-            messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully Updated {self.event_details['name']} on {self.event_details['platform']} Calendar')
+            messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully Updated {self.event_details["name"]} on {self.event_details["platform"]} Calendar')
         except Exception as e:
-            messagebox.showinfo(title=FAILED_TITLE, message=f'Failed update of {self.event_details['name']} on {self.event_details['platform']} Calendar\ndue to\n{e}')
+            messagebox.showinfo(title=FAILED_TITLE, message=f'Failed update of {self.event_details["name"]} on {self.event_details["platform"]} Calendar\ndue to\n{e}')

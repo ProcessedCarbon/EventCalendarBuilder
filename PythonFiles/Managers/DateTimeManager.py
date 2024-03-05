@@ -71,51 +71,6 @@ class DateTimeManager:
     def isAPeriod(period_: str):
         period_string = str(period_).lower()
         return period_string.lower() in DateTimeManager._period
-    
-    # Gets the current timezone of the user using country code and country
-    def getTimeZone(timezone_abrev_="", country_code_="", country_=""):
-        """
-        Attempt to get timezone given the abbreviation, country code and country.
-        Tries to find the abrev first, if that fails, country code to get a list of potential abrev and try and match
-        If all else fails, use country and look through all of Olson databse 
-        
-        :param timezone_abrev_ (str): Initial abreviation given
-        :param country_code_ (str): country code to use in case timezone_abrev_ fails
-        :param country_ (str): country to use in case all else fails
-
-        return: a timezone from Olson database or None if timezone cannot be found
-        """
-
-        # Attempt to use abrev to get timezone
-        if timezone_abrev_ in pytz.all_timezones:
-            return timezone_abrev_
-
-        # Attempt to use abrev and country code to get time zone
-        country_tzones = None
-        try:
-            country_tzones = pytz.country_timezones[country_code_]
-        except:
-            pass
-        set_zones = set()
-        if country_tzones is not None and len(country_tzones) > 0:
-            for name in country_tzones:
-                tzone = pytz.timezone(name)
-                for utcoffset, dstoffset, tzabbrev in getattr(tzone, '_transition_info', [[None, None, dt.datetime.now(tzone).tzname()]]):
-                    if tzabbrev.upper() == timezone_abrev_.upper():
-                        set_zones.add(name)
-
-            if len(set_zones) > 0:
-                return min(set_zones, key=len)
-
-            # none matched, at least pick one in the right country
-            return min(country_tzones, key=len)
-
-        # If all else fails, use country to get timezone instead.
-        for name in pytz.all_timezones:
-            if country_.lower() in name.lower():
-                return name
-            
-        return None
 
     # Converts a given 12H time in HH MM SS pp to 24H format
     def convertTime12HTo24H(time_12h: str):
