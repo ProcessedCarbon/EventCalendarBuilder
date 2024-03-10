@@ -124,9 +124,8 @@ class DateTimeManager:
     
     # 2023-05-17 14:00:00+08:00
     # Returns format YYYY-MM-DD HH:MM:SS Z
-    def getDateTime(hour:int, min:int, sec:int, day:int, month:int, year:int)->datetime:
+    def getDateTime(hour:int, min:int, sec:int, day:int, month:int, year:int, tz = ZoneInfo("Singapore"))->datetime:
         # Handle timezone
-        tz = ZoneInfo("Singapore")
         return datetime(year, month, day, hour, min, sec, tzinfo=tz)
     
     # Accepts only format of YYYY-MM-DD HH:MM:SS z for both
@@ -152,6 +151,11 @@ class DateTimeManager:
         
         # Compare times
         return time1 < time2
+    
+    def CompareDates(date1, date2, fmt='%Y-%m-%d'):
+        first = datetime.strptime(date1, fmt)
+        second = datetime.strptime(date2, fmt)
+        return first >= second
     
     def getTimeStamps(timestamps:int):
         return datetime.fromtimestamp(timestamps)

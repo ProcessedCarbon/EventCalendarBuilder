@@ -1,5 +1,6 @@
 # Message box titles
 MISSING_INPUT_TITLE = 'Missing Input!'
+INVALID_INPUT_TITLE = 'Invalid Input!'
 SUCCESS_TITLE = 'Success!'
 FAILED_TITLE = 'Failed!'
 MAX_EVENT_TITLE = 'Max Event Reached!'

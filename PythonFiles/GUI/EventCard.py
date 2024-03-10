@@ -3,13 +3,15 @@ from sys import platform
 import logging
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER, FAILED_TITLE, WARNING_TITLE
+from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER, FAILED_TITLE, WARNING_TITLE, INVALID_INPUT_TITLE, MISSING_INPUT_TITLE, MISSING_EVENT_NAME_INPUT_MSG
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
 import Calendar.Outlook.OutlookInterface as outlook_interface
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, OUTLOOK_CALENDAR, GOOGLE_CALENDAR
 from Calendar.CalendarInterface import CalendarInterface
+from Managers.DateTimeManager import DateTimeManager
+from Managers.TextProcessing import TextProcessingManager
 
 class EventCard:
     def __init__(self, parent, row, event_details:dict, remove_cb, index:int) -> None:
@@ -207,6 +209,10 @@ class EventCard:
                 'Platform': self.event_details['platform'],
             }
 
+            # Handle missing or incorrect input for time fields
+            if self.CheckInputs(input) == False:
+                return
+
             # If no isses then create ics file
             # Process datetime to ics calendar format
             CalendarInterface.AppendStartTime(input=input)
@@ -241,3 +247,25 @@ class EventCard:
             messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully Updated {self.event_details["name"]} on {self.event_details["platform"]} Calendar')
         except Exception as e:
             messagebox.showinfo(title=FAILED_TITLE, message=f'Failed update of {self.event_details["name"]} on {self.event_details["platform"]} Calendar\ndue to\n{e}')
+    
+    def CheckInputs(self, input):
+        # Handle missing or incorrect input for time fields
+        if input['Event'] == '':
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=MISSING_EVENT_NAME_INPUT_MSG)
+            return False
+        elif input['Start_Time'] == "":
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing Start Time field for {input["Event"]}')
+            return False
+        elif input['End_Time'] == "":
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing End Time field for {input["Event"]}')
+            return False
+        elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect Start Time provided for {input["Event"]} with {input["Start_Time"]}')
+            return False
+        elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect End Time provided for {input["Event"]} with {input["End_Time"]}')
+            return False
+        elif DateTimeManager.CompareDates(date1=input['End_Date'], date2=input['Start_Date']) == False:
+            messagebox.showerror(title=INVALID_INPUT_TITLE, message=f'Invalid Dates provided\nStart Date: {input["Start_Date"]}\nEnd Date: {input["End_Date"]}')
+            return False
+        return True

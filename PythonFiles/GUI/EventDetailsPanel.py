@@ -4,13 +4,14 @@ import logging
 from customtkinter import *
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER, MISSING_EVENT_NAME_INPUT_MSG, SCHEDULE_SUCCESS_MSG
+from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER, MISSING_EVENT_NAME_INPUT_MSG, SCHEDULE_SUCCESS_MSG, INVALID_INPUT_TITLE
 from Events.Event import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR
 import GUI.PopupManager as popup_mgr
 from Calendar.CalendarInterface import CalendarInterface
+from Managers.DateTimeManager import DateTimeManager
 
 class EventDetailsPanel:
     def __init__(self, parent, event:Event, remove_cb, dup_cb, row, key:int):
@@ -200,20 +201,7 @@ class EventDetailsPanel:
         input = self.getCurrentInputFieldsInfo()
 
         # Handle missing or incorrect input for time fields
-        if input['Event'] == '':
-            messagebox.showerror(title=MISSING_INPUT_TITLE, message=MISSING_EVENT_NAME_INPUT_MSG)
-            return
-        elif input['Start_Time'] == "":
-            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing Start Time field for {input["Event"]}')
-            return
-        elif input['End_Time'] == "":
-            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing End Time field for {input["Event"]}')
-            return
-        elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
-            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect Start Time provided for {input["Event"]} with {input["Start_Time"]}')
-            return
-        elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
-            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect End Time provided for {input["Event"]} with {input["End_Time"]}')
+        if self.CheckInputs(input) == False:
             return
         
         # If no isses then create ics file
@@ -246,3 +234,25 @@ class EventDetailsPanel:
     
     def Destroy(self):
         self.details_frame.destroy()
+    
+    def CheckInputs(self, input):
+        # Handle missing or incorrect input for time fields
+        if input['Event'] == '':
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=MISSING_EVENT_NAME_INPUT_MSG)
+            return False
+        elif input['Start_Time'] == "":
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing Start Time field for {input["Event"]}')
+            return False
+        elif input['End_Time'] == "":
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Missing End Time field for {input["Event"]}')
+            return False
+        elif TextProcessingManager.CheckStringFormat(input['Start_Time']) == None:
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect Start Time provided for {input["Event"]} with {input["Start_Time"]}')
+            return False
+        elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect End Time provided for {input["Event"]} with {input["End_Time"]}')
+            return False
+        elif DateTimeManager.CompareDates(date1=input['End_Date'], date2=input['Start_Date']) == False:
+            messagebox.showerror(title=INVALID_INPUT_TITLE, message=f'Invalid Dates provided\nStart Date: {input["Start_Date"]}\nEnd Date: {input["End_Date"]}')
+            return False
+        return True
