@@ -12,6 +12,7 @@ from Calendar.CalendarConstants import DEFAULT_CALENDAR, OUTLOOK_CALENDAR, GOOGL
 from Calendar.CalendarInterface import CalendarInterface
 from Managers.DateTimeManager import DateTimeManager
 from Managers.TextProcessing import TextProcessingManager
+import GUI.PopupManager as popup_mgr
 
 class EventCard:
     def __init__(self, parent, row, event_details:dict, remove_cb, index:int) -> None:
@@ -155,14 +156,21 @@ class EventCard:
         self.n_entry.configure(state=state)
         self.desc_entry.configure(state=state)
         self.l_entry.configure(state=state)
-        self.s_d_entry.configure(state=state)
-        self.e_d_entry.configure(state=state)
+        # self.s_d_entry.configure(state=state)
+        # self.e_d_entry.configure(state=state)
         self.st_entry.configure(state=state)
         self.et_entry.configure(state=state)
         self.p_entry.configure(state=state)
         self.r_entry.configure(state=state)
         self.tz_entry.configure(state=state)
-
+        # Bindings
+        if state == 'normal':
+            self.s_d_entry.bind('<1>', lambda event, entry=self.s_d_entry: self.PickDate(entry))
+            self.e_d_entry.bind('<1>', lambda event, entry=self.e_d_entry: self.PickDate(entry))
+        else:
+            self.s_d_entry.unbind('<1>')
+            self.e_d_entry.unbind('<1>')
+        
     def OnEditClick(self):
         self.editable = not self.editable
         state = self.editable == False and 'readonly'  or 'normal'
@@ -248,6 +256,15 @@ class EventCard:
         except Exception as e:
             messagebox.showinfo(title=FAILED_TITLE, message=f'Failed update of {self.event_details["name"]} on {self.event_details["platform"]} Calendar\ndue to\n{e}')
     
+    def PickDate(self, entry):
+        date_window, cal, submit_btn = popup_mgr.CreateDateWindow()
+
+        def GrabDate(entry, date:str, window):
+            GUIInterface.UpdateEntry(entry, date)
+            window.destroy()
+
+        submit_btn.configure(command=lambda: GrabDate(entry, cal.get_date(), date_window))
+
     def CheckInputs(self, input):
         # Handle missing or incorrect input for time fields
         if input['Event'] == '':

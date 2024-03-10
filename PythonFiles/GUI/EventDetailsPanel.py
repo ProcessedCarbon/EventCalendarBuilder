@@ -76,13 +76,11 @@ class EventDetailsPanel:
                                                 entryname="Start Date", 
                                                 entry_state='disabled', 
                                                 placeholder_text='YYYY-MM-DD')
-        s_d_entry.bind('<1>', lambda event, entry=s_d_entry: self.PickDate(entry))
 
         e_d_frame, e_d_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="End Date", 
                                                 entry_state='disabled', 
                                                 placeholder_text='YYYY-MM-DD')
-        e_d_entry.bind('<1>', lambda event, entry=e_d_entry: self.PickDate(entry))
 
         st_frame, st_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="Start Time", 
@@ -108,6 +106,10 @@ class EventDetailsPanel:
         self.recur_option, self.recur_label, self.recur_box = self.CreateDropdownField(values=["None", "Daily", 'Weekly', 'Monthly'], 
                                                                         entryname="Repeated")
         self.recur_box.set(self.event.getRecurring())
+
+        # Bindings
+        s_d_entry.bind('<1>', lambda event, entry=s_d_entry: self.PickDate(entry))
+        e_d_entry.bind('<1>', lambda event, entry=e_d_entry: self.PickDate(entry))
 
         # Grid GUI
         remove_btn.grid(row=0, column=1, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, sticky='e')
