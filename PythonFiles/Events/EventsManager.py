@@ -15,7 +15,7 @@ import Managers.DirectoryManager as directory_manager
 from Managers.DateTimeManager import DateTimeManager
 from Managers.TextProcessing import TextProcessingManager
 from Events.Event import Event
-from GUI.GUIConstants import WARNING_TITLE, NO_CHECKS_MSG, FAILED_TITLE, FAILED_SCHEDULE_MSG
+from GUI.GUIConstants import WARNING_TITLE, NO_CHECKS_MSG, FAILED_TITLE, FAILED_SCHEDULE_MSG, NO_GOOGLE_CONNECTION_MSG, FAILED_ICS_PARSING, NO_OUTLOOK_CONNECTION_MSG
 
 class EventsManager:
     # Directories
@@ -261,12 +261,23 @@ class EventsManager:
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
-            return ''
+            return
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
-
+        
+        # Check if can get any event from ICS
+        if google_event == None:
+            messagebox.showerror(title=FAILED_TITLE, message=FAILED_ICS_PARSING)
+            return
+        
         # Check for existing events
         existing_events = GoogleCalendarInterface.getEvents(time_min=google_event.getStartDate(), 
                                                             time_max=google_event.getUNTILDate())
+        
+        # Check if there are is any connection with google
+        if existing_events == None:
+            messagebox.showerror(title=FAILED_TITLE, message=NO_GOOGLE_CONNECTION_MSG)
+            return
+
         overlapped_events = []
         if len(existing_events) > 0: 
             overlapped_events = GoogleCalendarInterface.EventOverlaps(google_event, existing_events)
@@ -298,12 +309,16 @@ class EventsManager:
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
             return ''
         outlook_event = outlook_interface.parse_ics(filename).event
+
+        # Check if can get any event from ICS
+        if outlook_event == None:
+            messagebox.showerror(title=FAILED_TITLE, message=FAILED_ICS_PARSING)
+            return
+        
         # Check for any pre-existing event
-        filter_param = {
-        '$filter': f"start/dateTime ge {outlook_event['start']['dateTime']} and end/dateTime le {outlook_event['end']['dateTime']}"
-        }
         cal_events ={}
         try: 
+            filter_param = {'$filter': f"start/dateTime ge {outlook_event['start']['dateTime']} and end/dateTime le {outlook_event['end']['dateTime']}"}
             cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
         except: 
             pass
@@ -311,8 +326,8 @@ class EventsManager:
         # Response format
         #(True, {'@odata.context': "", 'value': []})
         if cal_events == {}: 
-            messagebox.showerror(title=FAILED_TITLE, message='Failed to schedule event for [OUTLOOK] due to failed authentication')
-            return ''
+            messagebox.showerror(title=FAILED_TITLE, message=NO_OUTLOOK_CONNECTION_MSG)
+            return
 
         def schedule_outlook_calendar_event():
             response = outlook_interface.send_flask_req(req='create_event', 

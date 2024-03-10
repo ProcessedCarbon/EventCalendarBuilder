@@ -11,6 +11,7 @@ from Calendar.GoogleCalendar.GoogleEvent import GoogleEvent
 from Calendar.CalendarInterface import CalendarInterface
 from Managers.DateTimeManager import DateTimeManager
 import Managers.DirectoryManager as directory_manager
+from GUI.GUIConstants import FAILED_TITLE, NO_GOOGLE_CONNECTION_MSG
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
@@ -118,11 +119,7 @@ class GoogleCalendarInterface:
                             description=description)
 
     # Only expecting 1 event per ics
-    def Parse_ICS(ics:str)->GoogleEvent:
-        if GoogleCalendarInterface.service == None:
-            logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
-            return
-        
+    def Parse_ICS(ics:str)->GoogleEvent:        
         ics_file = CalendarInterface.ReadICSFile(ics)
         for component in ics_file.walk():
             if component.name == "VEVENT":
@@ -144,6 +141,10 @@ class GoogleCalendarInterface:
         return None
     
     def getEvents(calendar_id='primary', time_min=None, time_max=None)->list[GoogleEvent]:
+        if GoogleCalendarInterface.service == None:
+            logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
+            return None
+        
         """Get events from a specific calendar within a time range."""
         existing = GoogleCalendarInterface.service.events().list(calendarId=calendar_id, timeMin=time_min, timeMax=time_max).execute().get('items', [])
         existing_google_events = [GoogleEvent(event=x['summary'],

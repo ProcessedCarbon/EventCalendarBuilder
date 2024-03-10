@@ -11,6 +11,9 @@ FAILED_SCHEDULE_MSG = 'Failed to schedule event for reasons'
 MISSING_EVENT_NAME_INPUT_MSG ='Missing Event Name field!'
 SCHEDULE_SUCCESS_MSG ='Successfully schedule event!'
 NO_TEXT_FOUND_MSG = 'No text found!\nPlease input text'
+NO_GOOGLE_CONNECTION_MSG = 'No Google connection established and authenticated.'
+FAILED_ICS_PARSING = 'Failed to get any events from ICS file.'
+NO_OUTLOOK_CONNECTION_MSG = 'No Outlook connection established and authenticated.'
 
 # Main Window
 MAIN_WINDOW_ASPECT = 0.85
