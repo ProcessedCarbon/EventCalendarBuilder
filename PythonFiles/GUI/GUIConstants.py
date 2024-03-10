@@ -15,6 +15,7 @@ NO_TEXT_FOUND_MSG = 'No text found!\nPlease input text'
 NO_GOOGLE_CONNECTION_MSG = 'No Google connection established and authenticated.'
 FAILED_ICS_PARSING = 'Failed to get any events from ICS file.'
 NO_OUTLOOK_CONNECTION_MSG = 'No Outlook connection established and authenticated.'
+ASK_REMOVE_EVENT_MSG = 'Are you sure you wish to remove this event?'
 
 # Main Window
 MAIN_WINDOW_ASPECT = 0.85

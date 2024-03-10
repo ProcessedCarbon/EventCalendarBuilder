@@ -3,7 +3,7 @@ from sys import platform
 import logging
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER, FAILED_TITLE, WARNING_TITLE, INVALID_INPUT_TITLE, MISSING_INPUT_TITLE, MISSING_EVENT_NAME_INPUT_MSG, NO_GOOGLE_CONNECTION_MSG, NO_OUTLOOK_CONNECTION_MSG, FAILED_ICS_PARSING
+from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER, FAILED_TITLE, WARNING_TITLE, INVALID_INPUT_TITLE, MISSING_INPUT_TITLE, MISSING_EVENT_NAME_INPUT_MSG, NO_GOOGLE_CONNECTION_MSG, NO_OUTLOOK_CONNECTION_MSG, FAILED_ICS_PARSING, ASK_REMOVE_EVENT_MSG
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
@@ -156,8 +156,6 @@ class EventCard:
         self.n_entry.configure(state=state)
         self.desc_entry.configure(state=state)
         self.l_entry.configure(state=state)
-        # self.s_d_entry.configure(state=state)
-        # self.e_d_entry.configure(state=state)
         self.st_entry.configure(state=state)
         self.et_entry.configure(state=state)
         self.p_entry.configure(state=state)
@@ -178,36 +176,40 @@ class EventCard:
 
     def RemoveFromCalender(self)->bool:
         try:
-            if self.event_details['platform'] == DEFAULT_CALENDAR: # Should not occur as Default calendar methods are not saved locally
-                if platform == 'darwin': 
-                    cal_mac.RemoveMacCalendarEvents(self.event_details['name'])
-                else: 
+            res = messagebox.askokcancel(title=WARNING_TITLE, message=ASK_REMOVE_EVENT_MSG)
+
+            if res:
+                if self.event_details['platform'] == DEFAULT_CALENDAR: # Should not occur as Default calendar methods are not saved locally
+                    if platform == 'darwin': 
+                        cal_mac.RemoveMacCalendarEvents(self.event_details['name'])
+                    else: 
+                        removed = None
+                        response = None
+                        removed, response = outlook_interface.send_flask_req('delete_event', json_data={'event_id':self.event_details['id']})
+                        if removed == False and response == None:
+                            messagebox.showerror(title=FAILED_TITLE, message=NO_OUTLOOK_CONNECTION_MSG)
+                            return False
+                
+                elif self.event_details['platform'] == GOOGLE_CALENDAR:
+                    removed, reason = GoogleCalendarInterface.DeleteEvent(self.event_details['id'])
+                    if removed == False and reason == '':
+                        messagebox.showerror(title=FAILED_TITLE, message=NO_GOOGLE_CONNECTION_MSG)
+                        return False
+                
+                elif self.event_details['platform'] == OUTLOOK_CALENDAR:
                     removed = None
                     response = None
-                    removed, response = outlook_interface.send_flask_req('delete_event', json_data={'event_id':self.event_details['id']})
+                    try:
+                        removed, response = outlook_interface.send_flask_req('delete_event', json_data={'event_id':self.event_details['id']})
+                    except:
+                        pass
                     if removed == False and response == None:
                         messagebox.showerror(title=FAILED_TITLE, message=NO_OUTLOOK_CONNECTION_MSG)
                         return False
-            
-            elif self.event_details['platform'] == GOOGLE_CALENDAR:
-                removed, reason = GoogleCalendarInterface.DeleteEvent(self.event_details['id'])
-                if removed == False and reason == '':
-                    messagebox.showerror(title=FAILED_TITLE, message=NO_GOOGLE_CONNECTION_MSG)
-                    return False
-            
-            elif self.event_details['platform'] == OUTLOOK_CALENDAR:
-                removed = None
-                response = None
-                try:
-                    removed, response = outlook_interface.send_flask_req('delete_event', json_data={'event_id':self.event_details['id']})
-                except:
-                    pass
-                if removed == False and response == None:
-                    messagebox.showerror(title=FAILED_TITLE, message=NO_OUTLOOK_CONNECTION_MSG)
-                    return False
 
-            messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully removed {self.event_details["name"]} from {self.event_details["platform"]} Calendar')
-            return True            
+                messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully removed {self.event_details["name"]} from {self.event_details["platform"]} Calendar')
+                return True
+            return False            
         except:
             messagebox.showinfo(title=FAILED_TITLE, message=f'Failed removal of {self.event_details["name"]}')
             return False
