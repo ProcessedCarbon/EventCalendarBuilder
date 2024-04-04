@@ -88,13 +88,13 @@ class EventCard:
         GUIInterface.CreateGrid(self.button_frame, rows=[1], cols=[1, 1, 1])
 
         self.remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(index), 
-                                                    text='Remove')
+                                                    text='Remove this event')
         
         self.edit_btn = GUIInterface.CreateButton(on_click=self.OnEditClick, 
-                                                    text='Edit')
+                                                    text='Edit this event')
         
         self.update_btn = GUIInterface.CreateButton(on_click=self.UpdateOnCalendar, 
-                                                    text='Update')
+                                                    text='Update this event')
         GUIInterface.current_frame = tmp
 
         # Update entries

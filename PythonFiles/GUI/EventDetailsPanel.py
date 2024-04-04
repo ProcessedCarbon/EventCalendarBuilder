@@ -57,7 +57,7 @@ class EventDetailsPanel:
         # Buttons
         remove_btn = GUIInterface.CreateButton(on_click=lambda:self.remove_cb(self.key), text='X', width=50)
         dup_btn = GUIInterface.CreateButton(on_click=lambda:self.dup_cb(self.event.getId()), text='+', width=40)
-        schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule')
+        schedule_btn = GUIInterface.CreateButton(on_click=self.ScheduleEvent, text='Schedule this event')
 
         # Input
         e_frame, e_entry = self.CreateEntryField(detail_entry_width, 

@@ -33,7 +33,7 @@ class SchedulePage(Page):
                                 cols=[1])
 
         # Create Event Button
-        create_event = GUIInterface.CreateButton(on_click=self.CreateEventButton, text='Create')
+        create_event = GUIInterface.CreateButton(on_click=self.CreateEventButton, text='Create New Event')
 
         # Grid elements
         button.grid(row=0, column=0, sticky='nw')

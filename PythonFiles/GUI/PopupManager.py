@@ -35,7 +35,7 @@ def CreateDateWindow(size='450x450'):
                 othermonthwebackground=bg,)
     cal.grid(row=0, column=0, sticky='nsew',pady=10, padx=10)
 
-    submit_btn = GUIInterface.CreateButton(on_click=None, text='select')
+    submit_btn = GUIInterface.CreateButton(on_click=None, text='confirm')
     submit_btn.grid(row=1, column=0, pady=10, padx=10)
 
     # Prevent clicking and focus of main window

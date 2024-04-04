@@ -37,15 +37,13 @@ class MainPage(Page):
                 self.button_frame.rowconfigure(2, weight=1)
 
                 # Buttons
-                self.submit_button = GUIInterface.CreateButton(text="Submit", on_click=lambda:self.Submit(self.main_page_textbox))
-                self.go_to_schedule_btn = GUIInterface.CreateButton(text='Go To Schedule', on_click=lambda:PageManager.SwitchPages(1))
-                self.upload_file_btn = GUIInterface.CreateButton(text='Upload File', on_click=self.OnUpload)
+                self.submit_button = GUIInterface.CreateButton(text="Submit Text", on_click=lambda:self.Submit(self.main_page_textbox))
+                self.upload_file_btn = GUIInterface.CreateButton(text='Upload File To Read Text', on_click=self.OnUpload)
 
                 # Grid GUI
                 self.main_page_textbox.grid(row=1, column=1, sticky='nsew')
                 self.button_frame.grid(row=2, column=1, sticky='nsew')
                 self.submit_button.grid(row=1, column=0)
-                self.go_to_schedule_btn.grid(row=1, column=1)
                 self.upload_file_btn.grid(row=1, column=2)
 
                 GUIInterface.current_frame = tmp
@@ -60,22 +58,20 @@ class MainPage(Page):
                 logging.warning(f"[{__name__}] MISSING TEXTBOX REFERENCE")
 
         def Submit(self, textbox):
-                success = self.ReadAndProcessText(textbox)
-                if success:
-                        PageManager.SwitchPages(1) 
+                self.ReadAndProcessText(textbox)
+                PageManager.SwitchPages(1) 
 
         def ReadAndProcessText(self,textbox)->bool:
                 t = GUIInterface.RetrieveCurrentInputFromTextbox(textbox)
 
                 if t == "" or t == " " or t == "\n":
-                        messagebox.showinfo(title=WARNING_TITLE, message=NO_TEXT_FOUND_MSG)
-                        return False
+                        return
 
                 t.strip("\n").strip()
                 events = NERInterface.GetEntitiesFromText(text=t)
                 p_events = EventsManager.ProcessEvents(events)
                 EventsManager.AddEvents(events=p_events)
-                return True
+                return
         
         def OnUpload(self):
                 eml_file_path = filedialog.askopenfilename(filetypes=[("EML Files", "*.eml")])
