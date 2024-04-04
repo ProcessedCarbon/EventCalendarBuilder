@@ -43,8 +43,10 @@ class GoogleCalendarInterface:
         try:
             GoogleCalendarInterface.service = build("calendar", 'v3', credentials = GoogleCalendarInterface.creds)
             logging.info(f"[{__name__}] CONNECTION SUCCESSFUL")
+            return True
         except HttpError as error:
             logging.error(f"[{__name__}] CONNECTION FAILURE WITH {error}")
+            return False
 
     # Calendar event query
     def GetUpcomingCalendarEvent(count: int):

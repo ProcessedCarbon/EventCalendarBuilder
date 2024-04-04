@@ -13,8 +13,10 @@ MISSING_EVENT_NAME_INPUT_MSG ='Missing Event Name field!'
 SCHEDULE_SUCCESS_MSG ='Successfully schedule event!'
 NO_TEXT_FOUND_MSG = 'No text found!\nPlease input text'
 NO_GOOGLE_CONNECTION_MSG = 'No Google connection established and authenticated.'
+HAS_GOOGLE_CONNECTION_MSG = 'Google connection successfully established!'
 FAILED_ICS_PARSING = 'Failed to get any events from ICS file.'
 NO_OUTLOOK_CONNECTION_MSG = 'No Outlook connection established and authenticated.'
+HAS_OUTLOOK_CONNECTION_MSG = 'Outlook connection successfully established!'
 ASK_REMOVE_EVENT_MSG = 'Are you sure you wish to remove this event?'
 
 # Main Window

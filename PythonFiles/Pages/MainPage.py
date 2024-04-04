@@ -7,9 +7,8 @@ from NER.NERInterface import NERInterface
 from GUI.MainAppWindow import MainAppWindow
 from Events.EventsManager import EventsManager
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import TEXT_BOX_MODIFIER, WARNING_TITLE, NO_TEXT_FOUND_MSG, FAILED_TITLE, SUCCESS_TITLE
+from GUI.GUIConstants import TEXT_BOX_MODIFIER, FAILED_TITLE, SUCCESS_TITLE
 import Managers.DirectoryManager as dir_manager
-from Managers.TextProcessing import TextProcessingManager
 
 class MainPage(Page):
         def __init__(self): 

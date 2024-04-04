@@ -22,13 +22,13 @@ SCOPES = "openid User.Read Calendars.ReadWrite"
 
 TOKEN_PATH = directory_manager.getCurrentFileDirectory(__file__)
 
+auth = False
+auth_event = threading.Event()
+
 @APP.route('/')
 def login():
-    # Generate the full authorization endpoint on Microsoft's identity platform
-    authorization_url = f"{AUTHORITY_URL}/oauth2/v2.0/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&response_mode=query&scope={SCOPES}&state={uuid4()}"
-
     # Open the browser for authentication
-    webbrowser.open(authorization_url)
+    webbrowser.open(f"{AUTHORITY_URL}/oauth2/v2.0/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&response_mode=query&scope={SCOPES}&state={uuid4()}")
 
     return "Authentication started. Please check your browser."
 
@@ -50,6 +50,10 @@ def callback():
     }
     token_r = requests.post(token_url, data=token_data)
     directory_manager.WriteJSON(TOKEN_PATH, 'api_token_access.json', token_r.json())
+    logging.info('ESTABLISHED CONNECTION TO OUTLOOK API')
+    global auth
+    auth = True
+    auth_event.set()
     return 'Authentication Successful can close browser'
 
 @APP.route('/create_event')
@@ -163,5 +167,4 @@ def run():
 
 def start_flask():
     logging.info('ESTABLISHING CONNECTION TO OUTLOOK API THROUGH FLASK')
-    flask_thread = threading.Thread(target=run)
-    flask_thread.start()
+    threading.Thread(target=run).start()

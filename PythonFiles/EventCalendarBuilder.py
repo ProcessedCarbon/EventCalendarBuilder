@@ -27,10 +27,12 @@ from Pages.ManageEventPage import ManageEventPage
 from GUI.AppToolbar import AppToolbar
 
 LOG_PATH = Path('./app.log')
-ALLOW_GOOGLE = False
-ALLOW_OUTLOOK = False
+    
+if __name__ == "__main__":
+    if os.path.exists(LOG_PATH):
+        os.remove(LOG_PATH)
+    logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def client_app():
     logging.info('App Starting.....')
     gui = GUIInterface()
     GUIInterface.SetDefaultColorTheme('Oceanix.json')
@@ -48,15 +50,3 @@ def client_app():
     # Toolbar
     AppToolbar() # Must be called here after all pages are created as it requires a list[Page] of all pages
     gui.MainLoop()
-
-if __name__ == "__main__":
-    if os.path.exists(LOG_PATH):
-        os.remove(LOG_PATH)
-    logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
-    if ALLOW_GOOGLE: 
-        GoogleCalendarInterface.ConnectToGoogleCalendar()
-    if ALLOW_OUTLOOK: 
-        outlook_interface.start_flask()
-
-    client_app()
