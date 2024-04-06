@@ -24,9 +24,10 @@ def WriteFile(dir_path:Path, file_name:str, content, write_type:['w', 'wb']='w')
 
 def ReadFile(dir_path:Path, file_name:str, read_type:['r', 'rb']='r'):
     try:
-        with open(Path(os.path.join(dir_path, file_name)), read_type) as file:
-            content = file.read()
-        return content
+        return FileRead(Path(os.path.join(dir_path, file_name)), read_type)
+        # with open(Path(os.path.join(dir_path, file_name)), read_type) as file:
+        #     content = file.read()
+        # return content
     except Exception as e:
         logging.error(f'[{__name__}] FAILED TO READ {file_name} TO {dir_path}')
         return False
@@ -128,3 +129,8 @@ def getCurrentFileDirectory(file):
 
 def checkPathExists(path:Path)->bool:
     return os.path.exists(path)
+
+def FileRead(file_path, read_type:['r', 'rb']='r'):
+    with open(file_path, read_type) as file:
+        content = file.read()
+    return content

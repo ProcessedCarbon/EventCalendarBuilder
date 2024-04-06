@@ -1,6 +1,7 @@
 from tkinter import messagebox
 import logging
-from customtkinter import filedialog    
+from customtkinter import filedialog
+import os    
 
 from Pages.Page import PageManager, Page
 from NER.NERInterface import NERInterface
@@ -73,13 +74,17 @@ class MainPage(Page):
                 return
         
         def OnUpload(self):
-                eml_file_path = filedialog.askopenfilename(filetypes=[("EML Files", "*.eml")])
-                if eml_file_path:
+                file_path = filedialog.askopenfilename(filetypes=[("EML Files", "*.eml"), ("Text Files", ".txt")])
+                if file_path:
+                        _, file_extension = os.path.splitext(file_path)
                         try:
                                 GUIInterface.ClearTextBox(self.main_page_textbox)
-                                content, subject, sender, recipients, date = dir_manager.ReadEMLFile(eml_file_path)
+                                if file_extension.lower() == ".eml":
+                                        content, subject, sender, recipients, date = dir_manager.ReadEMLFile(file_path)
+                                else:
+                                        content = dir_manager.FileRead(file_path)
                                 GUIInterface.UpdateTextBox(textbox=self.main_page_textbox, state='normal', text=content)
-                                messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully read .eml file with subject:\n{subject}')
+                                messagebox.showinfo(title=SUCCESS_TITLE, message=f'Successfully read file')
                         except Exception as e:
                                 messagebox.showinfo(title=FAILED_TITLE, message=f'Failed to read file due to {e}')
-                                logging.error(f'[{__name__}] FAILED TO READ .eml FILE DUE TO {e}')
+                                logging.error(f'[{__name__}] FAILED TO READ FILE DUE TO {e}')
