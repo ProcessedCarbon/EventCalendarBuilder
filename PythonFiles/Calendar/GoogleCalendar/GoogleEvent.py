@@ -6,6 +6,7 @@ class GoogleEvent:
                 tzstart: str, 
                 tzend:str, 
                 rrule:str,
+                alert:int,
                 description=''
                 ):
         
@@ -25,6 +26,12 @@ class GoogleEvent:
             'recurrence': [
                 rrule
             ],
+            'reminders': {
+                'useDefault': False,
+                'overrides': [
+                    {'method': 'popup', 'minutes': alert},  # 15 minutes before the event
+                ],
+            },
         }
 
     def __repr__(self):
@@ -80,3 +87,6 @@ class GoogleEvent:
             return _until
         else:
             return self.getEndDate()
+    
+    def getAlert(self)->int:
+        return self.event['reminders']['overrides'][0]['minutes']

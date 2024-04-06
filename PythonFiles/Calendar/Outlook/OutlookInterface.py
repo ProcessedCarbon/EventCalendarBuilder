@@ -5,6 +5,7 @@ import webbrowser
 import threading
 import logging
 from werkzeug.middleware.proxy_fix import ProxyFix
+import re
 
 from Calendar.CalendarInterface import CalendarInterface
 from Calendar.Outlook.OutlookEvent import OutlookEvent
@@ -131,21 +132,37 @@ def update_event():
 # Only expecting 1 event per .ics file
 def parse_ics(ics)->OutlookEvent:
     ics_file = CalendarInterface.ReadICSFile(ics)
+    vEvent = False
+    alert = None
+    
     for component in ics_file.walk():
         if component.name == "VEVENT":
             rule=component.get('rrule').to_ical().decode(errors="ignore") if component.get('rrule') is not None else ''
             s_dt = component.get('dtstart').dt
             e_dt = component.get('dtend').dt
-            return OutlookEvent(name=component.get('name'),
-                                location=component.get("location"),
-                                dtstart=s_dt.isoformat(),
-                                dtend=e_dt.isoformat(),
-                                tzstart='UTC',
-                                tzend='UTC',
-                                rrule=rule,
-                                description=component.get('description'))
-    return None
+            name = component.get('name')
+            location = component.get("location")
+            description = component.get('description')
+            vEvent = True
 
+        if component.name == "VALARM":
+                # Use regular expressions to extract the trigger time
+                match = re.search(r'(\d{2}:\d{2}:\d{2})', str(component.get('trigger')))
+                if match:
+                    trigger_time = match.group(0)[3:5]
+                    diff = 60 - int(trigger_time)
+                    alert = diff if (diff != 0) else 60
+
+    return OutlookEvent(name=name,
+                        location=location,
+                        dtstart=s_dt.isoformat(),
+                        dtend=e_dt.isoformat(),
+                        tzstart='UTC',
+                        tzend='UTC',
+                        rrule=rule,
+                        description=description,
+                        alert=alert if alert != None else 10) if vEvent else None
+    
 # Require this to go from Flask -> Outlook
 # send_flask_req will always return true if any sort of response is received
 def send_flask_req(req, json_data={}, param_data={})->[bool, dict]:

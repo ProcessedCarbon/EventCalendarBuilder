@@ -1,9 +1,10 @@
 from tkinter import messagebox
 from sys import platform
 import logging
+import pytz
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER, FAILED_TITLE, WARNING_TITLE, INVALID_INPUT_TITLE, MISSING_INPUT_TITLE, MISSING_EVENT_NAME_INPUT_MSG, NO_GOOGLE_CONNECTION_MSG, NO_OUTLOOK_CONNECTION_MSG, FAILED_ICS_PARSING, ASK_REMOVE_EVENT_MSG
+from GUI.GUIConstants import SUCCESS_TITLE, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_CARD_GAP, EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER, FAILED_TITLE, WARNING_TITLE, INVALID_INPUT_TITLE, MISSING_INPUT_TITLE, MISSING_EVENT_NAME_INPUT_MSG, NO_GOOGLE_CONNECTION_MSG, NO_OUTLOOK_CONNECTION_MSG, FAILED_ICS_PARSING, ASK_REMOVE_EVENT_MSG, ALERT_OPTIONS, RECURRING_OPTIONS
 from Events.EventsManager import EventsManager
 import Calendar.CalendarMacInterface as cal_mac
 from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
@@ -68,18 +69,17 @@ class EventCard:
         self.et_frame, self.et_label, self.et_entry = GUIInterface.CreateEntryWithLabel(label= "End Time:",
                                                                                         entry_width=attribute_width, 
                                                                                         entry_state='disabled')
-        # platform
-        self.p_frame, self.p_label, self.p_entry = GUIInterface.CreateEntryWithLabel(label= "Platform:",
-                                                                                    entry_width=attribute_width, 
-                                                                                    entry_state='disabled')
-        # recurrence
-        self.r_frame, self.r_label, self.r_entry = GUIInterface.CreateEntryWithLabel(label= "Repeated:",
-                                                                                    entry_width=attribute_width, 
-                                                                                    entry_state='disabled')
-        # timezone
-        self.tz_frame, self.tz_label, self.tz_entry = GUIInterface.CreateEntryWithLabel(label= "Timezone:",
-                                                                                        entry_width=attribute_width, 
-                                                                                        entry_state='disabled')
+
+        self.tz_frame, self.tz_label, self.tz_box = GUIInterface.CreateOptionMenuWithLabel(label="Timezone:", dropdown=pytz.all_timezones)
+        self.tz_box.configure(state='disabled')
+
+        self.recur_frame, self.recur_label, self.recur_box = GUIInterface.CreateOptionMenuWithLabel(label="Repeated:", dropdown=RECURRING_OPTIONS)
+        self.recur_box.configure(state='disabled')
+
+        # Alert Options
+        self.alert_frame, self.alert_label, self.alert_box = GUIInterface.CreateOptionMenuWithLabel(label="Alert (minutes):", dropdown=ALERT_OPTIONS)
+        self.alert_box.configure(state='disabled')
+
         # Buttons
         tmp = GUIInterface.current_frame
         self.button_frame = GUIInterface.CreateFrame(GUIInterface.current_frame, 
@@ -108,9 +108,10 @@ class EventCard:
         self.e_d_frame.grid(row=5, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         self.st_frame.grid(row=6, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         self.et_frame.grid(row=7, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.p_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.r_frame.grid(row=9, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.tz_frame.grid(row=10, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+
+        self.tz_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.recur_frame.grid(row=9, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.alert_frame.grid(row=10, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # Buttons
         self.button_frame.grid(row=0, column=0,  sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
@@ -137,9 +138,10 @@ class EventCard:
         GUIInterface.UpdateEntry(self.e_d_entry, self.event_details['e_date'])
         GUIInterface.UpdateEntry(self.st_entry, self.event_details['start_time'])
         GUIInterface.UpdateEntry(self.et_entry, self.event_details['end_time'])
-        GUIInterface.UpdateEntry(self.p_entry, self.event_details['platform'])
-        GUIInterface.UpdateEntry(self.r_entry, self.event_details['recurring'])
-        GUIInterface.UpdateEntry(self.tz_entry, self.event_details['timezone'])        
+
+        self.tz_box.set(self.event_details['timezone'])
+        self.recur_box.set(self.event_details['recurring'])
+        self.alert_box.set(self.event_details['alert']) 
     
     def UpdateEventDetails(self):
         self.event_details['name'] = self.n_entry.get()
@@ -149,18 +151,20 @@ class EventCard:
         self.event_details['e_date'] = self.e_d_entry.get()
         self.event_details['start_time'] = self.st_entry.get()
         self.event_details['end_time'] = self.et_entry.get()
-        self.event_details['platform'] = self.p_entry.get()
-        self.event_details['recurring'] = self.r_entry.get()
-    
+        self.event_details['timezone'] = self.tz_box.get()
+        self.event_details['recurring'] = self.recur_box.get()
+        self.event_details['alert'] = self.alert_box.get()
+
     def ChangeEntryState(self, state):
         self.n_entry.configure(state=state)
         self.desc_entry.configure(state=state)
         self.l_entry.configure(state=state)
         self.st_entry.configure(state=state)
         self.et_entry.configure(state=state)
-        self.p_entry.configure(state=state)
-        self.r_entry.configure(state=state)
-        self.tz_entry.configure(state=state)
+        self.tz_box.configure(state=state)
+        self.recur_box.configure(state=state)
+        self.alert_box.configure(state=state)
+
         # Bindings
         if state == 'normal':
             self.s_d_entry.bind('<1>', lambda event, entry=self.s_d_entry: self.PickDate(entry))
@@ -230,9 +234,10 @@ class EventCard:
                 'End_Date': self.event_details['e_date'],
                 'Start_Time': self.event_details['start_time'],
                 'End_Time': self.event_details['end_time'],
-                'Timezone': 'Asia/Singapore',
+                'Timezone': self.event_details['timezone'],
                 'Repeated': self.event_details['recurring'],
                 'Platform': self.event_details['platform'],
+                'Alert': self.event_details['alert'],
             }
 
             # Handle missing or incorrect input for time fields

@@ -12,7 +12,8 @@ class Event:
                 platform=DEFAULT_CALENDAR,
                 recurring='None',
                 description='',
-                tz='Asia/Singapore') -> None:
+                tz='Asia/Singapore',
+                alert=10) -> None:
         
         self.id = id
         self.name = name
@@ -26,6 +27,7 @@ class Event:
         self.description = description
         self.tz = tz
         self.copy = 0
+        self.alert = alert
     
     def getId(self)->str:
         return self.id
@@ -59,7 +61,10 @@ class Event:
     
     def getTimezone(self)->str:
         return self.tz
-
+    
+    def getAlert(self)->int:
+        return self.alert
+    
     def getEventDict(self):
         return {
             "id" : self.id,
@@ -73,6 +78,7 @@ class Event:
             'recurring':self.recurring,
             'description': self.description,
             'timezone': self.tz,
+            'alert': self.alert
         }
     
     def getCopy(self)->int:
@@ -113,3 +119,6 @@ class Event:
 
     def setCopy(self, num: int):
         self.copy = num
+
+    def setAlert(self, minutes:int):
+        self.alert = minutes

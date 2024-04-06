@@ -8,8 +8,6 @@ MANAGERS AND INTERFACES
 '''
 from GUI.GUIInterface import GUIInterface
 from Pages.PageManager import PageManager
-from Calendar.GoogleCalendar.GoogleCalendarInterface import GoogleCalendarInterface
-import Calendar.Outlook.OutlookInterface as outlook_interface
 from Events.EventsManager import EventsManager
 
 '''

@@ -1,5 +1,5 @@
 import icalendar
-from icalendar import Calendar, Event, vCalAddress, vText
+from icalendar import Calendar, Event, vCalAddress, vText, Alarm
 from pathlib import Path
 from datetime import timedelta
 from uuid import uuid4
@@ -23,7 +23,7 @@ class CalendarInterface:
         
     def CreateICSEvent(e_name, e_description, s_datetime, e_datetime,duration,
                     e_organizer_addr="", e_organizer_name="", e_organizer_role="",
-                    e_location="", e_priority=5, rrule={}, tz='Asia/Singapore'):
+                    e_location="", e_alert=60, rrule={}, tz='Asia/Singapore'):
         
         # Add subcomponents
         event = Event()
@@ -48,7 +48,12 @@ class CalendarInterface:
         event['location'] = vText(e_location)
         
         event['uid'] = uuid4()
-        event.add('priority', e_priority)
+
+        # Create a reminder e_alert minutes before the event
+        alarm = Alarm()
+        alarm.add('action', 'DISPLAY')
+        alarm.add('trigger', timedelta(minutes=-(e_alert)))
+        event.add_component(alarm)
         
         # Add the event to the calendar
         CalendarInterface._cal.add_component(event)

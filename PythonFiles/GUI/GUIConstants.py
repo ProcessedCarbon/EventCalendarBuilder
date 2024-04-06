@@ -31,6 +31,8 @@ APP_TOOLBAR_GAP_Y = 10
 
 # Events Detail/ Events Card
 EVENT_ROW_GAP = 10
+ALERT_OPTIONS = ['15', '30', '45', '60']
+RECURRING_OPTIONS = ["None", "Daily", 'Weekly', 'Monthly']
 
 # Event Detail Panel
 EVENT_DETAILS_PANEL_ROWS = 12

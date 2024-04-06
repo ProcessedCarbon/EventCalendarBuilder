@@ -3,7 +3,7 @@
 class OutlookEvent():
     def __init__(self, 
                 name:str, location:str,  dtstart:str, rrule:str, description: str,
-                dtend:str, tzstart:str, tzend:str, isonline=False) -> None:
+                dtend:str, tzstart:str, tzend:str, alert:int, isonline=False) -> None:
         
         self.name = name
         self.location = location
@@ -14,6 +14,7 @@ class OutlookEvent():
         self.isonline = isonline
         self.rrule = rrule
         self.description = description
+        self.alert = alert
         
         self.event = {
             "subject": name,
@@ -33,6 +34,8 @@ class OutlookEvent():
                 "displayName":location
             },
             "isOnlineMeeting": isonline,
+            
+            "reminderMinutesBeforeStart": alert
             }
         self.reccurence_pattern = self.getRecurrencePatternFromRRULE(rrule=self.rrule)
         if self.reccurence_pattern != {}: self.event['recurrence'] = self.reccurence_pattern
@@ -64,6 +67,9 @@ class OutlookEvent():
     
     def get_descriptuon(self):
         return self.description
+    
+    def get_alert(self):
+        return self.alert
 
     # Assuming RRULES come in the following format
     # FREQ=DAILY;INTERVAL=10;COUNT=5 

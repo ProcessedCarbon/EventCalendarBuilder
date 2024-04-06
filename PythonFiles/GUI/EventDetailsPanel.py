@@ -4,7 +4,7 @@ import logging
 from customtkinter import *
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER, MISSING_EVENT_NAME_INPUT_MSG, SCHEDULE_SUCCESS_MSG, INVALID_INPUT_TITLE
+from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER, MISSING_EVENT_NAME_INPUT_MSG, SCHEDULE_SUCCESS_MSG, INVALID_INPUT_TITLE, ALERT_OPTIONS, RECURRING_OPTIONS
 from Events.Event import Event
 from Events.EventsManager import EventsManager
 from Managers.TextProcessing import TextProcessingManager
@@ -100,12 +100,15 @@ class EventDetailsPanel:
         self.tz_frame, self.tz_label, self.tz_box = self.CreateDropdownField(values=pytz.all_timezones, entryname="Timezone")
         self.tz_box.set('Asia/Singapore')
 
-        self.calendars_frame, self.calendar_label, self.calendar_box = self.CreateDropdownField(values=[DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR], 
-                                                                                entryname="Calendar")
+        self.calendars_frame, self.calendar_label, self.calendar_box = self.CreateDropdownField(values=[DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR], entryname="Calendar")
 
-        self.recur_option, self.recur_label, self.recur_box = self.CreateDropdownField(values=["None", "Daily", 'Weekly', 'Monthly'], 
-                                                                        entryname="Repeated")
+        self.recur_frame, self.recur_label, self.recur_box = self.CreateDropdownField(values=RECURRING_OPTIONS, entryname="Repeated")
         self.recur_box.set(self.event.getRecurring())
+
+        # Alert Options
+        self.alert_frame, self.alert_label, self.alert_box = self.CreateDropdownField(values=ALERT_OPTIONS, entryname="Alert")
+        self.alert_label.configure(text=f"{self.alert_label.cget('text').split(':')[0]} (minutes):")
+        self.alert_box.set('30')
 
         # Bindings
         s_d_entry.bind('<1>', lambda event, entry=s_d_entry: self.PickDate(entry))
@@ -128,7 +131,8 @@ class EventDetailsPanel:
         # Under drop down frame
         self.tz_frame.grid(row=0, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
         self.calendars_frame.grid(row=1, column=0, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
-        self.recur_option.grid(row=1, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        self.recur_frame.grid(row=1, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        self.alert_frame.grid(row=0, column=0, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
 
         GUIInterface.current_frame = tmp_frame
 
@@ -143,8 +147,10 @@ class EventDetailsPanel:
         self.event.set_E_Date(details['End_Date'])
         self.event.setStart_Time(details['Start_Time'])
         self.event.setEnd_Time(details['End_Time'])
+
         self.event.setTimezone(tz=self.tz_box.get())
         self.event.setRecurring(recur=self.recur_box.get())
+        self.event.setAlert(minutes=int(self.alert_box.get()))
 
     def UpdateInputFields(self):
         GUIInterface.UpdateEntry(self.details_entries["Event"], self.event.getName())

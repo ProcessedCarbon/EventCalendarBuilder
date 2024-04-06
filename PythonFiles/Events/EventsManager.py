@@ -259,11 +259,12 @@ class EventsManager:
             
     def ScheduleGoogleCalendar(event, schedule_cb):
         filename = EventsManager.CreateICSFileFromInput(event)
+
         if filename == None:
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
             return
         google_event = GoogleCalendarInterface.Parse_ICS(filename)
-        
+
         # Check if can get any event from ICS
         if google_event == None:
             messagebox.showerror(title=FAILED_TITLE, message=FAILED_ICS_PARSING)
@@ -304,6 +305,10 @@ class EventsManager:
             schedule_google_calendar_event()
 
     def ScheduleOutlookCalendar(event, schedule_cb):
+        if outlook_interface.auth == False:
+            messagebox.showerror(title=FAILED_TITLE, message=NO_OUTLOOK_CONNECTION_MSG)
+            return
+
         filename = EventsManager.CreateICSFileFromInput(event)
         if filename == None:
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
@@ -325,9 +330,6 @@ class EventsManager:
 
         # Response format
         #(True, {'@odata.context': "", 'value': []})
-        if cal_events == {}: 
-            messagebox.showerror(title=FAILED_TITLE, message=NO_OUTLOOK_CONNECTION_MSG)
-            return
 
         def schedule_outlook_calendar_event():
             response = outlook_interface.send_flask_req(req='create_event', 
@@ -379,5 +381,6 @@ class EventsManager:
                                                     e_datetime=ics_e,
                                                     e_location=location,
                                                     rrule=rrule,
-                                                    duration=hours)
+                                                    duration=hours,
+                                                    e_alert=int(event['Alert']))
         return file_name

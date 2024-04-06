@@ -6,6 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import logging
+import re
 
 from Calendar.GoogleCalendar.GoogleEvent import GoogleEvent
 from Calendar.CalendarInterface import CalendarInterface
@@ -123,6 +124,9 @@ class GoogleCalendarInterface:
     # Only expecting 1 event per ics
     def Parse_ICS(ics:str)->GoogleEvent:        
         ics_file = CalendarInterface.ReadICSFile(ics)
+        vEvent = False
+        alert = None
+
         for component in ics_file.walk():
             if component.name == "VEVENT":
                 start_datetime = component.get('dtstart').dt.isoformat()
@@ -130,17 +134,25 @@ class GoogleCalendarInterface:
                 tzstart = str(component.get('dtstart').dt.tzinfo)
                 tzend = str(component.get('dtstart').dt.tzinfo)
                 rule='RRULE:' + component.get('rrule').to_ical().decode(errors="ignore")+'Z' if component.get('rrule') is not None else ''
+                vEvent = True
 
-                return GoogleEvent(event=component.get('name'),
-                                    location=component.get("location"),
-                                    start_datetime=start_datetime,
-                                    end_datetime=end_datetime,
-                                    tzstart=tzstart,
-                                    tzend=tzend,
-                                    rrule=str(rule) if rule != '' else [],
-                                    description=component.get('description'))
-            
-        return None
+            if component.name == "VALARM":
+                # Use regular expressions to extract the trigger time
+                match = re.search(r'(\d{2}:\d{2}:\d{2})', str(component.get('trigger')))
+                if match:
+                    trigger_time = match.group(0)[3:5]
+                    diff = 60 - int(trigger_time)
+                    alert = diff if (diff != 0) else 60
+
+        return GoogleEvent(event=component.get('name'),
+                            location=component.get("location"),
+                            start_datetime=start_datetime,
+                            end_datetime=end_datetime,
+                            tzstart=tzstart,
+                            tzend=tzend,
+                            rrule=str(rule) if rule != '' else [],
+                            description=component.get('description'),
+                            alert=alert if alert != None else 10) if vEvent else None
     
     def getEvents(calendar_id='primary', time_min=None, time_max=None)->list[GoogleEvent]:
         if GoogleCalendarInterface.service == None:
