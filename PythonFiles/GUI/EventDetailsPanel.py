@@ -112,9 +112,9 @@ class EventDetailsPanel:
         e_d_entry.bind('<1>', lambda event, entry=e_d_entry: self.PickDate(entry))
 
         # Grid GUI
-        remove_btn.grid(row=0, column=1, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, sticky='e')
-        dup_btn.grid(row=0, column=2, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, padx=(0, EVENT_DETAILS_PANEL_DETAIL_GAP), sticky='e')
-        schedule_btn.grid(row=10, column=1, pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        schedule_btn.grid(row=0, column=1, pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
+        dup_btn.grid(row=0, column=2, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, sticky='e')
+        remove_btn.grid(row=0, column=3, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, sticky='e', padx=(0, EVENT_DETAILS_PANEL_DETAIL_GAP))
 
         e_frame.grid(row=1, column=1,sticky='nsew', pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
         desp_frame.grid(row=2, column=1, sticky='nsew',pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
