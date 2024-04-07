@@ -25,6 +25,8 @@ TOKEN_PATH = directory_manager.getCurrentFileDirectory(__file__)
 
 auth = False
 auth_event = threading.Event()
+token_access = None
+token = None
 
 @APP.route('/')
 def login():
@@ -38,6 +40,7 @@ def callback():
     code = request.args.get('code')
     if not code:
         directory_manager.WriteJSON(TOKEN_PATH, 'api_token_access.json', '')
+        auth_event.set()
         return "Failed Authentication."
 
     token_url = f"{AUTHORITY_URL}/oauth2/v2.0/token"
@@ -52,6 +55,13 @@ def callback():
     token_r = requests.post(token_url, data=token_data)
     directory_manager.WriteJSON(TOKEN_PATH, 'api_token_access.json', token_r.json())
     logging.info('ESTABLISHED CONNECTION TO OUTLOOK API')
+
+    global token_access
+    global token
+
+    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
+    token = token_access['access_token']
+
     global auth
     auth = True
     auth_event.set()
@@ -59,10 +69,9 @@ def callback():
 
 @APP.route('/create_event')
 def create_event():   
-    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
-    token = token_access['access_token']
 
-    if not token: return jsonify(status="error", message="Not authenticated!"), 401
+    if not token or auth == False: 
+        return jsonify(status="error", message="Not authenticated!"), 401
     
     event = request.json['event']
     
@@ -75,8 +84,6 @@ def create_event():
 
 @APP.route('/delete_event')
 def delete_event():   
-    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
-    token = token_access['access_token']
 
     if not token:
         return jsonify(status="error", message="Not authenticated!"), 401
@@ -94,27 +101,25 @@ def delete_event():
 
 @APP.route('/get_events')
 def get_events():   
-    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
-    token = token_access['access_token']
-
-    if not token:
+    if not token or auth == False:
         return jsonify(status="error", message="Not authenticated!"), 401
     
+    filter = ""
+    if 'filter' in request.json: filter = request.json['filter']
+
     headers = {
         'Authorization': f'{token_access["token_type"]} {token}',
         'Content-Type': 'application/json'
     }
 
-    response = requests.get(f"https://graph.microsoft.com/v1.0/me/events", headers=headers)
+    response = requests.get(f"https://graph.microsoft.com/v1.0/me/events?{filter}", headers=headers)
     logging.info(f'GET EVENTS RESPONSE STATUS CODE: {response.status_code}')
     return response.json()
 
 @APP.route('/update_event')
 def update_event():   
-    token_access = directory_manager.ReadJSON(TOKEN_PATH, 'api_token_access.json')
-    token = token_access['access_token']
 
-    if not token:
+    if not token or auth == False:
         return jsonify(status="error", message="Not authenticated!"), 401
     
     event_id = request.json['event_id']
@@ -134,7 +139,6 @@ def parse_ics(ics)->OutlookEvent:
     ics_file = CalendarInterface.ReadICSFile(ics)
     vEvent = False
     alert = None
-    
     for component in ics_file.walk():
         if component.name == "VEVENT":
             rule=component.get('rrule').to_ical().decode(errors="ignore") if component.get('rrule') is not None else ''
@@ -143,6 +147,8 @@ def parse_ics(ics)->OutlookEvent:
             name = component.get('name')
             location = component.get("location")
             description = component.get('description')
+            tzstart = str(component.get('dtstart').dt.tzinfo)
+            tzend = str(component.get('dtstart').dt.tzinfo)
             vEvent = True
 
         if component.name == "VALARM":
@@ -157,8 +163,8 @@ def parse_ics(ics)->OutlookEvent:
                         location=location,
                         dtstart=s_dt.isoformat(),
                         dtend=e_dt.isoformat(),
-                        tzstart='UTC',
-                        tzend='UTC',
+                        tzstart=tzstart,
+                        tzend=tzend,
                         rrule=rule,
                         description=description,
                         alert=alert if alert != None else 10) if vEvent else None

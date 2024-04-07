@@ -6,6 +6,8 @@ import logging
 from sys import platform
 from tkinter import messagebox
 from uuid import uuid4
+from datetime import datetime
+import pytz
 
 from Calendar.CalendarInterface import CalendarInterface
 from Calendar.CalendarConstants import DEFAULT_CALENDAR
@@ -323,14 +325,18 @@ class EventsManager:
         # Check for any pre-existing event
         cal_events ={}
         try: 
-            filter_param = {'$filter': f"start/dateTime ge {outlook_event['start']['dateTime']} and end/dateTime le {outlook_event['end']['dateTime']}"}
-            cal_events = outlook_interface.send_flask_req('get_events', param_data=filter_param)[1]['value']
+            # Convert time to UTC first because outlook only saves in UTC
+            start_dt = datetime.fromisoformat(outlook_event['start']['dateTime']).replace(tzinfo=None)
+            end_dt = datetime.fromisoformat(outlook_event['end']['dateTime']).replace(tzinfo=None)
+            tz = pytz.timezone(outlook_event["start"]['timeZone'])
+            start_utc_dt = tz.localize(start_dt).astimezone(pytz.utc)
+            end_utc_dt = tz.localize(end_dt).astimezone(pytz.utc)
+            start_split = str(start_utc_dt).split(' ')
+            end_split = str(end_utc_dt).split(' ')
+
+            cal_events = outlook_interface.send_flask_req('get_events', json_data={'filter': f"$filter=start/dateTime ge '{start_split[0]}T{start_split[1].split('+')[0]}.0000000' and end/dateTime le '{end_split[0]}T{end_split[1].split('+')[0]}'"})[1]['value']
         except: 
             pass
-
-        # Response format
-        #(True, {'@odata.context': "", 'value': []})
-
         def schedule_outlook_calendar_event():
             response = outlook_interface.send_flask_req(req='create_event', 
                                                         json_data={'event': outlook_event})
