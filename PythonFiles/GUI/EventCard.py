@@ -46,9 +46,9 @@ class EventCard:
                                                                                         entry_state='disabled')
 
         # desc
-        self.desc_frame, self.desc_label, self.desc_entry = GUIInterface.CreateEntryWithLabel(label= "Description:",
-                                                                                            entry_width=attribute_width, 
-                                                                                            entry_state='disabled')
+        self.desc_frame, self.desc_label, self.desc_textbox = GUIInterface.CreateTextboxWithLabel(label= "Description:",
+                                                                                                textbox_width=attribute_width, 
+                                                                                                textbox_state='disabled')
         # location
         self.l_frame, self.l_label, self.l_entry = GUIInterface.CreateEntryWithLabel(label= "Location:",
                                                                                     entry_width=attribute_width, 
@@ -70,15 +70,24 @@ class EventCard:
                                                                                         entry_width=attribute_width, 
                                                                                         entry_state='disabled')
 
+        # Dropsdowns
+        tmp = GUIInterface.current_frame
+        self.drop_down_frame = GUIInterface.CreateFrame(GUIInterface.current_frame, border_color=frame_color, fg_color=frame_color)
+        GUIInterface.CreateGrid(self.drop_down_frame, rows=[1], cols=[1, 1, 1])
+
         self.tz_frame, self.tz_label, self.tz_box = GUIInterface.CreateOptionMenuWithLabel(label="Timezone:", dropdown=pytz.all_timezones)
         self.tz_box.configure(state='disabled')
+        self.tz_label.grid(row=0, column=0, sticky='e')
 
         self.recur_frame, self.recur_label, self.recur_box = GUIInterface.CreateOptionMenuWithLabel(label="Repeated:", dropdown=RECURRING_OPTIONS)
         self.recur_box.configure(state='disabled')
+        self.recur_label.grid(row=0, column=0, sticky='e')
 
-        # Alert Options
         self.alert_frame, self.alert_label, self.alert_box = GUIInterface.CreateOptionMenuWithLabel(label="Alert (minutes):", dropdown=ALERT_OPTIONS)
         self.alert_box.configure(state='disabled')
+        self.alert_label.grid(row=0, column=0, sticky='e')
+
+        GUIInterface.current_frame = tmp
 
         # Buttons
         tmp = GUIInterface.current_frame
@@ -109,9 +118,11 @@ class EventCard:
         self.st_frame.grid(row=6, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         self.et_frame.grid(row=7, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
-        self.tz_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.recur_frame.grid(row=9, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.alert_frame.grid(row=10, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        # Dropdown
+        self.drop_down_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.tz_frame.grid(row=0, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.recur_frame.grid(row=0, column=1, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.alert_frame.grid(row=0, column=2, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # Buttons
         self.button_frame.grid(row=0, column=0,  sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
@@ -132,7 +143,7 @@ class EventCard:
 
     def UpdateEntries(self):
         GUIInterface.UpdateEntry(self.n_entry, self.event_details['name'])
-        GUIInterface.UpdateEntry(self.desc_entry, self.event_details['description'])
+        GUIInterface.UpdateTextBox(self.desc_textbox, "disabled", self.event_details['description'])
         GUIInterface.UpdateEntry(self.l_entry, self.event_details['location'])
         GUIInterface.UpdateEntry(self.s_d_entry, self.event_details['s_date'])
         GUIInterface.UpdateEntry(self.e_d_entry, self.event_details['e_date'])
@@ -145,7 +156,7 @@ class EventCard:
     
     def UpdateEventDetails(self):
         self.event_details['name'] = self.n_entry.get()
-        self.event_details['description'] = self.desc_entry.get()
+        self.event_details['description'] = GUIInterface.RetrieveCurrentInputFromTextbox(self.desc_textbox)
         self.event_details['location'] = self.l_entry.get()
         self.event_details['s_date'] = self.s_d_entry.get()
         self.event_details['e_date'] = self.e_d_entry.get()
@@ -157,7 +168,7 @@ class EventCard:
 
     def ChangeEntryState(self, state):
         self.n_entry.configure(state=state)
-        self.desc_entry.configure(state=state)
+        self.desc_textbox.configure(state=state)
         self.l_entry.configure(state=state)
         self.st_entry.configure(state=state)
         self.et_entry.configure(state=state)
@@ -175,7 +186,7 @@ class EventCard:
         
     def OnEditClick(self):
         self.editable = not self.editable
-        state = self.editable == False and 'readonly'  or 'normal'
+        state = self.editable == False and 'disabled'  or 'normal'
         self.ChangeEntryState(state=state)
 
     def RemoveFromCalender(self)->bool:
@@ -224,7 +235,7 @@ class EventCard:
             
             if self.editable == True:
                 self.editable = False
-                self.ChangeEntryState(state='readonly')
+                self.ChangeEntryState(state='disabled')
 
             input = {
                 'Event': self.event_details['name'],
@@ -239,6 +250,8 @@ class EventCard:
                 'Platform': self.event_details['platform'],
                 'Alert': self.event_details['alert'],
             }
+
+            print(input)
 
             # Handle missing or incorrect input for time fields
             if self.CheckInputs(input) == False:

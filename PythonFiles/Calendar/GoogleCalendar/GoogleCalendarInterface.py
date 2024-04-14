@@ -133,6 +133,9 @@ class GoogleCalendarInterface:
                 end_datetime = component.get('dtend').dt.isoformat()
                 tzstart = str(component.get('dtstart').dt.tzinfo)
                 tzend = str(component.get('dtstart').dt.tzinfo)
+                name = component.get('name')
+                location = component.get("location")
+                desc = component.get('description')
                 rule='RRULE:' + component.get('rrule').to_ical().decode(errors="ignore")+'Z' if component.get('rrule') is not None else ''
                 vEvent = True
 
@@ -144,14 +147,14 @@ class GoogleCalendarInterface:
                     diff = 60 - int(trigger_time)
                     alert = diff if (diff != 0) else 60
 
-        return GoogleEvent(event=component.get('name'),
-                            location=component.get("location"),
+        return GoogleEvent(event=name,
+                            location=location,
                             start_datetime=start_datetime,
                             end_datetime=end_datetime,
                             tzstart=tzstart,
                             tzend=tzend,
                             rrule=str(rule) if rule != '' else [],
-                            description=component.get('description'),
+                            description=desc,
                             alert=alert if alert != None else 10) if vEvent else None
     
     def getEvents(calendar_id='primary', time_min=None, time_max=None)->list[GoogleEvent]:
@@ -204,6 +207,7 @@ class GoogleCalendarInterface:
             else: return False, 'Unknown Reason, Proceeding to Deletion'
     
     def UpdateEvent(id:str, update: dict):
+        print('Update: ', update)
         if GoogleCalendarInterface.service == None:
             logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return False,''

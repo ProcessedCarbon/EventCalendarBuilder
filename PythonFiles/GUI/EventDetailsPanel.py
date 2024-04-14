@@ -64,9 +64,8 @@ class EventDetailsPanel:
                                                 entryname="Event", 
                                                 placeholder_text='Title')
 
-        desp_frame, desp_entry = self.CreateEntryField(detail_entry_width, 
-                                                    entryname="Description", 
-                                                    placeholder_text='Description')
+        desp_frame, desp_entry = self.CreateTextboxField(detail_entry_width, 
+                                                        entryname="Description")
 
         l_frame, l_entry = self.CreateEntryField(detail_entry_width, 
                                                 entryname="Location", 
@@ -108,7 +107,7 @@ class EventDetailsPanel:
         # Alert Options
         self.alert_frame, self.alert_label, self.alert_box = self.CreateDropdownField(values=ALERT_OPTIONS, entryname="Alert")
         self.alert_label.configure(text=f"{self.alert_label.cget('text').split(':')[0]} (minutes):")
-        self.alert_box.set('30')
+        self.alert_box.set(ALERT_OPTIONS[1])
 
         # Bindings
         s_d_entry.bind('<1>', lambda event, entry=s_d_entry: self.PickDate(entry))
@@ -156,7 +155,7 @@ class EventDetailsPanel:
         GUIInterface.UpdateEntry(self.details_entries["Event"], self.event.getName())
         GUIInterface.UpdateEntry(self.details_entries["Location"], self.event.getLocation())
         if self.event.getDescription() != '':
-            GUIInterface.UpdateEntry(self.details_entries["Description"], self.event.getDescription())
+            GUIInterface.UpdateTextBox(self.details_entries["Description"], "normal", self.event.getDescription())
         GUIInterface.UpdateEntry(self.details_entries["Start_Date"], self.event.get_S_Date())
         GUIInterface.UpdateEntry(self.details_entries["End_Date"], self.event.get_E_Date())
         GUIInterface.UpdateEntry(self.details_entries["Start_Time"], self.event.getStart_Time())
@@ -169,7 +168,7 @@ class EventDetailsPanel:
         GUIInterface.UpdateEntry(self.details_entries["End_Date"], "")
         GUIInterface.UpdateEntry(self.details_entries["Start_Time"], "")
         GUIInterface.UpdateEntry(self.details_entries["End_Time"], "")
-        GUIInterface.UpdateEntry(self.details_entries["Description"], "")
+        GUIInterface.UpdateTextBox(self.details_entries["Description"], "normal" ,"")
     
     # Create GUI
     def CreateEntryField(self, width:int, entryname:str, entry_state='normal', placeholder_text=None):
@@ -180,6 +179,14 @@ class EventDetailsPanel:
                                                                     placeholder_text=placeholder_text)
         self.details_entries[key] = e_entry
         return e_frame, e_entry
+    
+    def CreateTextboxField(self, width:int, entryname:str, textbox_state='normal'):
+        key = self.ConvertEntryNameToKey(entryname)
+        e_frame, e_label, e_textbox = GUIInterface.CreateTextboxWithLabel(label= entryname + ":",
+                                                                        textbox_width=width, 
+                                                                        textbox_state=textbox_state)
+        self.details_entries[key] = e_textbox
+        return e_frame, e_textbox
 
     def CreateDropdownField(self, values:list[str], entryname:str):
         key = self.ConvertEntryNameToKey(entryname)
@@ -190,7 +197,10 @@ class EventDetailsPanel:
     def getCurrentInputFieldsInfo(self)->dict:
         details = {}
         for detail in self.details_entries:
-            details[detail] = self.details_entries[detail].get()
+            if detail == 'Description':
+                details[detail] = GUIInterface.RetrieveCurrentInputFromTextbox(self.details_entries[detail])
+            else:
+                details[detail] = self.details_entries[detail].get()
         return details
     
     def PickDate(self, entry):

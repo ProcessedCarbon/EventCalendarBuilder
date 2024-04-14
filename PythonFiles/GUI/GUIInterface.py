@@ -286,6 +286,32 @@ class GUIInterface:
 
         return entry_frame, label ,entry
     
+    def CreateTextboxWithLabel(label:str, **kwargs)->list[CTkFrame, CTkLabel, CTkTextbox]:
+        textbox_width =       GUIInterface.getParamValFromKwarg('textbox_width', kwargs)
+        textbox_state =       GUIInterface.getParamValFromKwarg('entry_state', kwargs)
+
+        tmp_frame = GUIInterface.current_frame
+        entry_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame, 
+                                            border_width=0,
+                                            fg_color='transparent')
+
+        entry_frame.columnconfigure(0, weight=1)
+        entry_frame.columnconfigure(1, weight=3)
+
+        # Entry label
+        label = GUIInterface.CreateLabel(text=label,font=GUIInterface.getCTKFont(weight="bold"))
+        label.grid(row=0, column=0, sticky='n')
+
+        # Textbox
+        textbox = GUIInterface.CreateTextbox(width=textbox_width, 
+                                            state=textbox_state)
+        
+        textbox.grid(row=0, column=1, sticky='e')
+
+        GUIInterface.current_frame = tmp_frame
+
+        return entry_frame, label ,textbox
+    
     def CreateOptionMenuWithLabel(label:str, dropdown:list[str])->list[CTkFrame,CTkLabel,CTkComboBox]:    
         tmp_frame = GUIInterface.current_frame
         combo_frame = GUIInterface.CreateFrame(frame_target=GUIInterface.current_frame,
