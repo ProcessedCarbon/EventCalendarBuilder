@@ -1,6 +1,8 @@
 import spacy
-import Managers.DirectoryManager as directory_manager
 import logging
+
+import Managers.DirectoryManager as directory_manager
+from NER.NER_Constants import NAME, DATE, TIME, LOC, DESC
 
 PARENT_DIR = directory_manager.getCurrentFileDirectory(__file__)
 MODEL_PATH = directory_manager.getFilePath(PARENT_DIR, 'model/model-best')
@@ -34,7 +36,7 @@ class NERInterface:
 
             for entity in entityList:
                 e = str(entity)
-                if entity.label_ == "E_NAME":
+                if entity.label_ == NAME:
                     if event_name != e:
 
                         # To handle if first entity in list is event
@@ -57,7 +59,7 @@ class NERInterface:
                         loc = ""
                         event_name = e # set name to the next entity
 
-                elif entity.label_ == "E_DATE":
+                elif entity.label_ == DATE:
                     # Already encountered a time label before date
                     if len(tmp_time_list) > 0 and curr_dt != None:
                         dt[curr_dt] = tmp_time_list
@@ -65,16 +67,16 @@ class NERInterface:
                     curr_dt = entity
                     dt[curr_dt] = tmp_time_list
 
-                elif entity.label_ == "E_TIME":
+                elif entity.label_ == TIME:
                     # Handle already encountered date
                     if curr_dt != None: dt[curr_dt].append(e)
                     else: tmp_time_list.append(e)
 
-                elif entity.label_ == "E_LOC":
+                elif entity.label_ == LOC:
                     loc = e
                 
                 # Append what is left and return list of events
-                if entity == entityList[-1] and entity.label_ != "E_NAME":
+                if entity == entityList[-1] and entity.label_ != NAME:
                     events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc))
                     return events
                 
