@@ -201,6 +201,7 @@ class EventsManager:
                     n_event = Event(id=uuid4(),
                                     name=event['EVENT'],
                                     location=event["LOC"],
+                                    description = event['DESC'],
                                     s_date=start_date,
                                     e_date=start_date,
                                     start_time=start_time,

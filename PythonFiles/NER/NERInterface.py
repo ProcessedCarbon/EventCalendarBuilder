@@ -33,6 +33,7 @@ class NERInterface:
             event_name = ""
             curr_dt =None
             dt = {}
+            desc = ""
 
             for entity in entityList:
                 e = str(entity)
@@ -52,11 +53,12 @@ class NERInterface:
                                 for t in dt[tmp_key]:
                                     dt[tmp_key] = t
 
-                        events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc))
+                        events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc, d=desc))
                         tmp_time_list = []
                         dt ={}
                         curr_dt = None
                         loc = ""
+                        desc = ""
                         event_name = e # set name to the next entity
 
                 elif entity.label_ == DATE:
@@ -75,17 +77,21 @@ class NERInterface:
                 elif entity.label_ == LOC:
                     loc = e
                 
+                elif entity.label_ == DESC:
+                    desc += e
+                
                 # Append what is left and return list of events
                 if entity == entityList[-1] and entity.label_ != NAME:
-                    events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc))
+                    events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc, d=desc))
                     return events
                 
         return events
     
     # Creates NER entity dataype
-    def getEntities(e : str, dt : list, l : str):
+    def getEntities(e:str, dt:list, l:str, d:str):
         return {
             "EVENT" : e,
             "DATE_TIME" : dt,
             "LOC" : l,
+            "DESC": d
         }
