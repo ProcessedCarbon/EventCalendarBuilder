@@ -8,13 +8,13 @@ from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from GUI.GUIConstants import MAX_EVENT_TITLE, SUCCESS_TITLE, FAILED_SCHEDULE_MSG
 from Events.EventsManager import EventsManager
+from Events.Event_Constants import EVENT_LIMIT
 
 class SchedulePage(Page):
     def __init__(self):
         self.details_panels = {}
         self.details_panels_max_column = 3
         self.details_panels_frame = None
-        self.max_panels = 10
         self.panels = 0
         super().__init__()
 
@@ -57,15 +57,17 @@ class SchedulePage(Page):
         detail_rows = ceil(n / self.details_panels_max_column)
         GUIInterface.CreateGrid(self.details_panel_frame, rows=([1] * detail_rows), cols=[1])
         for index, event in enumerate(events):
-            if self.panels == self.max_panels:
-                messagebox.showwarning(title=MAX_EVENT_TITLE, message=f'Max event panels of {self.max_panels} reached.')
+            if self.panels >= EVENT_LIMIT:
+                messagebox.showwarning(title=MAX_EVENT_TITLE, message=f'Max number of {EVENT_LIMIT} reached for number of displayed panels.\nDid not manage to show panels for all detected events.')
                 break
+
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                             event=event['object'],
                                             remove_cb=self.RemovePanel,
                                             dup_cb=self.DuplicatePanel,
                                             key=index,
                                             row=index)
+            
             self.details_panels[index] = detail_panel
             self.panels += 1
         

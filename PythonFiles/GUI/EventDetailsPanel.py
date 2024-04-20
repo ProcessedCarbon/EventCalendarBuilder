@@ -4,9 +4,10 @@ import logging
 from customtkinter import *
 
 from GUI.GUIInterface import GUIInterface
-from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER, MISSING_EVENT_NAME_INPUT_MSG, SCHEDULE_SUCCESS_MSG, INVALID_INPUT_TITLE, ALERT_OPTIONS, RECURRING_OPTIONS
+from GUI.GUIConstants import MISSING_INPUT_TITLE, EVENT_DETAILS_PANEL_ROWS, SUCCESS_TITLE, EVENT_DETAILS_PANEL_DETAIL_GAP, EVENT_ROW_GAP, EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER, MISSING_EVENT_NAME_INPUT_MSG, SCHEDULE_SUCCESS_MSG, INVALID_INPUT_TITLE, ALERT_OPTIONS, RECURRING_OPTIONS, MAX_EVENT_TITLE, MAX_EVENT_REACHED_MESSAGE
 from Events.Event import Event
 from Events.EventsManager import EventsManager
+from Events.Event_Constants import EVENT_LIMIT
 from Managers.TextProcessing import TextProcessingManager
 from Calendar.CalendarConstants import DEFAULT_CALENDAR, GOOGLE_CALENDAR, OUTLOOK_CALENDAR
 import GUI.PopupManager as popup_mgr
@@ -212,7 +213,12 @@ class EventDetailsPanel:
 
         submit_btn.configure(command=lambda: GrabDate(entry, cal.get_date(), date_window))
 
-    def ScheduleEvent(self):       
+    def ScheduleEvent(self):     
+        # Handle event limit reached
+        if len(EventsManager.events_db) >= EVENT_LIMIT:
+            messagebox.showinfo(title=MAX_EVENT_TITLE, message=MAX_EVENT_REACHED_MESSAGE)
+            return
+        
         self.UpdateEventWithDetails() # update event object before scheduling
 
         # Get input

@@ -18,6 +18,7 @@ FAILED_ICS_PARSING = 'Failed to get any events from ICS file.'
 NO_OUTLOOK_CONNECTION_MSG = 'No Outlook connection established and authenticated.'
 HAS_OUTLOOK_CONNECTION_MSG = 'Outlook connection successfully established!'
 ASK_REMOVE_EVENT_MSG = 'Are you sure you wish to remove this event?'
+MAX_EVENT_REACHED_MESSAGE = "Maximum number of events tracked reached. Please remove events before scheduling more."
 
 # Main Window
 MAIN_WINDOW_ASPECT = 0.85
