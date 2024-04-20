@@ -1,11 +1,12 @@
 import spacy
 import logging
+from uuid import uuid4
 
 import Managers.DirectoryManager as directory_manager
-from NER.NER_Constants import NAME, DATE, TIME, LOC, DESC
+from NER.NER_Constants import NAME, DATE, TIME, LOC, DESC, BASE_MODEL, BASE_MODEL_W_DESC
 
 PARENT_DIR = directory_manager.getCurrentFileDirectory(__file__)
-MODEL_PATH = directory_manager.getFilePath(PARENT_DIR, 'model/model-best')
+MODEL_PATH = directory_manager.getFilePath(PARENT_DIR, f'model/{BASE_MODEL_W_DESC}')
 
 class NERInterface:
     nlp = spacy.load(MODEL_PATH) #load model   
@@ -19,7 +20,6 @@ class NERInterface:
         :return: The entities of event, time, date and loc. They can be null
         """
         if text == None or "":
-            #print(f"[{__name__}] INVALID PARAM GIVEN!")
             logging.error(f"[{__name__}] INVALID PARAM GIVEN!")
             return
 
@@ -34,6 +34,7 @@ class NERInterface:
             curr_dt =None
             dt = {}
             desc = ""
+            # copy_dict = entityList.copy()
 
             for entity in entityList:
                 e = str(entity)
@@ -44,14 +45,6 @@ class NERInterface:
                         if event_name == "":
                             event_name = e
                             continue
-                        
-                        # If date has more than 2 time, split each one up into its individual date
-                        for d in dt:
-                            if len(dt[d]) > 2:
-                                tmp_key = d
-                                del dt[d]
-                                for t in dt[tmp_key]:
-                                    dt[tmp_key] = t
 
                         events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc, d=desc))
                         tmp_time_list = []

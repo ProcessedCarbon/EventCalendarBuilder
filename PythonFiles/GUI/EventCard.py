@@ -251,8 +251,6 @@ class EventCard:
                 'Alert': self.event_details['alert'],
             }
 
-            print(input)
-
             # Handle missing or incorrect input for time fields
             if self.CheckInputs(input) == False:
                 return
