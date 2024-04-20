@@ -1,7 +1,8 @@
-PythonFiles/NER/model/model-best
+PythonFiles/NER/model/
 PythonFiles/Calendar/Outlook/api_token_access.json
 PythonFiles/Calendar/GoogleCalendar/*GoogleCalendarAPI
 *Testing
+*Models
 dev_venv
 PythonFiles/__pycache__
 PythonFiles/Calendar/__pycache__
@@ -15,3 +16,4 @@ PythonFiles/NER/__pycache__
 PythonFiles/Pages/__pycache__
 .DS_Store
 .vscode
+.venv

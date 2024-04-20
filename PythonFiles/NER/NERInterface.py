@@ -3,10 +3,10 @@ import logging
 from uuid import uuid4
 
 import Managers.DirectoryManager as directory_manager
-from NER.NER_Constants import NAME, DATE, TIME, LOC, DESC, BASE_MODEL, BASE_MODEL_W_DESC
+from NER.NER_Constants import NAME, DATE, TIME, LOC, DESC, MODEL
 
 PARENT_DIR = directory_manager.getCurrentFileDirectory(__file__)
-MODEL_PATH = directory_manager.getFilePath(PARENT_DIR, f'model/{BASE_MODEL_W_DESC}')
+MODEL_PATH = directory_manager.getFilePath(PARENT_DIR, f'model/{MODEL}')
 
 class NERInterface:
     nlp = spacy.load(MODEL_PATH) #load model   

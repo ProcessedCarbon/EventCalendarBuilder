@@ -6,5 +6,4 @@ LOC = "E_LOC"
 DESC = "E_DESC"
 
 # MODELS
-BASE_MODEL = "model-base"
-BASE_MODEL_W_DESC = "model-base-desc"
+MODEL = "model-base-desc"
