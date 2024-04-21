@@ -55,8 +55,11 @@ class EventsManager:
                         start_time=d['start_time'],
                         end_time=d['end_time'],
                         platform=d['platform'],
-                        recurring=d['recurring'])
-            EventsManager.AddEventToEventDB(event=event, target=EventsManager.events_db, store_object=False)
+                        recurring=d['recurring'],
+                        description=d['description'],
+                        alert=d['alert'],
+                        tz=d['timezone'])
+            EventsManager.AddEventToEventDB(event=event, target=EventsManager.events_db, store_object=False, write=False)
 
     # Send only those that are schedule
     def WriteEventDBToJSON():
@@ -78,7 +81,7 @@ class EventsManager:
         except Exception as e:
             logging.error(f'[{__name__}]: {e}')
 
-    def AddEventToEventDB(event:Event, target=None, store_object=True):
+    def AddEventToEventDB(event:Event, target=None, store_object=True, write=True):
         '''
         Takes in an event object and adds it to the target list in this class
         Works with the assumption that event db is updated
@@ -93,7 +96,8 @@ class EventsManager:
             event_dict['object'] = event
 
         target.append(event_dict)
-        EventsManager.WriteEventDBToJSON()
+        if write:
+            EventsManager.WriteEventDBToJSON()
     
     def RemoveFromEventDB(id:str, target=None)->bool:
         if target == None:
