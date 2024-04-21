@@ -207,7 +207,6 @@ class GoogleCalendarInterface:
             else: return False, 'Unknown Reason, Proceeding to Deletion'
     
     def UpdateEvent(id:str, update: dict):
-        print('Update: ', update)
         if GoogleCalendarInterface.service == None:
             logging.warning(f"[{__name__}] MISSING CONNECTION TO GOOGLE CALENDARS, PLEASE CONNECT TO GOOGLE CALENDARS FIRST")
             return False,''

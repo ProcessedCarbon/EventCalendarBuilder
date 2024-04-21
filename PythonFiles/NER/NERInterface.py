@@ -1,9 +1,12 @@
 import spacy
-import Managers.DirectoryManager as directory_manager
 import logging
+from uuid import uuid4
+
+import Managers.DirectoryManager as directory_manager
+from NER.NER_Constants import NAME, DATE, TIME, LOC, DESC, MODEL
 
 PARENT_DIR = directory_manager.getCurrentFileDirectory(__file__)
-MODEL_PATH = directory_manager.getFilePath(PARENT_DIR, 'model/model-best')
+MODEL_PATH = directory_manager.getFilePath(PARENT_DIR, f'model/{MODEL}')
 
 class NERInterface:
     nlp = spacy.load(MODEL_PATH) #load model   
@@ -17,7 +20,6 @@ class NERInterface:
         :return: The entities of event, time, date and loc. They can be null
         """
         if text == None or "":
-            #print(f"[{__name__}] INVALID PARAM GIVEN!")
             logging.error(f"[{__name__}] INVALID PARAM GIVEN!")
             return
 
@@ -31,33 +33,28 @@ class NERInterface:
             event_name = ""
             curr_dt =None
             dt = {}
+            desc = ""
+            # copy_dict = entityList.copy()
 
             for entity in entityList:
                 e = str(entity)
-                if entity.label_ == "E_NAME":
+                if entity.label_ == NAME:
                     if event_name != e:
 
                         # To handle if first entity in list is event
                         if event_name == "":
                             event_name = e
                             continue
-                        
-                        # If date has more than 2 time, split each one up into its individual date
-                        for d in dt:
-                            if len(dt[d]) > 2:
-                                tmp_key = d
-                                del dt[d]
-                                for t in dt[tmp_key]:
-                                    dt[tmp_key] = t
 
-                        events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc))
+                        events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc, d=desc))
                         tmp_time_list = []
                         dt ={}
                         curr_dt = None
                         loc = ""
+                        desc = ""
                         event_name = e # set name to the next entity
 
-                elif entity.label_ == "E_DATE":
+                elif entity.label_ == DATE:
                     # Already encountered a time label before date
                     if len(tmp_time_list) > 0 and curr_dt != None:
                         dt[curr_dt] = tmp_time_list
@@ -65,25 +62,29 @@ class NERInterface:
                     curr_dt = entity
                     dt[curr_dt] = tmp_time_list
 
-                elif entity.label_ == "E_TIME":
+                elif entity.label_ == TIME:
                     # Handle already encountered date
                     if curr_dt != None: dt[curr_dt].append(e)
                     else: tmp_time_list.append(e)
 
-                elif entity.label_ == "E_LOC":
+                elif entity.label_ == LOC:
                     loc = e
                 
+                elif entity.label_ == DESC:
+                    desc += e
+                
                 # Append what is left and return list of events
-                if entity == entityList[-1] and entity.label_ != "E_NAME":
-                    events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc))
+                if entity == entityList[-1] and entity.label_ != NAME:
+                    events.append(NERInterface.getEntities(e=event_name, dt=dt, l=loc, d=desc))
                     return events
                 
         return events
     
     # Creates NER entity dataype
-    def getEntities(e : str, dt : list, l : str):
+    def getEntities(e:str, dt:list, l:str, d:str):
         return {
             "EVENT" : e,
             "DATE_TIME" : dt,
             "LOC" : l,
+            "DESC": d
         }

@@ -144,8 +144,10 @@ class EventsManager:
                 for d in date_time:
                     time = date_time[d]
                     date = TextProcessingManager.ProcessDate(date_text=str(d))
-
-                    if len(time) > 0: 
+                    if len(time) > 1 :
+                        for t in time:
+                            n_time = TextProcessingManager.ProcessTime(time_text=str(t))
+                    elif len(time) > 0: 
                         n_time = TextProcessingManager.ProcessTime(time_text=str(time))
                     else: 
                         n_time = [DateTimeManager.getCurrentTime()]
@@ -158,7 +160,7 @@ class EventsManager:
                     else: 
                         events[i]["DATE_TIME"][f"{date}_{count}"] = n_time
                         count += 1
-
+                               
             # Check how many dates event has, only create and end time if there is only
             # a single date else just treat that date pair as a range and sort them in ascending
             # Also handle the pairing of dates
@@ -201,6 +203,7 @@ class EventsManager:
                     n_event = Event(id=uuid4(),
                                     name=event['EVENT'],
                                     location=event["LOC"],
+                                    description = event['DESC'],
                                     s_date=start_date,
                                     e_date=start_date,
                                     start_time=start_time,

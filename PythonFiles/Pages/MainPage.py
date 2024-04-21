@@ -58,8 +58,11 @@ class MainPage(Page):
                 logging.warning(f"[{__name__}] MISSING TEXTBOX REFERENCE")
 
         def Submit(self, textbox):
-                self.ReadAndProcessText(textbox)
-                PageManager.SwitchPages(1) 
+                try:
+                        self.ReadAndProcessText(textbox)
+                        PageManager.SwitchPages(1)
+                except Exception as e:
+                        messagebox.showinfo(title=FAILED_TITLE, message="Failed to extract events from text, Please try again with a different text") 
 
         def ReadAndProcessText(self,textbox)->bool:
                 t = GUIInterface.RetrieveCurrentInputFromTextbox(textbox)
