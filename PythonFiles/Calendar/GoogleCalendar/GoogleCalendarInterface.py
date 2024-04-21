@@ -171,7 +171,8 @@ class GoogleCalendarInterface:
                                             end_datetime=x['end']['dateTime'],
                                             tzend=x['end']['timeZone'],
                                             rrule=x['recurrence'] if 'recurrence' in x else '',
-                                            description=x['description'] if 'description' in x else ''
+                                            description=x['description'] if 'description' in x else '',
+                                            alert=x['reminders']['overrides'][0]['minutes'] if 'reminders' in x else 0
                                             ) for x in existing]
         
         return existing_google_events  
