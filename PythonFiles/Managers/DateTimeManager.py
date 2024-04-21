@@ -157,6 +157,11 @@ class DateTimeManager:
         second = datetime.strptime(date2, fmt)
         return first >= second
     
+    def areDatesEqual(date1, date2, fmt='%Y-%m-%d'):
+        first = datetime.strptime(date1, fmt)
+        second = datetime.strptime(date2, fmt)
+        return first == second
+    
     def getTimeStamps(timestamps:int):
         return datetime.fromtimestamp(timestamps)
     

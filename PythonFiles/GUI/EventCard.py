@@ -132,8 +132,8 @@ class EventCard:
 
         GUIInterface.current_frame = tmp_frame
 
-    def Destroy(self)->bool:
-        removed_from_cal = self.RemoveFromCalender()
+    def Destroy(self, askBeforeDelete = True)->bool:
+        removed_from_cal = self.RemoveFromCalender(askCheck=askBeforeDelete)
         if removed_from_cal:
             success = EventsManager.RemoveFromEventDB(self.event_details['id'], EventsManager.events_db)
             if success:
@@ -189,9 +189,9 @@ class EventCard:
         state = self.editable == False and 'disabled'  or 'normal'
         self.ChangeEntryState(state=state)
 
-    def RemoveFromCalender(self)->bool:
+    def RemoveFromCalender(self, askCheck = True)->bool:
         try:
-            res = messagebox.askokcancel(title=WARNING_TITLE, message=ASK_REMOVE_EVENT_MSG)
+            res = messagebox.askokcancel(title=WARNING_TITLE, message=ASK_REMOVE_EVENT_MSG) if askCheck else not askCheck
 
             if res:
                 if self.event_details['platform'] == DEFAULT_CALENDAR: # Should not occur as Default calendar methods are not saved locally
@@ -343,3 +343,6 @@ class EventCard:
             messagebox.showerror(title=INVALID_INPUT_TITLE, message=f'Invalid Dates provided\nStart Date: {input["Start_Date"]}\nEnd Date: {input["End_Date"]}')
             return False
         return True
+    
+    def RemoveCard(self, askBeforeDelete=True):
+        self.remove_cb(self.index, askBeforeDelete)
