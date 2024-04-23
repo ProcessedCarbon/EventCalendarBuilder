@@ -169,6 +169,52 @@ class GUIInterface:
                             state=state)
         return textInput
     
+    def CreateSwitch(**kwargs)->CTkSwitch:
+        width =                     GUIInterface.getParamValFromKwarg('width', kwargs, default=140)
+        height =                    GUIInterface.getParamValFromKwarg('height', kwargs, default=28)
+        switch_width =              GUIInterface.getParamValFromKwarg('switch_width', kwargs, default=36)
+        switch_height =             GUIInterface.getParamValFromKwarg('switch_height', kwargs, default=18)
+        corner_radius =             GUIInterface.getParamValFromKwarg('corner_radius', kwargs)
+        border_width =                  GUIInterface.getParamValFromKwarg('border_width', kwargs)
+        button_length =                GUIInterface.getParamValFromKwarg('button_length', kwargs)
+        bg_color =                      GUIInterface.getParamValFromKwarg('bg_color', kwargs, 'transparent')
+        fg_color =              GUIInterface.getParamValFromKwarg('fg_color', kwargs)
+        border_color =             GUIInterface.getParamValFromKwarg('border_color', kwargs, 'transparent')
+        progress_color =    GUIInterface.getParamValFromKwarg('progress_color', kwargs)
+        button_color =          GUIInterface.getParamValFromKwarg('button_color', kwargs)
+        button_hover_color =                     GUIInterface.getParamValFromKwarg('button_hover_color', kwargs)
+        text_color =                     GUIInterface.getParamValFromKwarg('text_color', kwargs)
+        text =                     GUIInterface.getParamValFromKwarg('text', kwargs, 'CtkSwitch')
+        font =                     GUIInterface.getParamValFromKwarg('font', kwargs)
+        textvariable =                     GUIInterface.getParamValFromKwarg('textvariable', kwargs)
+        onvalue =                     GUIInterface.getParamValFromKwarg('onvalue', kwargs)
+        hover =                     GUIInterface.getParamValFromKwarg('hover', kwargs, True)
+        command =                     GUIInterface.getParamValFromKwarg('command', kwargs)
+        state =                     GUIInterface.getParamValFromKwarg('state', kwargs, 'normal')
+
+        return CTkSwitch(GUIInterface.current_frame, 
+                        width=width,
+                        height=height,
+                        switch_width = switch_width,
+                        switch_height = switch_height,
+                        border_width = border_width,
+                        button_length = button_length,
+                        border_color = border_color,
+                        button_color = button_color,
+                        button_hover_color = button_hover_color,
+                        text = text,
+                        onvalue = onvalue,
+                        hover = hover,
+                        command = command,
+                        bg_color = bg_color,
+                        progress_color = progress_color,
+                        fg_color=fg_color,
+                        text_color=text_color,
+                        font=font,
+                        textvariable=textvariable,
+                        corner_radius=corner_radius,
+                        state=state)    
+    
     def CreateTextbox(**kwargs)->CTkTextbox:
         width =                         GUIInterface.getParamValFromKwarg('width', kwargs, default=200)
         height =                        GUIInterface.getParamValFromKwarg('height', kwargs, default=200)

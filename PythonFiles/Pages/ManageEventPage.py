@@ -5,7 +5,7 @@ from GUI.GUIInterface import GUIInterface
 from Calendar.CalendarInterface import CalendarInterface
 from Events.EventsManager import EventsManager
 from GUI.EventCard import EventCard
-from Calendar.CalendarConstants import GOOGLE_CALENDAR, OUTLOOK_CALENDAR
+from Pages.PageConstants import AUTO_REMOVE_OLD_EVENTS
 from Managers.DateTimeManager import DateTimeManager
 
 class ManageEventPage(Page):
@@ -24,15 +24,21 @@ class ManageEventPage(Page):
         # Frame to hold all EventCards
         self.content_frame = GUIInterface.CreateScrollableFrame(self.page)
 
+        # Auto Remove Old Events
+        self.autoRemoveLabel =  GUIInterface.CreateLabel(text="Auto Remove Old Events from Manage Page:")
+        self.autoRemoveSwitch = GUIInterface.CreateSwitch(text="", onvalue=1, offvalue=0, border_color='grey', command=self.autoRemoveSwitchValue)
+
         # Grid GUI
         self.label.grid(row=0, column=1)
         self.content_frame.grid(row=1, column=1, sticky='nsew')
+        self.autoRemoveLabel.grid(row=2, column=1, sticky='nsew')
+        self.autoRemoveSwitch.grid(row=3, column=1, sticky='nsew')
 
     def OnEntry(self):
         self.UpdateGUI()
 
-        # WIP
-        self.CheckExpiredEvents()
+        if AUTO_REMOVE_OLD_EVENTS:
+            self.CheckExpiredEvents()
     
     def OnExit(self):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
@@ -75,31 +81,20 @@ class ManageEventPage(Page):
         cardsCopy = self.cards.copy()
         now_date = str(DateTimeManager.getDateTimeNow().date())
         now_time = str(DateTimeManager.getDateTimeNow().time()).split('.')[0]
-        print("now_date: ",now_date)
-        print("now_time: ",now_time)
 
         for c in cardsCopy:
             print(self.cards[c].event_details)
             end_date = cardsCopy[c].event_details['e_date']
             end_time = cardsCopy[c].event_details['end_time']
-            platform = cardsCopy[c].event_details['platform']
-
-            print(c)
-            print("End Date: ", end_date)
-            print("End Time: ", end_time)
-            print("Platform: ", platform)
 
             isEventDateOver = DateTimeManager.CompareDates(now_date, str(end_date))
             isEventDateEquals = DateTimeManager.areDatesEqual(now_date, str(end_date))
             isEventTimeOver = DateTimeManager.CompareTimes(str(end_time), now_time)
             eventOver = True if isEventDateOver and (isEventDateEquals and isEventTimeOver or not isEventDateEquals) else False
 
-            print("isEventDateOver: ", isEventDateOver)
-            print("isEventDateOver: ", isEventDateEquals)
-            print("isEventTimeOver: ", isEventTimeOver)
-            print("eventOver: ", eventOver)
-
             if not eventOver:
-                print('No current event is over')
                 return
+            
             cardsCopy[c].RemoveCard(False)
+
+        self.content_frame.update()
