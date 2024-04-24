@@ -24,15 +24,9 @@ class ManageEventPage(Page):
         # Frame to hold all EventCards
         self.content_frame = GUIInterface.CreateScrollableFrame(self.page)
 
-        # Auto Remove Old Events
-        self.autoRemoveLabel =  GUIInterface.CreateLabel(text="Auto Remove Old Events from Manage Page:")
-        self.autoRemoveSwitch = GUIInterface.CreateSwitch(text="", onvalue=1, offvalue=0, border_color='grey', command=self.autoRemoveSwitchValue)
-
         # Grid GUI
         self.label.grid(row=0, column=1)
         self.content_frame.grid(row=1, column=1, sticky='nsew')
-        self.autoRemoveLabel.grid(row=2, column=1, sticky='nsew')
-        self.autoRemoveSwitch.grid(row=3, column=1, sticky='nsew')
 
     def OnEntry(self):
         self.UpdateGUI()
