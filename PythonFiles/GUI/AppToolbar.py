@@ -13,7 +13,7 @@ class AppToolbar:
                                                                         corner_radius=0,
                                                                         fg_color=GUIInterface.color_palette['CTkProgressBar']['fg_color'])
         
-        GUIInterface.CreateGrid(self.events_toolbar_frame, rows=[1,1,1,1,1,1,1,1,1], cols=[1])
+        GUIInterface.CreateGrid(self.events_toolbar_frame, rows=[1,1,1,1,1,1,1,1,1,1,1], cols=[1])
 
         tmp = GUIInterface.current_frame
         GUIInterface.current_frame = self.events_toolbar_frame
@@ -38,6 +38,10 @@ class AppToolbar:
         self.authGoogleBtn = GUIInterface.CreateButton(text="Authenticate Google Calendar", on_click=self.AuthGoogle)
         self.authOutlookBtn = GUIInterface.CreateButton(text="Authenticate Outlook Calendar", on_click=self.AuthOutlook)
 
+        # Auto remove events
+        self.autoRemoveLabel = GUIInterface.CreateLabel(text="Auto Remove Old Events (ManagePage):")
+        self.autoRemoveEventButton = GUIInterface.CreateSwitch(text='', border_color='grey', onvalue=1, offvalue=0, command=self.UpdateAutoRemoveEvent)
+
         # GUI Grid
         self.events_toolbar_frame.grid(row=0, column=0, sticky='nswe')
         self.logo_label.grid(row=0, column=0, padx=APP_TOOLBAR_GAP_X, pady=(20, APP_TOOLBAR_GAP_Y))
@@ -49,6 +53,8 @@ class AppToolbar:
         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=APP_TOOLBAR_GAP_X, pady=APP_TOOLBAR_GAP_Y)
         self.scaling_label.grid(row=7, column=0, padx=APP_TOOLBAR_GAP_X, pady=(APP_TOOLBAR_GAP_Y, 0))
         self.scaling_optionemenu.grid(row=8, column=0, padx=APP_TOOLBAR_GAP_X, pady=(APP_TOOLBAR_GAP_Y, 20))
+        self.autoRemoveLabel.grid(row=9, column=0, padx=APP_TOOLBAR_GAP_X)
+        self.autoRemoveEventButton.grid(row=10, column=0, padx=APP_TOOLBAR_GAP_X)
 
         GUIInterface.current_frame = tmp
 
@@ -81,3 +87,6 @@ class AppToolbar:
             self.authOutlookBtn.configure(state='disabled')
         else:
             messagebox.showinfo(title=SUCCESS_TITLE, message=NO_OUTLOOK_CONNECTION_MSG)
+
+    def UpdateAutoRemoveEvent(self):
+        PageManager.pages[2].autoEvents = self.autoRemoveEventButton.get()

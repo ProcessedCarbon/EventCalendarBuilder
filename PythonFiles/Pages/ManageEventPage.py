@@ -10,7 +10,8 @@ from Managers.DateTimeManager import DateTimeManager
 
 class ManageEventPage(Page):
     def __init__(self):   
-        self.cards = {} 
+        self.cards = {}
+        self.autoEvents = 0 # int cos CTkSwitch is bugged
         super().__init__()
 
     def OnStart(self):
@@ -31,7 +32,7 @@ class ManageEventPage(Page):
     def OnEntry(self):
         self.UpdateGUI()
 
-        if AUTO_REMOVE_OLD_EVENTS:
+        if self.autoEvents == 1:
             self.CheckExpiredEvents()
     
     def OnExit(self):
