@@ -5,7 +5,6 @@ from GUI.GUIInterface import GUIInterface
 from Calendar.CalendarInterface import CalendarInterface
 from Events.EventsManager import EventsManager
 from GUI.EventCard import EventCard
-from Pages.PageConstants import AUTO_REMOVE_OLD_EVENTS
 from Managers.DateTimeManager import DateTimeManager
 
 class ManageEventPage(Page):
@@ -36,6 +35,7 @@ class ManageEventPage(Page):
             self.CheckExpiredEvents()
     
     def OnExit(self):
+        for c in self.cards: self.cards[c].card_frame.destroy() # clear GUI
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
 
     def UpdateGUI(self):
@@ -78,7 +78,6 @@ class ManageEventPage(Page):
         now_time = str(DateTimeManager.getDateTimeNow().time()).split('.')[0]
 
         for c in cardsCopy:
-            print(self.cards[c].event_details)
             end_date = cardsCopy[c].event_details['e_date']
             end_time = cardsCopy[c].event_details['end_time']
 
@@ -91,5 +90,3 @@ class ManageEventPage(Page):
                 return
             
             cardsCopy[c].RemoveCard(False)
-
-        self.content_frame.update()
