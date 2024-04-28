@@ -10,13 +10,14 @@ import re
 from Calendar.CalendarInterface import CalendarInterface
 from Calendar.Outlook.OutlookEvent import OutlookEvent
 import Managers.DirectoryManager as directory_manager
+from Calendar.Outlook.OutlookConstants import OUTLOOK_CLIENT_ID, OUTLOOK_CLIENT_SECRET
 
 APP = Flask(__name__)
 APP.secret_key = 'EventCalendarBuilder'  # Change this
 LOCAL_HOST = 8000
 
-CLIENT_ID = "99b8766f-5d52-490c-8237-187338d09615"
-CLIENT_SECRET = "_xm8Q~VKXbbgvNF8mT5BUAMr5I_XyE3Q18aRNczT"
+CLIENT_ID = OUTLOOK_CLIENT_ID
+CLIENT_SECRET = OUTLOOK_CLIENT_SECRET
 REDIRECT_URI=f'http://localhost:{LOCAL_HOST}/callback'
 AUTHORITY_URL = 'https://login.microsoftonline.com/common'
 SCOPES = "openid User.Read Calendars.ReadWrite"

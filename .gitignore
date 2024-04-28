@@ -1,6 +1,9 @@
 PythonFiles/NER/model/
 PythonFiles/Calendar/Outlook/api_token_access.json
-PythonFiles/Calendar/GoogleCalendar/*GoogleCalendarAPI
+PythonFiles/Calendar/GoogleCalendar/GoogleCalendarAPI/credentials.json
+PythonFiles/Calendar/GoogleCalendar/GoogleCalendarAPI/token.json
+PythonFiles/Calendar/Outlook/OutlookConstants.py
+PythonFiles/test.py
 *Testing
 *Models
 dev_venv
