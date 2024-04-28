@@ -2,10 +2,6 @@ import os
 from pathlib import Path
 os.chdir(Path(os.path.dirname(os.path.realpath(__file__))).parent.absolute())
 import logging
-from dotenv import load_dotenv
-
-# Load local env
-load_dotenv() # Needs to run here before anything else is ran
 
 '''
 MANAGERS AND INTERFACES
@@ -31,7 +27,6 @@ from GUI.AppToolbar import AppToolbar
 LOG_PATH = Path('./app.log')
     
 if __name__ == "__main__":
-    # Start Logs
     if os.path.exists(LOG_PATH):
         os.remove(LOG_PATH)
     logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')

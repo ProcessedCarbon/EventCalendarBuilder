@@ -26,13 +26,3 @@
 ### Note-worthy
 1. A altered wordninja library is used under EdittedPackages/wordninja
 2. Spacy transformer code has been manually editted to use 'torch.utils._pytree.register_pytree_node' instead of 'torch.utils._pytree._register_pytree_node' in transformer/utils/generic.py
-
-### Google API
-1. Store your google credentials file in .\PythonFiles\Calendar\GoogleCalendar\GoogleCalendarAPI and name it 'credentials.json'
-
-### Outlook API
-1. Create a .env file and update the client secret and client id of azure project.
-2. Look at .env_sample for reference.
-
-### NER Model
-1. Place spacy model folder in PythonFiles\NER\model and name it 'model-base-desc'

@@ -1,8 +1,6 @@
 PythonFiles/NER/model/
 PythonFiles/Calendar/Outlook/api_token_access.json
-PythonFiles/Calendar/GoogleCalendar/GoogleCalendarAPI/credentials.json
-PythonFiles/Calendar/GoogleCalendar/GoogleCalendarAPI/token.json
-PythonFiles/test.py
+PythonFiles/Calendar/GoogleCalendar/*GoogleCalendarAPI
 *Testing
 *Models
 dev_venv
@@ -19,4 +17,3 @@ PythonFiles/Pages/__pycache__
 .DS_Store
 .vscode
 .venv
-.env
