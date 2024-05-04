@@ -20,7 +20,7 @@ class NERInterface:
         :return: The entities of event, time, date and loc. They can be null
         """
         if text == None or "":
-            logging.error(f"[{__name__}] INVALID PARAM GIVEN!")
+            logging.error(f"[{__name__}] INVALID ENTITIES PARAM GIVEN!")
             return
 
         doc = NERInterface.nlp(text) 
