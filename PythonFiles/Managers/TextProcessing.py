@@ -23,7 +23,7 @@ class TextProcessingManager:
         return re.split(pattern, new_string)
     
     # Creates a date dictionary 
-    def GetDateStruct(day, month, year):
+    def GetDateStruct(date_component_list):
         """
         Returns a structure with day, month and year. 
 
@@ -33,10 +33,28 @@ class TextProcessingManager:
 
         return: structured date
         """
+        day_pattern = r'^\d{1,2}$'
+        year_pattern = r'^\d{4}$'
+
+        day = year = month = None
+
+        for item in date_component_list:
+            if DateTimeManager.isMonth(item):
+                month = item
+            elif re.match(day_pattern, item):
+                day = item
+            elif re.match(year_pattern, item):
+                year = item
+
+        currentDate = DateTimeManager.getCurrentDate()
+        day = day if day != None else currentDate.day
+        month = month if month != None else currentDate.month
+        year = year if year != None else currentDate.year
+
         return  {
                 "day" : re.sub(r'[^0-9]', '', day),
-                "month" : DateTimeManager.isMonth(month) and month or None,
-                "year" : DateTimeManager.isYear(year) and year or None
+                "month" : month,
+                "year" : year
             }
     
     # Checks each special char in string and removes ones that are not in special_char_to_keep
@@ -128,25 +146,12 @@ class TextProcessingManager:
             # Len == 1 > Only has day
             # Len == 2 > Has both day and month
             # Len == 3 > Has all day, month and year
-            date_struct = TextProcessingManager.GetDateStruct(day=remove_empty[0], 
-                                                                month=len(remove_empty) > 1 and remove_empty[1] or 0,
-                                                                year=len(remove_empty) > 2 and remove_empty[2] or 0)
-            # Get reference month and year from a substring that has one
-            founded_month = date_struct['month'] != None and date_struct['month'] or None
-            founded_year = date_struct['year'] != None and date_struct['year'] or None
-
+            date_struct = TextProcessingManager.GetDateStruct(remove_empty)
             list_of_processed.append(date_struct)
-        # Assign year and month to be used for substrings that do not posses one
-        currentDate = DateTimeManager.getCurrentDate()
-        year = founded_year != None and founded_year or currentDate.year
-        month = founded_month != None and founded_month or currentDate.month
 
         res = []
         for struct in list_of_processed:
-            struct['month'] = struct['month'] == None and month or struct['month']
-            struct['year'] = struct['year'] == None and year or struct['year']
-
-            s_date = str(struct['day']) + str(struct['month']) + str(struct['year'])
+            s_date = f"{struct['year']}-{struct['month']}-{struct['day']}"
             res.append(DateTimeManager.FormatToDateTime(date_string=s_date, format='%Y-%m-%d'))
 
         return len(res) == 1 and res[0] or res
