@@ -8,6 +8,7 @@ from Calendar.CalendarInterface import CalendarInterface
 from GUI.EventDetailsPanel import EventDetailsPanel
 from GUI.GUIConstants import MAX_EVENT_TITLE, SUCCESS_TITLE, FAILED_SCHEDULE_MSG
 from Events.EventsManager import EventsManager
+from Events.Event import Event
 from Events.Event_Constants import EVENT_LIMIT
 
 class SchedulePage(Page):
@@ -38,7 +39,7 @@ class SchedulePage(Page):
         # Grid elements
         button.grid(row=0, column=0, sticky='nw')
         self.details_panel_frame.grid(row=1, column=1, sticky='nsew')
-        create_event.grid(row=2, column=1)
+        create_event.grid(row=2, column=2)
 
     def OnExit(self):
         CalendarInterface.DeleteICSFilesInDir(CalendarInterface._main_dir)
@@ -134,25 +135,24 @@ class SchedulePage(Page):
 
     def CreateEventButton(self):
         try:
-            if self.panels == self.max_panels:
+            if self.panels >= EVENT_LIMIT:
                 messagebox.showwarning(title=MAX_EVENT_TITLE, message=f'Max event panels of {self.max_panels} reached.')
                 return
             
-            empty_event = EventsManager.CreateEventObj(id=self.panels,
-                                                        name='',
-                                                        location='',
-                                                        s_date='',
-                                                        e_date='',
-                                                        start_time='',
-                                                        end_time='')
+            empty_event = Event(id=self.panels,
+                                name='',
+                                location='',
+                                s_date='',
+                                e_date='',
+                                start_time='',
+                                end_time='')
 
             detail_panel = EventDetailsPanel(parent=self.details_panel_frame,
                                             event=empty_event,
                                             remove_cb=self.RemovePanel,
+                                            dup_cb=self.DuplicatePanel,
                                             key=self.panels,
-                                            row=self.panels, 
-                                            column=0, 
-                                            sticky='nsew')
+                                            row=self.panels)
             
             self.details_panels[self.panels] = detail_panel
             self.panels += 1

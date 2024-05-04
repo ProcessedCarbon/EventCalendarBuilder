@@ -52,6 +52,9 @@ class EventDetailsPanel:
 
         self.details_frame.update() # needs to be grid and updated before other GUI as following UI needs the updated frame params
 
+        # Event Title
+        self.event_title = GUIInterface.CreateLabel(text=f"Event {self.row}", font=GUIInterface.getCTKFont(size=20, weight="bold"))
+
         # GUI Attributes
         detail_entry_width = self.details_frame.winfo_width() * EVENT_DETAILS_PANEL_ENTRY_WIDTH_MODIFIER
 
@@ -115,6 +118,7 @@ class EventDetailsPanel:
         e_d_entry.bind('<1>', lambda event, entry=e_d_entry: self.PickDate(entry))
 
         # Grid GUI
+        self.event_title.grid(row=0, column=1, pady=EVENT_DETAILS_PANEL_DETAIL_GAP)
         dup_btn.grid(row=0, column=2, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, sticky='e')
         remove_btn.grid(row=0, column=3, pady=EVENT_DETAILS_PANEL_DETAIL_GAP, sticky='e', padx=(0, EVENT_DETAILS_PANEL_DETAIL_GAP))
 
