@@ -380,10 +380,7 @@ class EventsManager:
     # 1 ICS = should have 1 VEVENT
     # returns names of file created
     def CreateICSFileFromInput(event)->str:
-        desp = event["Description"]
-        location = event["Location"]
         tz = event['Timezone']
-        title = event["Event"]
         ics_s = event["Start_Time_ICS"]
         ics_e = event["End_Time_ICS"]
 
@@ -398,11 +395,11 @@ class EventsManager:
                 } if event['Repeated'] != 'None' else {}
         
         # Create ICS File
-        file_name = CalendarInterface.CreateICSEvent(e_name=title,
-                                                    e_description=desp,
+        file_name = CalendarInterface.CreateICSEvent(e_name=event["Event"],
+                                                    e_description= event["Description"],
                                                     s_datetime=ics_s,
                                                     e_datetime=ics_e,
-                                                    e_location=location,
+                                                    e_location=event["Location"],
                                                     rrule=rrule,
                                                     duration=hours,
                                                     e_alert=int(event['Alert']))

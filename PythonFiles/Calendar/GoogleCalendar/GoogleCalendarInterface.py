@@ -141,12 +141,12 @@ class GoogleCalendarInterface:
 
             if component.name == "VALARM":
                 # Use regular expressions to extract the trigger time
-                match = re.search(r'(\d{2}:\d{2}:\d{2})', str(component.get('trigger')))
-                if match:
-                    trigger_time = match.group(0)[3:5]
-                    diff = 60 - int(trigger_time)
-                    alert = diff if (diff != 0) else 60
-
+                trigger = component.get('TRIGGER').to_ical().decode('utf-8')
+                trigger = re.sub(r'[^0-9PTMHSDW]', '', trigger)
+                trigger_time = trigger[2:4]
+                diff = 60 - int(trigger_time)
+                alert = diff if (diff != 0) else 60
+        
         return GoogleEvent(event=name,
                             location=location,
                             start_datetime=start_datetime,

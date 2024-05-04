@@ -40,6 +40,8 @@ class EventCard:
         attribute_width= self.card_frame.winfo_width() * EVENT_DETAILS_CARD_ENTRY_WIDTH_MODIFIER
 
         # Details
+        self.platform_label = GUIInterface.CreateLabel(text=f"Platform: {self.event_details['platform']}", font = GUIInterface.getCTKFont(size=15, weight="bold"))
+
         # title
         self.n_frame,  self.n_label, self.n_entry = GUIInterface.CreateEntryWithLabel(label= "Name:",
                                                                                         entry_width=attribute_width, 
@@ -69,7 +71,7 @@ class EventCard:
         self.et_frame, self.et_label, self.et_entry = GUIInterface.CreateEntryWithLabel(label= "End Time:",
                                                                                         entry_width=attribute_width, 
                                                                                         entry_state='disabled')
-
+        
         # Dropsdowns
         tmp = GUIInterface.current_frame
         self.drop_down_frame = GUIInterface.CreateFrame(GUIInterface.current_frame, border_color=frame_color, fg_color=frame_color)
@@ -110,16 +112,17 @@ class EventCard:
         self.UpdateEntries()
 
         # Grid GUI
-        self.n_frame.grid(row=1, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.desc_frame.grid(row=2, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.l_frame.grid(row=3, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.s_d_frame.grid(row=4, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.e_d_frame.grid(row=5, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.st_frame.grid(row=6, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
-        self.et_frame.grid(row=7, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.platform_label.grid(row=1, column=0, sticky='ew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.n_frame.grid(row=2, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.desc_frame.grid(row=3, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.l_frame.grid(row=4, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.s_d_frame.grid(row=5, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.e_d_frame.grid(row=6, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.st_frame.grid(row=7, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.et_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
 
         # Dropdown
-        self.drop_down_frame.grid(row=8, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
+        self.drop_down_frame.grid(row=9, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         self.tz_frame.grid(row=0, column=0, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         self.recur_frame.grid(row=0, column=1, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
         self.alert_frame.grid(row=0, column=2, sticky='nsew', padx=EVENT_DETAILS_PANEL_CARD_GAP, pady=EVENT_DETAILS_PANEL_CARD_GAP)
