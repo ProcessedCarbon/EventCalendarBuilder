@@ -272,7 +272,12 @@ class EventsManager:
         if filename == None:
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR GOOGLE')
             return
-        google_event = GoogleCalendarInterface.Parse_ICS(filename)
+        
+        try:
+            google_event = GoogleCalendarInterface.Parse_ICS(filename)
+        except Exception as e:
+            messagebox.showerror(title=FAILED_ICS_PARSING, message=FAILED_ICS_PARSING)
+            logging.error(f'[{__name__}] FAILED TO PARSE ICS FILE FOR GOOGLE')
 
         # Check if can get any event from ICS
         if google_event == None:
@@ -322,7 +327,12 @@ class EventsManager:
         if filename == None:
             logging.error(f'[{__name__}] FAILED TO CREATE ICS FILE FOR OUTLOOK')
             return ''
-        outlook_event = outlook_interface.parse_ics(filename).event
+        
+        try:
+            outlook_event = outlook_interface.parse_ics(filename).event
+        except Exception as e:
+            messagebox.showerror(title=FAILED_ICS_PARSING, message=FAILED_ICS_PARSING)
+            logging.error(f'[{__name__}] FAILED TO PARSE ICS FILE FOR OUTLOOK')
 
         # Check if can get any event from ICS
         if outlook_event == None:
