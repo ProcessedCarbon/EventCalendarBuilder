@@ -280,6 +280,12 @@ class EventDetailsPanel:
         elif TextProcessingManager.CheckStringFormat(input['End_Time']) == None:
             messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect End Time provided for {input["Event"]} with {input["End_Time"]}')
             return False
+        elif TextProcessingManager.CheckStringFormat(input['Start_Date'], regex="^\d{4}-\d{2}-\d{2}$") == None:
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect Start Date provided for {input["Event"]} with {input["Start_Date"]}')
+            return False
+        elif TextProcessingManager.CheckStringFormat(input['End_Date'], regex="^\d{4}-\d{2}-\d{2}$") == None:
+            messagebox.showerror(title=MISSING_INPUT_TITLE, message=f'Incorrect End Date provided for {input["Event"]} with {input["End_Date"]}')
+            return False
         elif DateTimeManager.CompareDates(date1=input['End_Date'], date2=input['Start_Date']) == False:
             messagebox.showerror(title=INVALID_INPUT_TITLE, message=f'Invalid Dates provided\nStart Date: {input["Start_Date"]}\nEnd Date: {input["End_Date"]}')
             return False
