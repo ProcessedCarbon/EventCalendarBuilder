@@ -1,5 +1,4 @@
 import datetime as dt
-import pytz
 from datetime import datetime, timedelta
 from dateutil.parser import parse
 from zoneinfo import ZoneInfo
